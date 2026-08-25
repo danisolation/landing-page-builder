@@ -10,13 +10,13 @@ export class PagesService {
 
   async create(dto: CreatePageDto) {
     return this.prisma.page.create({
-      data: dto,  // Prisma tự map dto → SQL INSERT
+      data: dto, // Prisma tự map dto → SQL INSERT
     });
   }
 
   async findAll() {
     return this.prisma.page.findMany({
-      include: { sections: true },  // Lấy luôn sections của mỗi page
+      include: { sections: true }, // Lấy luôn sections của mỗi page
     });
   }
 
@@ -39,7 +39,7 @@ export class PagesService {
 
     return this.prisma.page.update({
       where: { id },
-      data: dto,  // Chỉ update field có trong dto
+      data: dto, // Chỉ update field có trong dto
     });
   }
 
@@ -49,5 +49,18 @@ export class PagesService {
     return this.prisma.page.delete({
       where: { id },
     });
+  }
+
+  async findBySlug(slug: string) {
+    const page = await this.prisma.page.findUnique({
+      where: { slug },
+      include: { sections: { orderBy: { order: 'asc' } } },
+    });
+
+    if (!page) {
+      throw new NotFoundException(`Page with slug "${slug}" not found`);
+    }
+
+    return page;
   }
 }
