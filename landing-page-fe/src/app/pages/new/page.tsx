@@ -2,29 +2,28 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createPage } from "@/lib/api";
+import { usePages } from "@/hooks/usePages";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function NewPagePage() {
   const router = useRouter();
+  const { createPage, isCreating } = usePages();
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [description, setDescription] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
-
-    try {
-      await createPage({ title, slug, description });
-      router.push("/dashboard");
-    } catch (err: any) {
-      setError(err.message || "Tạo page thất bại");
-    } finally {
-      setLoading(false);
-    }
+    createPage(
+      { title, slug, description },
+      {
+        onSuccess: () => router.push("/dashboard"),
+      },
+    );
   };
 
   return (
@@ -36,67 +35,59 @@ export default function NewPagePage() {
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-8">
-        {error && (
-          <div className="bg-red-100 text-red-700 p-3 rounded mb-4">
-            {error}
-          </div>
-        )}
+        <Card>
+          <CardHeader>
+            <CardTitle>Thông tin page</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="title">Tiêu đề *</Label>
+                <Input
+                  id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                />
+              </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white p-6 rounded-lg shadow"
-        >
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Tiêu đề *</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="slug">Slug *</Label>
+                <Input
+                  id="slug"
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value)}
+                  placeholder="san-pham-moi"
+                  required
+                />
+                <p className="text-sm text-gray-500">URL: /{slug || "..."}</p>
+              </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2">Slug *</label>
-            <input
-              type="text"
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="san-pham-moi"
-              required
-            />
-            <p className="text-sm text-gray-500 mt-1">URL: /{slug || "..."}</p>
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="description">Mô tả</Label>
+                <Textarea
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={3}
+                />
+              </div>
 
-          <div className="mb-6">
-            <label className="block text-gray-700 mb-2">Mô tả</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={3}
-            />
-          </div>
-
-          <div className="flex gap-4">
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 disabled:opacity-50"
-            >
-              {loading ? "Đang tạo..." : "Tạo page"}
-            </button>
-            <button
-              type="button"
-              onClick={() => router.push("/dashboard")}
-              className="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400"
-            >
-              Hủy
-            </button>
-          </div>
-        </form>
+              <div className="flex gap-4">
+                <Button type="submit" disabled={isCreating}>
+                  {isCreating ? "Đang tạo..." : "Tạo page"}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => router.push("/dashboard")}
+                >
+                  Hủy
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
       </main>
     </div>
   );

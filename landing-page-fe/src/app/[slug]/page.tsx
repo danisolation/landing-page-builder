@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { getPageBySlug } from '@/lib/api';
 import HeroSection from '@/components/sections/HeroSection';
 import FeaturesSection from '@/components/sections/FeaturesSection';
@@ -16,18 +16,13 @@ const sectionComponents: Record<string, any> = {
 export default function PublicPage() {
   const params = useParams();
   const slug = params.slug as string;
-  const [page, setPage] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
 
-  useEffect(() => {
-    getPageBySlug(slug)
-      .then(setPage)
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
-  }, [slug]);
+  const { data: page, isLoading, error } = useQuery({
+    queryKey: ['page', slug],
+    queryFn: () => getPageBySlug(slug),
+  });
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p>Đang tải...</p>
