@@ -29,6 +29,21 @@ export default function SearchFilter({
 }: SearchFilterProps) {
   const t = useTranslations('searchFilter');
 
+  const statusOptions = [
+    { value: 'all', label: t('all') },
+    { value: 'published', label: t('published') },
+    { value: 'draft', label: t('draft') },
+  ];
+
+  const sortOptions = [
+    { value: 'newest', label: t('newest') },
+    { value: 'oldest', label: t('oldest') },
+    { value: 'name', label: t('nameAZ') },
+  ];
+
+  const selectedStatusLabel = statusOptions.find(opt => opt.value === status)?.label || t('all');
+  const selectedSortLabel = sortOptions.find(opt => opt.value === sortBy)?.label || t('newest');
+
   return (
     <div className="flex flex-col sm:flex-row gap-3 mb-6">
       <div className="flex-1">
@@ -42,23 +57,27 @@ export default function SearchFilter({
 
       <Select value={status} onValueChange={(v) => onStatusChange(v ?? "all")}>
         <SelectTrigger className="w-full sm:w-[160px] h-10">
-          <SelectValue placeholder={t('status')} />
+          <SelectValue>{selectedStatusLabel}</SelectValue>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">{t('all')}</SelectItem>
-          <SelectItem value="published">{t('published')}</SelectItem>
-          <SelectItem value="draft">{t('draft')}</SelectItem>
+          {statusOptions.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
 
       <Select value={sortBy} onValueChange={(v) => onSortChange(v ?? "newest")}>
         <SelectTrigger className="w-full sm:w-[160px] h-10">
-          <SelectValue placeholder={t('sort')} />
+          <SelectValue>{selectedSortLabel}</SelectValue>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="newest">{t('newest')}</SelectItem>
-          <SelectItem value="oldest">{t('oldest')}</SelectItem>
-          <SelectItem value="name">{t('nameAZ')}</SelectItem>
+          {sortOptions.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
     </div>
