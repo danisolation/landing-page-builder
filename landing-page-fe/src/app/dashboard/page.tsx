@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { usePages } from "@/hooks/usePages";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { LoadingPage, SkeletonList } from "@/components/ui/loading";
+import { LoadingPage } from "@/components/ui/loading";
 import EmptyState from "@/components/ui/empty-state";
-import { showToast } from "@/components/ui/toast-notification";
 import { showConfirm } from "@/components/ui/confirm-dialog";
 
 export default function DashboardPage() {
@@ -23,10 +23,10 @@ export default function DashboardPage() {
     if (confirmed) {
       deletePage(pageId, {
         onSuccess: () => {
-          showToast("Đã xóa page thành công!", "success");
+          toast.success("Đã xóa page thành công!");
         },
         onError: (error: any) => {
-          showToast(error.message || "Xóa page thất bại", "error");
+          toast.error(error.message || "Xóa page thất bại");
         },
       });
     }
