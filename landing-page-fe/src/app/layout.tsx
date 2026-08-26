@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "@/providers/QueryProvider";
+import AppLayout from "@/components/layout/AppLayout";
+import ToastNotification from "@/components/ui/toast-notification";
+import ConfirmDialog from "@/components/ui/confirm-dialog";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +21,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <AppLayout>
+            {children}
+          </AppLayout>
+          <ToastNotification />
+          <ConfirmDialog />
+        </QueryProvider>
       </body>
     </html>
   );
