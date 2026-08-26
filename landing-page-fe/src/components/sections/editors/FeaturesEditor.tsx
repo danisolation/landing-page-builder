@@ -1,0 +1,126 @@
+'use client';
+
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+
+interface FeaturesEditorProps {
+  content: any;
+  onChange: (content: any) => void;
+}
+
+export default function FeaturesEditor({ content, onChange }: FeaturesEditorProps) {
+  const items = content.items || [];
+
+  const handleTitleChange = (value: string) => {
+    onChange({
+      ...content,
+      title: value,
+    });
+  };
+
+  const handleItemChange = (index: number, field: string, value: string) => {
+    const newItems = [...items];
+    newItems[index] = {
+      ...newItems[index],
+      [field]: value,
+    };
+    onChange({
+      ...content,
+      items: newItems,
+    });
+  };
+
+  const addItem = () => {
+    onChange({
+      ...content,
+      items: [
+        ...items,
+        { icon: '✨', name: '', description: '' },
+      ],
+    });
+  };
+
+  const removeItem = (index: number) => {
+    const newItems = items.filter((_: any, i: number) => i !== index);
+    onChange({
+      ...content,
+      items: newItems,
+    });
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <Label>Section Title</Label>
+        <Input
+          value={content.title || ''}
+          onChange={(e) => handleTitleChange(e.target.value)}
+          placeholder="Tính năng nổi bật"
+        />
+      </div>
+
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <Label>Feature Items</Label>
+          <Button type="button" variant="outline" size="sm" onClick={addItem}>
+            + Thêm item
+          </Button>
+        </div>
+
+        {items.map((item: any, index: number) => (
+          <div key={index} className="border rounded-lg p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium">Item {index + 1}</span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => removeItem(index)}
+                className="text-red-500 hover:text-red-700"
+              >
+                Xóa
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3">
+              <div className="space-y-2">
+                <Label>Icon</Label>
+                <Input
+                  value={item.icon || ''}
+                  onChange={(e) => handleItemChange(index, 'icon', e.target.value)}
+                  placeholder="⚡"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Name</Label>
+                <Input
+                  value={item.name || ''}
+                  onChange={(e) => handleItemChange(index, 'name', e.target.value)}
+                  placeholder="Nhanh chóng"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Description</Label>
+                <Input
+                  value={item.description || ''}
+                  onChange={(e) => handleItemChange(index, 'description', e.target.value)}
+                  placeholder="Tốc độ xử lý nhanh"
+                />
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {items.length === 0 && (
+          <p className="text-sm text-gray-500 text-center py-4">
+            Chưa có feature nào. Nhấn &quot;+ Thêm item&quot; để bắt đầu.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
