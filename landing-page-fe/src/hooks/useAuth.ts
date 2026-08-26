@@ -12,12 +12,16 @@ export function useAuth() {
       loginAPI(data.username, data.password),
     onSuccess: (data) => {
       localStorage.setItem("token", data.access_token);
+      // Lưu vào cookie cho middleware
+      document.cookie = `token=${data.access_token}; path=/; max-age=86400`;
       router.push("/dashboard");
     },
   });
 
   const logout = () => {
     localStorage.removeItem("token");
+    // Xóa cookie
+    document.cookie = "token=; path=/; max-age=0";
     router.push("/login");
   };
 

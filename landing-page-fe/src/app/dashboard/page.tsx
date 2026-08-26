@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { usePages } from "@/hooks/usePages";
 import { useAuth } from "@/hooks/useAuth";
@@ -9,15 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function DashboardPage() {
-  const router = useRouter();
-  const { getToken, logout } = useAuth();
+  const { logout } = useAuth();
   const { pages, isLoading, deletePage } = usePages();
-
-  useEffect(() => {
-    if (!getToken()) {
-      router.push("/login");
-    }
-  }, []);
 
   if (isLoading) {
     return <div className="p-8">Đang tải...</div>;
