@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { toast } from "sonner";
 import { usePage, usePages } from "@/hooks/usePages";
 import { useSections } from "@/hooks/useSections";
 import { Button } from "@/components/ui/button";
@@ -50,7 +51,10 @@ export default function EditPagePage() {
     e.preventDefault();
     updatePage(
       { id: pageId, data: { title, slug, description } },
-      { onSuccess: () => alert("Đã lưu!") }
+      {
+        onSuccess: () => toast.success("Đã lưu thành công!"),
+        onError: (error: any) => toast.error(error.message || "Lưu thất bại"),
+      }
     );
   };
 
@@ -68,13 +72,21 @@ export default function EditPagePage() {
           onSuccess: () => {
             setShowSectionForm(false);
             setEditingSection(null);
+            toast.success("Đã cập nhật section!");
           },
+          onError: (error: any) => toast.error(error.message || "Cập nhật thất bại"),
         }
       );
     } else {
       createSection(
         { type: sectionType, content, order: sectionOrder },
-        { onSuccess: () => setShowSectionForm(false) }
+        {
+          onSuccess: () => {
+            setShowSectionForm(false);
+            toast.success("Đã thêm section!");
+          },
+          onError: (error: any) => toast.error(error.message || "Thêm section thất bại"),
+        }
       );
     }
   };
@@ -192,8 +204,10 @@ export default function EditPagePage() {
                         variant="destructive"
                         size="sm"
                         onClick={() => {
-                          if (confirm("Xóa section?"))
-                            deleteSection(section.id);
+                          deleteSection(section.id, {
+                            onSuccess: () => toast.success("Đã xóa section!"),
+                            onError: (error: any) => toast.error(error.message || "Xóa thất bại"),
+                          });
                         }}
                       >
                         Xóa
