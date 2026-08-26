@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { usePage, usePages } from "@/hooks/usePages";
 import { useSections } from "@/hooks/useSections";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,8 @@ import SectionEditor from "@/components/sections/SectionEditor";
 import SectionPreview from "@/components/sections/SectionPreview";
 
 export default function EditPagePage() {
+  const t = useTranslations("editPage");
+  const tCommon = useTranslations("common");
   const router = useRouter();
   const params = useParams();
   const pageId = params.id as string;
@@ -44,8 +47,8 @@ export default function EditPagePage() {
     updatePage(
       { id: pageId, data: { title, slug, description } },
       {
-        onSuccess: () => toast.success("Da luu thanh cong!"),
-        onError: (error: any) => toast.error(error.message || "Luu that bai"),
+        onSuccess: () => toast.success(t("saveSuccess")),
+        onError: (error: any) => toast.error(error.message || t("saveFailed")),
       }
     );
   };
@@ -61,18 +64,18 @@ export default function EditPagePage() {
           onSuccess: () => {
             setShowSectionForm(false);
             setEditingSection(null);
-            toast.success("Da cap nhat section!");
+            toast.success(t("sectionUpdated"));
           },
-          onError: (error: any) => toast.error(error.message || "Cap nhat that bai"),
+          onError: (error: any) => toast.error(error.message || t("sectionUpdateFailed")),
         }
       );
     } else {
       createSection(data, {
         onSuccess: () => {
           setShowSectionForm(false);
-          toast.success("Da them section!");
+          toast.success(t("sectionAdded"));
         },
-        onError: (error: any) => toast.error(error.message || "Them section that bai"),
+        onError: (error: any) => toast.error(error.message || t("sectionAddFailed")),
       });
     }
   };
@@ -86,8 +89,8 @@ export default function EditPagePage() {
     return (
       <div>
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Sua page</h1>
-          <Button variant="outline" disabled size="sm">Quay lai</Button>
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">{t("title")}</h1>
+          <Button variant="outline" disabled size="sm">{tCommon("back")}</Button>
         </div>
         <div className="max-w-4xl space-y-8">
           <SkeletonForm />
@@ -102,9 +105,9 @@ export default function EditPagePage() {
       <Breadcrumbs />
 
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Sua page</h1>
+        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">{t("title")}</h1>
         <Button variant="outline" size="sm" onClick={() => router.push("/dashboard")}>
-          Quay lai
+          {tCommon("back")}
         </Button>
       </div>
 
@@ -112,20 +115,20 @@ export default function EditPagePage() {
         {/* Page form */}
         <Card>
           <CardHeader className="pb-4">
-            <CardTitle className="text-lg">Thong tin page</CardTitle>
+            <CardTitle className="text-lg">{t("pageInfo")}</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSavePage} className="space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium">Tieu de</Label>
+                  <Label className="text-sm font-medium">{t("titleLabel")}</Label>
                   <Input
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium">Slug</Label>
+                  <Label className="text-sm font-medium">{t("slugLabel")}</Label>
                   <Input
                     value={slug}
                     onChange={(e) => setSlug(e.target.value)}
@@ -134,7 +137,7 @@ export default function EditPagePage() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Mo ta</Label>
+                <Label className="text-sm font-medium">{t("descLabel")}</Label>
                 <Textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -143,7 +146,7 @@ export default function EditPagePage() {
               </div>
 
               <Button type="submit" disabled={isUpdating} size="sm">
-                {isUpdating ? "Dang luu..." : "Luu thay doi"}
+                {isUpdating ? tCommon("saving") : tCommon("save")}
               </Button>
             </form>
           </CardContent>
@@ -153,7 +156,7 @@ export default function EditPagePage() {
         <Card>
           <CardHeader className="pb-4">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-              <CardTitle className="text-lg">Sections</CardTitle>
+              <CardTitle className="text-lg">{t("sections")}</CardTitle>
               <Button
                 size="sm"
                 onClick={() => {
@@ -161,13 +164,13 @@ export default function EditPagePage() {
                   setShowSectionForm(true);
                 }}
               >
-                + Them section
+                {t("addSection")}
               </Button>
             </div>
           </CardHeader>
           <CardContent>
             {page?.sections?.length === 0 ? (
-              <p className="text-sm text-gray-500 text-center py-8">Chua co section nao</p>
+              <p className="text-sm text-gray-500 text-center py-8">{t("noSections")}</p>
             ) : (
               <div className="space-y-3">
                 {page?.sections?.map((section: any) => (
@@ -190,19 +193,19 @@ export default function EditPagePage() {
                           size="sm"
                           onClick={() => handleEditSection(section)}
                         >
-                          Sua
+                          {tCommon("edit")}
                         </Button>
                         <Button
                           variant="destructive"
                           size="sm"
                           onClick={() => {
                             deleteSection(section.id, {
-                              onSuccess: () => toast.success("Da xoa section!"),
-                              onError: (error: any) => toast.error(error.message || "Xoa that bai"),
+                              onSuccess: () => toast.success(t("sectionDeleted")),
+                              onError: (error: any) => toast.error(error.message || t("sectionDeleteFailed")),
                             });
                           }}
                         >
-                          Xoa
+                          {tCommon("delete")}
                         </Button>
                       </div>
                     </div>

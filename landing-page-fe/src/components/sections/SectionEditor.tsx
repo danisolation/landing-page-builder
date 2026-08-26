@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -54,6 +55,8 @@ export default function SectionEditor({
   onCancel,
   isLoading,
 }: SectionEditorProps) {
+  const t = useTranslations('sectionEditor');
+  const tCommon = useTranslations('common');
   const [type, setType] = useState(section?.type || 'hero');
   const [content, setContent] = useState(
     section?.content || defaultContent['hero']
@@ -78,13 +81,13 @@ export default function SectionEditor({
       <Card>
         <CardHeader className="pb-4">
           <CardTitle className="text-lg">
-            {section ? 'Sua Section' : 'Them Section Moi'}
+            {section ? t('editSection') : t('addSection')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Loai Section</Label>
+              <Label className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('sectionType')}</Label>
               <Select value={type} onValueChange={setType}>
                 <SelectTrigger>
                   <SelectValue />
@@ -98,7 +101,7 @@ export default function SectionEditor({
             </div>
 
             <div className="space-y-2">
-              <Label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Thu tu</Label>
+              <Label className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('order')}</Label>
               <Input
                 type="number"
                 value={order}
@@ -114,10 +117,10 @@ export default function SectionEditor({
 
           <div className="flex gap-3 pt-4 border-t border-gray-100">
             <Button onClick={handleSave} disabled={isLoading} size="sm">
-              {isLoading ? 'Dang luu...' : 'Luu'}
+              {isLoading ? tCommon('saving') : tCommon('save')}
             </Button>
             <Button variant="outline" onClick={onCancel} size="sm">
-              Huy
+              {tCommon('cancel')}
             </Button>
           </div>
         </CardContent>
@@ -126,7 +129,7 @@ export default function SectionEditor({
       {/* Preview */}
       <Card>
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg">Preview</CardTitle>
+          <CardTitle className="text-lg">{t('preview')}</CardTitle>
         </CardHeader>
         <CardContent>
           <SectionPreview type={type} content={content} />

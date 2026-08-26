@@ -1,0 +1,128 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "saving": "Saving...",
+    "edit": "Edit",
+    "delete": "Delete",
+    "back": "Back",
+    "admin": "Admin",
+    "logout": "Logout",
+    "appName": "Landing Page Builder"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "pages": "Pages",
+    "createNew": "Create New",
+    "editPage": "Edit",
+    "createPage": "Create Page"
+  },
+  "login": {
+    "title": "Login",
+    "loggingIn": "Logging in...",
+    "username": "Username",
+    "password": "Password",
+    "loginFailed": "Login failed"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "createPage": "+ Create Page",
+    "noPages": "No pages yet",
+    "noPagesDesc": "Create your first page to start building your landing page.",
+    "noResults": "No pages found",
+    "noResultsDesc": "Try changing your search keywords or remove filters.",
+    "deleteSuccess": "Page deleted successfully!",
+    "deleteFailed": "Failed to delete page",
+    "deleteConfirmTitle": "Delete page?",
+    "deleteConfirmMsg": "Are you sure you want to delete \"{title}\"? This action cannot be undone."
+  },
+  "pageCard": {
+    "published": "Published",
+    "draft": "Draft",
+    "sections": "{count} sections"
+  },
+  "searchFilter": {
+    "searchPlaceholder": "Search pages...",
+    "status": "Status",
+    "all": "All",
+    "published": "Published",
+    "draft": "Draft",
+    "sort": "Sort",
+    "newest": "Newest",
+    "oldest": "Oldest",
+    "nameAZ": "Name A-Z"
+  },
+  "stats": {
+    "totalPages": "Total Pages",
+    "published": "Published",
+    "draft": "Drafts",
+    "totalSections": "Total Sections"
+  },
+  "newPage": {
+    "title": "Create New Page",
+    "pageInfo": "Page Information",
+    "titleLabel": "Title *",
+    "slugLabel": "Slug *",
+    "descLabel": "Description",
+    "creating": "Creating...",
+    "create": "Create Page",
+    "cancel": "Cancel",
+    "success": "Page created successfully!",
+    "failed": "Failed to create page"
+  },
+  "editPage": {
+    "title": "Edit Page",
+    "pageInfo": "Page Information",
+    "titleLabel": "Title",
+    "slugLabel": "Slug",
+    "descLabel": "Description",
+    "saveSuccess": "Saved successfully!",
+    "saveFailed": "Failed to save",
+    "sections": "Sections",
+    "addSection": "+ Add Section",
+    "noSections": "No sections yet",
+    "sectionUpdated": "Section updated!",
+    "sectionUpdateFailed": "Failed to update section",
+    "sectionAdded": "Section added!",
+    "sectionAddFailed": "Failed to add section",
+    "sectionDeleted": "Section deleted!",
+    "sectionDeleteFailed": "Failed to delete"
+  },
+  "sectionEditor": {
+    "editSection": "Edit Section",
+    "addSection": "Add New Section",
+    "sectionType": "Section Type",
+    "order": "Order",
+    "preview": "Preview"
+  },
+  "sectionPreview": {
+    "unsupported": "Section type \"{type}\" is not supported for preview"
+  },
+  "heroEditor": {
+    "heading": "Heading",
+    "subheading": "Subheading",
+    "buttonText": "Button Text",
+    "buttonLink": "Button Link"
+  },
+  "featuresEditor": {
+    "sectionTitle": "Section Title",
+    "featureItems": "Feature Items",
+    "addItem": "+ Add Item",
+    "item": "Item {n}",
+    "icon": "Icon",
+    "name": "Name",
+    "description": "Description",
+    "noFeatures": "No features yet. Click \"+ Add Item\" to get started."
+  },
+  "ctaEditor": {
+    "heading": "Heading",
+    "buttonText": "Button Text",
+    "buttonLink": "Button Link"
+  },
+  "publicPage": {
+    "notFound": "Page not found",
+    "unsupportedSection": "Section type \"{type}\" is not supported"
+  }
+}

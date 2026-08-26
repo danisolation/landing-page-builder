@@ -1,0 +1,128 @@
+{
+  "common": {
+    "loading": "Đang tải...",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận",
+    "save": "Lưu",
+    "saving": "Đang lưu...",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "back": "Quay lại",
+    "admin": "Admin",
+    "logout": "Đăng xuất",
+    "appName": "Landing Page Builder"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "pages": "Pages",
+    "createNew": "Tạo mới",
+    "editPage": "Chỉnh sửa",
+    "createPage": "Tạo page mới"
+  },
+  "login": {
+    "title": "Đăng nhập",
+    "loggingIn": "Đang đăng nhập...",
+    "username": "Username",
+    "password": "Password",
+    "loginFailed": "Đăng nhập thất bại"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "createPage": "+ Tạo page mới",
+    "noPages": "Chưa có page nào",
+    "noPagesDesc": "Tạo page đầu tiên để bắt đầu xây dựng landing page của bạn.",
+    "noResults": "Không tìm thấy page",
+    "noResultsDesc": "Thử thay đổi từ khóa tìm kiếm hoặc bỏ lọc.",
+    "deleteSuccess": "Đã xóa page thành công!",
+    "deleteFailed": "Xóa page thất bại",
+    "deleteConfirmTitle": "Xóa page?",
+    "deleteConfirmMsg": "Bạn có chắc muốn xóa \"{title}\"? Hành động này không thể hoàn tác."
+  },
+  "pageCard": {
+    "published": "Đã xuất bản",
+    "draft": "Nháp",
+    "sections": "{count} sections"
+  },
+  "searchFilter": {
+    "searchPlaceholder": "Tìm kiếm pages...",
+    "status": "Trạng thái",
+    "all": "Tất cả",
+    "published": "Đã xuất bản",
+    "draft": "Nháp",
+    "sort": "Sắp xếp",
+    "newest": "Mới nhất",
+    "oldest": "Cũ nhất",
+    "nameAZ": "Tên A-Z"
+  },
+  "stats": {
+    "totalPages": "Tổng pages",
+    "published": "Đã xuất bản",
+    "draft": "Nháp",
+    "totalSections": "Tổng sections"
+  },
+  "newPage": {
+    "title": "Tạo page mới",
+    "pageInfo": "Thông tin page",
+    "titleLabel": "Tiêu đề *",
+    "slugLabel": "Slug *",
+    "descLabel": "Mô tả",
+    "creating": "Đang tạo...",
+    "create": "Tạo page",
+    "cancel": "Hủy",
+    "success": "Tạo page thành công!",
+    "failed": "Tạo page thất bại"
+  },
+  "editPage": {
+    "title": "Sửa page",
+    "pageInfo": "Thông tin page",
+    "titleLabel": "Tiêu đề",
+    "slugLabel": "Slug",
+    "descLabel": "Mô tả",
+    "saveSuccess": "Đã lưu thành công!",
+    "saveFailed": "Lưu thất bại",
+    "sections": "Sections",
+    "addSection": "+ Thêm section",
+    "noSections": "Chưa có section nào",
+    "sectionUpdated": "Đã cập nhật section!",
+    "sectionUpdateFailed": "Cập nhật thất bại",
+    "sectionAdded": "Đã thêm section!",
+    "sectionAddFailed": "Thêm section thất bại",
+    "sectionDeleted": "Đã xóa section!",
+    "sectionDeleteFailed": "Xóa thất bại"
+  },
+  "sectionEditor": {
+    "editSection": "Sửa Section",
+    "addSection": "Thêm Section Mới",
+    "sectionType": "Loại Section",
+    "order": "Thứ tự",
+    "preview": "Preview"
+  },
+  "sectionPreview": {
+    "unsupported": "Section type \"{type}\" chưa được hỗ trợ preview"
+  },
+  "heroEditor": {
+    "heading": "Heading",
+    "subheading": "Subheading",
+    "buttonText": "Button Text",
+    "buttonLink": "Button Link"
+  },
+  "featuresEditor": {
+    "sectionTitle": "Section Title",
+    "featureItems": "Feature Items",
+    "addItem": "+ Thêm item",
+    "item": "Item {n}",
+    "icon": "Icon",
+    "name": "Name",
+    "description": "Description",
+    "noFeatures": "Chưa có feature nào. Nhấn \"+ Thêm item\" để bắt đầu."
+  },
+  "ctaEditor": {
+    "heading": "Heading",
+    "buttonText": "Button Text",
+    "buttonLink": "Button Link"
+  },
+  "publicPage": {
+    "notFound": "Không tìm thấy trang",
+    "unsupportedSection": "Section type \"{type}\" chưa được hỗ trợ"
+  }
+}

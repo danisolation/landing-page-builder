@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { usePages } from "@/hooks/usePages";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 
 export default function NewPagePage() {
+  const t = useTranslations("newPage");
   const router = useRouter();
   const { createPage, isCreating } = usePages();
   const [title, setTitle] = useState("");
@@ -24,11 +26,11 @@ export default function NewPagePage() {
       { title, slug, description },
       {
         onSuccess: () => {
-          toast.success("Tao page thanh cong!");
+          toast.success(t("success"));
           router.push("/dashboard");
         },
         onError: (error: any) => {
-          toast.error(error.message || "Tao page that bai");
+          toast.error(error.message || t("failed"));
         },
       },
     );
@@ -38,17 +40,17 @@ export default function NewPagePage() {
     <div>
       <Breadcrumbs />
 
-      <h1 className="text-2xl font-bold text-gray-900 tracking-tight mb-6">Tao page moi</h1>
+      <h1 className="text-2xl font-bold text-gray-900 tracking-tight mb-6">{t("title")}</h1>
 
       <div className="max-w-2xl">
         <Card>
           <CardHeader className="pb-4">
-            <CardTitle className="text-lg">Thong tin page</CardTitle>
+            <CardTitle className="text-lg">{t("pageInfo")}</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="title" className="text-sm font-medium">Tieu de *</Label>
+                <Label htmlFor="title" className="text-sm font-medium">{t("titleLabel")}</Label>
                 <Input
                   id="title"
                   value={title}
@@ -58,7 +60,7 @@ export default function NewPagePage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="slug" className="text-sm font-medium">Slug *</Label>
+                <Label htmlFor="slug" className="text-sm font-medium">{t("slugLabel")}</Label>
                 <Input
                   id="slug"
                   value={slug}
@@ -70,7 +72,7 @@ export default function NewPagePage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description" className="text-sm font-medium">Mo ta</Label>
+                <Label htmlFor="description" className="text-sm font-medium">{t("descLabel")}</Label>
                 <Textarea
                   id="description"
                   value={description}
@@ -81,7 +83,7 @@ export default function NewPagePage() {
 
               <div className="flex gap-3 pt-2">
                 <Button type="submit" disabled={isCreating} size="sm">
-                  {isCreating ? "Dang tao..." : "Tao page"}
+                  {isCreating ? t("creating") : t("create")}
                 </Button>
                 <Button
                   type="button"
@@ -89,7 +91,7 @@ export default function NewPagePage() {
                   size="sm"
                   onClick={() => router.push("/dashboard")}
                 >
-                  Huy
+                  {t("cancel")}
                 </Button>
               </div>
             </form>

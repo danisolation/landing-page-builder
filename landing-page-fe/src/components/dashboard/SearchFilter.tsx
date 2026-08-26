@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -26,11 +27,13 @@ export default function SearchFilter({
   sortBy,
   onSortChange,
 }: SearchFilterProps) {
+  const t = useTranslations('searchFilter');
+
   return (
     <div className="flex flex-col sm:flex-row gap-3 mb-6">
       <div className="flex-1">
         <Input
-          placeholder="Tim kiem pages..."
+          placeholder={t('searchPlaceholder')}
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
           className="h-10"
@@ -39,23 +42,23 @@ export default function SearchFilter({
 
       <Select value={status} onValueChange={(v) => onStatusChange(v ?? "all")}>
         <SelectTrigger className="w-full sm:w-[160px] h-10">
-          <SelectValue placeholder="Trang thai" />
+          <SelectValue placeholder={t('status')} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Tat ca</SelectItem>
-          <SelectItem value="published">Da xuat ban</SelectItem>
-          <SelectItem value="draft">Nhap</SelectItem>
+          <SelectItem value="all">{t('all')}</SelectItem>
+          <SelectItem value="published">{t('published')}</SelectItem>
+          <SelectItem value="draft">{t('draft')}</SelectItem>
         </SelectContent>
       </Select>
 
       <Select value={sortBy} onValueChange={(v) => onSortChange(v ?? "newest")}>
         <SelectTrigger className="w-full sm:w-[160px] h-10">
-          <SelectValue placeholder="Sap xep" />
+          <SelectValue placeholder={t('sort')} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="newest">Moi nhat</SelectItem>
-          <SelectItem value="oldest">Cu nhat</SelectItem>
-          <SelectItem value="name">Ten A-Z</SelectItem>
+          <SelectItem value="newest">{t('newest')}</SelectItem>
+          <SelectItem value="oldest">{t('oldest')}</SelectItem>
+          <SelectItem value="name">{t('nameAZ')}</SelectItem>
         </SelectContent>
       </Select>
     </div>

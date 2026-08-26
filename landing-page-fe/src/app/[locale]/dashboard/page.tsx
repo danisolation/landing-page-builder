@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { usePages } from "@/hooks/usePages";
 import { Button } from "@/components/ui/button";
 import { SkeletonStats, SkeletonList } from "@/components/ui/loading";
@@ -12,8 +12,10 @@ import { showConfirm } from "@/components/ui/confirm-dialog";
 import StatsCards from "@/components/dashboard/StatsCards";
 import SearchFilter from "@/components/dashboard/SearchFilter";
 import PageCard from "@/components/dashboard/PageCard";
+import { Link } from "@/i18n/navigation";
 
 export default function DashboardPage() {
+  const t = useTranslations("dashboard");
   const router = useRouter();
   const { pages, isLoading, deletePage } = usePages();
 
@@ -58,17 +60,17 @@ export default function DashboardPage() {
 
   const handleDelete = async (pageId: string, pageTitle: string) => {
     const confirmed = await showConfirm(
-      "Xoa page?",
-      `Ban co chac muon xoa "${pageTitle}"? Hanh dong nay khong the hoan tac.`
+      t("deleteConfirmTitle"),
+      t("deleteConfirmMsg", { title: pageTitle })
     );
 
     if (confirmed) {
       deletePage(pageId, {
         onSuccess: () => {
-          toast.success("Da xoa page thanh cong!");
+          toast.success(t("deleteSuccess"));
         },
         onError: (error: any) => {
-          toast.error(error.message || "Xoa page that bai");
+          toast.error(error.message || t("deleteFailed"));
         },
       });
     }
@@ -78,8 +80,8 @@ export default function DashboardPage() {
     return (
       <div>
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Dashboard</h1>
-          <Button disabled size="sm">+ Tao page moi</Button>
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">{t("title")}</h1>
+          <Button disabled size="sm">{t("createPage")}</Button>
         </div>
         <SkeletonStats />
         <SkeletonList count={3} />
@@ -90,9 +92,9 @@ export default function DashboardPage() {
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">{t("title")}</h1>
         <Link href="/pages/new">
-          <Button size="sm">+ Tao page moi</Button>
+          <Button size="sm">{t("createPage")}</Button>
         </Link>
       </div>
 
@@ -112,18 +114,18 @@ export default function DashboardPage() {
       {!pages || pages.length === 0 ? (
         <EmptyState
           icon="📄"
-          title="Chua co page nao"
-          description="Tao page dau tien de bat dau xay dung landing page cua ban."
+          title={t("noPages")}
+          description={t("noPagesDesc")}
           action={{
-            label: "+ Tao page moi",
+            label: t("createPage"),
             onClick: () => router.push("/pages/new"),
           }}
         />
       ) : filteredPages.length === 0 ? (
         <EmptyState
           icon="🔍"
-          title="Khong tim thay page"
-          description="Thu thay doi tu khoa tim kiem hoac bo loc."
+          title={t("noResults")}
+          description={t("noResultsDesc")}
         />
       ) : (
         <div className="grid gap-3">

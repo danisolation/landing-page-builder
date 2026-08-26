@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 
 interface ConfirmDialogState {
@@ -21,6 +22,7 @@ export function showConfirm(title: string, message: string): Promise<boolean> {
 }
 
 export default function ConfirmDialog() {
+  const t = useTranslations('common');
   const [dialog, setDialog] = useState<ConfirmDialogState>({
     isOpen: false,
     title: '',
@@ -69,10 +71,10 @@ export default function ConfirmDialog() {
 
         <div className="flex justify-end gap-3">
           <Button variant="outline" onClick={handleCancel}>
-            Hủy
+            {t('cancel')}
           </Button>
           <Button variant="destructive" onClick={dialog.onConfirm}>
-            Xác nhận
+            {t('confirm')}
           </Button>
         </div>
       </div>

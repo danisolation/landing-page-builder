@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
+import { Link } from '@/i18n/navigation';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const Icons = {
   dashboard: (
@@ -40,24 +42,29 @@ const Icons = {
   ),
 };
 
-const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: Icons.dashboard },
-  { href: '/pages/new', label: 'Tao page moi', icon: Icons.pages },
-];
-
 export default function AppLayout({ children }: { children: React.ReactNode }) {
+  const t = useTranslations();
   const pathname = usePathname();
   const { logout } = useAuth();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
-  const isLoginPage = pathname === '/login';
-  const isPublicPage = !pathname.startsWith('/dashboard') &&
-    !pathname.startsWith('/pages') &&
-    pathname !== '/';
+  // Extract locale from pathname
+  const locale = pathname.split('/')[1] || 'vi';
+  const pathWithoutLocale = pathname.replace(`/${locale}`, '') || '/';
+
+  const isLoginPage = pathWithoutLocale === '/login';
+  const isPublicPage = !pathWithoutLocale.startsWith('/dashboard') &&
+    !pathWithoutLocale.startsWith('/pages') &&
+    pathWithoutLocale !== '/';
 
   if (isLoginPage || isPublicPage) {
     return <>{children}</>;
   }
+
+  const navItems = [
+    { href: '/dashboard', label: t('nav.dashboard'), icon: Icons.dashboard },
+    { href: '/pages/new', label: t('nav.createPage'), icon: Icons.pages },
+  ];
 
   return (
     <div className="min-h-screen bg-[oklch(0.97_0_0)]">
@@ -74,17 +81,18 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             </button>
             <Link href="/dashboard" className="flex items-center gap-2">
               <span className="text-lg lg:text-xl font-bold text-gray-900 tracking-tight">
-                Landing Page Builder
+                {t('common.appName')}
               </span>
             </Link>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-500 hidden sm:inline">Admin</span>
-            <Button variant="outline" size="sm" onClick={logout} className="gap-2">
+            <span className="text-sm text-gray-500 hidden sm:inline">{t('common.admin')}</span>
+            <Button variant="outline" size="sm" onClick={logout} className="gap-2 min-w-[100px]">
               {Icons.logout}
-              <span className="hidden sm:inline">Dang xuat</span>
+              <span className="hidden sm:inline">{t('common.logout')}</span>
             </Button>
+            <LanguageSwitcher />
           </div>
         </div>
       </header>
@@ -107,8 +115,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         >
           <nav className="p-3 space-y-1 h-full overflow-y-auto scrollbar-thin">
             {navItems.map((item) => {
-              const isActive = pathname === item.href ||
-                (item.href !== '/dashboard' && pathname.startsWith(item.href));
+              const isActive = pathname === `/${locale}${item.href}` ||
+                (item.href !== '/dashboard' && pathname.startsWith(`/${locale}${item.href}`));
 
               return (
                 <Link

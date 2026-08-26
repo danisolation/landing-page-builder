@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Card, CardContent } from '@/components/ui/card';
 
 interface StatsCardsProps {
@@ -7,6 +8,7 @@ interface StatsCardsProps {
 }
 
 export default function StatsCards({ pages }: StatsCardsProps) {
+  const t = useTranslations('stats');
   const totalPages = pages.length;
   const publishedPages = pages.filter((p) => p.isPublished).length;
   const draftPages = totalPages - publishedPages;
@@ -14,25 +16,25 @@ export default function StatsCards({ pages }: StatsCardsProps) {
 
   const stats = [
     {
-      label: 'Tong pages',
+      label: t('totalPages'),
       value: totalPages,
       icon: '📄',
       color: 'bg-blue-50 text-blue-600',
     },
     {
-      label: 'Da xuat ban',
+      label: t('published'),
       value: publishedPages,
       icon: '✅',
       color: 'bg-emerald-50 text-emerald-600',
     },
     {
-      label: 'Nhap',
+      label: t('draft'),
       value: draftPages,
       icon: '📝',
       color: 'bg-amber-50 text-amber-600',
     },
     {
-      label: 'Tong sections',
+      label: t('totalSections'),
       value: totalSections,
       icon: '🧩',
       color: 'bg-purple-50 text-purple-600',

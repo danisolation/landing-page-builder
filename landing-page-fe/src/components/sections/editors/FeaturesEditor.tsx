@@ -1,8 +1,8 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 
 interface FeaturesEditorProps {
@@ -11,6 +11,8 @@ interface FeaturesEditorProps {
 }
 
 export default function FeaturesEditor({ content, onChange }: FeaturesEditorProps) {
+  const t = useTranslations('featuresEditor');
+  const tCommon = useTranslations('common');
   const items = content.items || [];
 
   const handleTitleChange = (value: string) => {
@@ -53,7 +55,7 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label>Section Title</Label>
+        <Label>{t('sectionTitle')}</Label>
         <Input
           value={content.title || ''}
           onChange={(e) => handleTitleChange(e.target.value)}
@@ -63,16 +65,16 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <Label>Feature Items</Label>
+          <Label>{t('featureItems')}</Label>
           <Button type="button" variant="outline" size="sm" onClick={addItem}>
-            + Thêm item
+            {t('addItem')}
           </Button>
         </div>
 
         {items.map((item: any, index: number) => (
           <div key={index} className="border rounded-lg p-4 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Item {index + 1}</span>
+              <span className="text-sm font-medium">{t('item', { n: index + 1 })}</span>
               <Button
                 type="button"
                 variant="ghost"
@@ -80,13 +82,13 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
                 onClick={() => removeItem(index)}
                 className="text-red-500 hover:text-red-700"
               >
-                Xóa
+                {tCommon('delete')}
               </Button>
             </div>
 
             <div className="grid grid-cols-3 gap-3">
               <div className="space-y-2">
-                <Label>Icon</Label>
+                <Label>{t('icon')}</Label>
                 <Input
                   value={item.icon || ''}
                   onChange={(e) => handleItemChange(index, 'icon', e.target.value)}
@@ -95,7 +97,7 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
               </div>
 
               <div className="space-y-2">
-                <Label>Name</Label>
+                <Label>{t('name')}</Label>
                 <Input
                   value={item.name || ''}
                   onChange={(e) => handleItemChange(index, 'name', e.target.value)}
@@ -104,7 +106,7 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
               </div>
 
               <div className="space-y-2">
-                <Label>Description</Label>
+                <Label>{t('description')}</Label>
                 <Input
                   value={item.description || ''}
                   onChange={(e) => handleItemChange(index, 'description', e.target.value)}
@@ -117,7 +119,7 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
 
         {items.length === 0 && (
           <p className="text-sm text-gray-500 text-center py-4">
-            Chưa có feature nào. Nhấn &quot;+ Thêm item&quot; để bắt đầu.
+            {t('noFeatures')}
           </p>
         )}
       </div>

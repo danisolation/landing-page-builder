@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import HeroSection from './HeroSection';
 import FeaturesSection from './FeaturesSection';
 import CtaSection from './CtaSection';
@@ -16,13 +17,14 @@ const sectionComponents: Record<string, any> = {
 };
 
 export default function SectionPreview({ type, content }: SectionPreviewProps) {
+  const t = useTranslations('sectionPreview');
   const SectionComponent = sectionComponents[type];
 
   if (!SectionComponent) {
     return (
       <div className="p-6 bg-amber-50 rounded-lg text-center border border-amber-200">
         <p className="text-sm text-amber-700">
-          Section type &quot;{type}&quot; chua duoc ho tro preview
+          {t('unsupported', { type })}
         </p>
       </div>
     );

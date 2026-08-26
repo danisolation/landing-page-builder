@@ -1,8 +1,9 @@
 'use client';
 
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Link } from '@/i18n/navigation';
 
 interface PageCardProps {
   page: any;
@@ -10,6 +11,8 @@ interface PageCardProps {
 }
 
 export default function PageCard({ page, onDelete }: PageCardProps) {
+  const t = useTranslations('pageCard');
+  const tCommon = useTranslations('common');
   const sectionCount = page.sections?.length || 0;
   const sectionTypes = page.sections?.map((s: any) => s.type) || [];
   const uniqueTypes = [...new Set(sectionTypes)];
@@ -28,7 +31,7 @@ export default function PageCard({ page, onDelete }: PageCardProps) {
                     : 'bg-gray-100 text-gray-600 ring-1 ring-gray-500/20'
                 }`}
               >
-                {page.isPublished ? 'Da xuat ban' : 'Nhap'}
+                {page.isPublished ? t('published') : t('draft')}
               </span>
             </div>
 
@@ -42,7 +45,7 @@ export default function PageCard({ page, onDelete }: PageCardProps) {
 
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500">
               <span className="inline-flex items-center gap-1">
-                🧩 {sectionCount} sections
+                🧩 {t('sections', { count: sectionCount })}
               </span>
 
               {uniqueTypes.length > 0 && (
@@ -60,7 +63,7 @@ export default function PageCard({ page, onDelete }: PageCardProps) {
           <div className="flex items-center gap-2 sm:ml-4 sm:flex-shrink-0">
             <Link href={`/pages/${page.id}/edit`}>
               <Button variant="outline" size="sm">
-                Sua
+                {tCommon('edit')}
               </Button>
             </Link>
             <Button
@@ -68,7 +71,7 @@ export default function PageCard({ page, onDelete }: PageCardProps) {
               size="sm"
               onClick={() => onDelete(page.id, page.title)}
             >
-              Xoa
+              {tCommon('delete')}
             </Button>
           </div>
         </div>

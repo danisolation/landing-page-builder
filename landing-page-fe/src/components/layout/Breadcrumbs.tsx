@@ -1,27 +1,34 @@
 'use client';
 
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
-const pathNames: Record<string, string> = {
-  dashboard: 'Dashboard',
-  pages: 'Pages',
-  new: 'Tao moi',
-  edit: 'Chinh sua',
-};
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 
 export default function Breadcrumbs() {
+  const t = useTranslations('nav');
   const pathname = usePathname();
 
-  const pathSegments = pathname.split('/').filter(Boolean);
-  const breadcrumbs = pathSegments.map((segment, index) => {
+  // Extract locale from pathname
+  const locale = pathname.split('/')[1] || 'vi';
+  const pathWithoutLocale = pathname.replace(`/${locale}`, '') || '/';
+  const pathSegments = pathWithoutLocale.split('/').filter(Boolean);
+
+  // Filter out "pages" segment (it's just a folder, not a real page)
+  const filteredSegments = pathSegments.filter(s => s !== 'pages');
+
+  const pathNames: Record<string, string> = {
+    new: t('createNew'),
+    edit: t('editPage'),
+  };
+
+  const breadcrumbs = filteredSegments.map((segment, index) => {
     const href = '/' + pathSegments.slice(0, index + 1).join('/');
     const label = pathNames[segment] || segment;
-    const isLast = index === pathSegments.length - 1;
+    const isLast = index === filteredSegments.length - 1;
     return { href, label, isLast };
   });
 
-  if (pathname === '/login' || pathname === '/dashboard') {
+  if (pathWithoutLocale === '/login' || pathWithoutLocale === '/dashboard') {
     return null;
   }
 
@@ -31,7 +38,7 @@ export default function Breadcrumbs() {
         href="/dashboard"
         className="px-1.5 py-0.5 rounded hover:text-gray-900 hover:bg-gray-100 transition-colors"
       >
-        Dashboard
+        {t('dashboard')}
       </Link>
 
       {breadcrumbs.map((crumb) => (
