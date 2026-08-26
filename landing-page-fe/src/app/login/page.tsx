@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +15,14 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    login({ username, password });
+    login(
+      { username, password },
+      {
+        onError: (error: any) => {
+          toast.error(error.message || "Đăng nhập thất bại");
+        },
+      }
+    );
   };
 
   return (
@@ -24,12 +32,6 @@ export default function LoginPage() {
           <CardTitle className="text-2xl text-center">Đăng nhập</CardTitle>
         </CardHeader>
         <CardContent>
-          {loginError && (
-            <div className="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm">
-              {loginError}
-            </div>
-          )}
-
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>

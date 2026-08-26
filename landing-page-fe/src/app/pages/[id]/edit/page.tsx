@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Breadcrumbs from "@/components/layout/Breadcrumbs";
 
 export default function EditPagePage() {
   const router = useRouter();
@@ -102,17 +103,17 @@ export default function EditPagePage() {
   if (isLoading) return <div className="p-8">Đang tải...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Sửa page</h1>
-          <Button variant="outline" onClick={() => router.push("/dashboard")}>
-            ← Quay lại
-          </Button>
-        </div>
-      </header>
+    <div>
+      <Breadcrumbs />
 
-      <main className="max-w-4xl mx-auto px-4 py-8 space-y-8">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Sửa page</h1>
+        <Button variant="outline" onClick={() => router.push("/dashboard")}>
+          ← Quay lại
+        </Button>
+      </div>
+
+      <div className="max-w-4xl space-y-8">
         {/* Page form */}
         <Card>
           <CardHeader>
@@ -288,7 +289,7 @@ export default function EditPagePage() {
             )}
           </CardContent>
         </Card>
-      </main>
+      </div>
     </div>
   );
 }

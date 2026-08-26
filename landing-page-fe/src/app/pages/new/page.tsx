@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { usePages } from "@/hooks/usePages";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import Breadcrumbs from "@/components/layout/Breadcrumbs";
 
 export default function NewPagePage() {
   const router = useRouter();
@@ -21,20 +23,24 @@ export default function NewPagePage() {
     createPage(
       { title, slug, description },
       {
-        onSuccess: () => router.push("/dashboard"),
+        onSuccess: () => {
+          toast.success("Tạo page thành công!");
+          router.push("/dashboard");
+        },
+        onError: (error: any) => {
+          toast.error(error.message || "Tạo page thất bại");
+        },
       },
     );
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold">Tạo page mới</h1>
-        </div>
-      </header>
+    <div>
+      <Breadcrumbs />
 
-      <main className="max-w-2xl mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold mb-6">Tạo page mới</h1>
+
+      <div className="max-w-2xl">
         <Card>
           <CardHeader>
             <CardTitle>Thông tin page</CardTitle>
@@ -88,7 +94,7 @@ export default function NewPagePage() {
             </form>
           </CardContent>
         </Card>
-      </main>
+      </div>
     </div>
   );
 }
