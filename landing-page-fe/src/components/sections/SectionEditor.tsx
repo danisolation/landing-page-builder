@@ -60,7 +60,6 @@ export default function SectionEditor({
   );
   const [order, setOrder] = useState(section?.order || 0);
 
-  // Reset content when type changes (only for new sections)
   useEffect(() => {
     if (!section) {
       setContent(defaultContent[type] || {});
@@ -77,15 +76,15 @@ export default function SectionEditor({
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Editor */}
       <Card>
-        <CardHeader>
-          <CardTitle>
-            {section ? 'Sửa Section' : 'Thêm Section Mới'}
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg">
+            {section ? 'Sua Section' : 'Them Section Moi'}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Loại Section</Label>
+              <Label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Loai Section</Label>
               <Select value={type} onValueChange={setType}>
                 <SelectTrigger>
                   <SelectValue />
@@ -99,7 +98,7 @@ export default function SectionEditor({
             </div>
 
             <div className="space-y-2">
-              <Label>Thứ tự</Label>
+              <Label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Thu tu</Label>
               <Input
                 type="number"
                 value={order}
@@ -109,17 +108,16 @@ export default function SectionEditor({
             </div>
           </div>
 
-          {/* Section-specific editor */}
           {EditorComponent && (
             <EditorComponent content={content} onChange={setContent} />
           )}
 
-          <div className="flex gap-4 pt-4">
-            <Button onClick={handleSave} disabled={isLoading}>
-              {isLoading ? 'Đang lưu...' : 'Lưu'}
+          <div className="flex gap-3 pt-4 border-t border-gray-100">
+            <Button onClick={handleSave} disabled={isLoading} size="sm">
+              {isLoading ? 'Dang luu...' : 'Luu'}
             </Button>
-            <Button variant="outline" onClick={onCancel}>
-              Hủy
+            <Button variant="outline" onClick={onCancel} size="sm">
+              Huy
             </Button>
           </div>
         </CardContent>
@@ -127,8 +125,8 @@ export default function SectionEditor({
 
       {/* Preview */}
       <Card>
-        <CardHeader>
-          <CardTitle>Preview</CardTitle>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg">Preview</CardTitle>
         </CardHeader>
         <CardContent>
           <SectionPreview type={type} content={content} />

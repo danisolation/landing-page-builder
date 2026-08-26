@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 
-// Icons (dùng SVG đơn giản, không cần cài thêm)
 const Icons = {
   dashboard: (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -41,52 +40,72 @@ const Icons = {
   ),
 };
 
-// Navigation items
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: Icons.dashboard },
-  { href: '/pages/new', label: 'Tạo page mới', icon: Icons.pages },
+  { href: '/pages/new', label: 'Tao page moi', icon: Icons.pages },
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { logout } = useAuth();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  const isLoginPage = pathname === '/login';
+  const isPublicPage = !pathname.startsWith('/dashboard') &&
+    !pathname.startsWith('/pages') &&
+    pathname !== '/';
+
+  if (isLoginPage || isPublicPage) {
+    return <>{children}</>;
+  }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-[oklch(0.97_0_0)]">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b fixed top-0 left-0 right-0 z-50">
-        <div className="flex items-center justify-between px-4 h-16">
-          <div className="flex items-center gap-4">
+      <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-white border-b border-gray-200 shadow-[0_1px_3px_0_rgba(0,0,0,0.04)]">
+        <div className="flex items-center justify-between h-full px-4 lg:px-6">
+          <div className="flex items-center gap-3">
             <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 hover:bg-gray-100 rounded-lg"
+              onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+              className="p-2 -ml-2 hover:bg-gray-100 rounded-lg transition-colors lg:hidden"
+              aria-label="Toggle sidebar"
             >
               {Icons.menu}
             </button>
-            <Link href="/dashboard" className="text-xl font-bold text-gray-800">
-              Landing Page Builder
+            <Link href="/dashboard" className="flex items-center gap-2">
+              <span className="text-lg lg:text-xl font-bold text-gray-900 tracking-tight">
+                Landing Page Builder
+              </span>
             </Link>
           </div>
 
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-600">Admin</span>
-            <Button variant="outline" size="sm" onClick={logout}>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-gray-500 hidden sm:inline">Admin</span>
+            <Button variant="outline" size="sm" onClick={logout} className="gap-2">
               {Icons.logout}
-              <span className="ml-2">Đăng xuất</span>
+              <span className="hidden sm:inline">Dang xuat</span>
             </Button>
           </div>
         </div>
       </header>
 
       <div className="flex pt-16">
+        {/* Mobile overlay */}
+        {mobileSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+            onClick={() => setMobileSidebarOpen(false)}
+          />
+        )}
+
         {/* Sidebar */}
         <aside
-          className={`fixed left-0 top-16 bottom-0 bg-white border-r transition-all duration-300 ${
-            sidebarOpen ? 'w-64' : 'w-0'
-          }`}
+          className={`fixed top-16 bottom-0 left-0 z-40 bg-white border-r border-gray-200 overflow-hidden transition-all duration-300 ease-in-out
+            w-0 lg:w-64
+            ${mobileSidebarOpen ? '!w-64 z-50' : ''}
+          `}
         >
-          <nav className="p-4 space-y-2">
+          <nav className="p-3 space-y-1 h-full overflow-y-auto scrollbar-thin">
             {navItems.map((item) => {
               const isActive = pathname === item.href ||
                 (item.href !== '/dashboard' && pathname.startsWith(item.href));
@@ -95,13 +114,16 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  onClick={() => setMobileSidebarOpen(false)}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                     isActive
                       ? 'bg-blue-50 text-blue-700'
-                      : 'text-gray-700 hover:bg-gray-100'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                   }`}
                 >
-                  {item.icon}
+                  <span className={`flex-shrink-0 ${isActive ? 'text-blue-600' : 'text-gray-400'}`}>
+                    {item.icon}
+                  </span>
                   <span>{item.label}</span>
                 </Link>
               );
@@ -110,12 +132,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </aside>
 
         {/* Main Content */}
-        <main
-          className={`flex-1 transition-all duration-300 ${
-            sidebarOpen ? 'ml-64' : 'ml-0'
-          }`}
-        >
-          <div className="p-6">
+        <main className="flex-1 transition-sidebar lg:ml-64">
+          <div className="p-4 lg:p-8 max-w-7xl mx-auto">
             {children}
           </div>
         </main>

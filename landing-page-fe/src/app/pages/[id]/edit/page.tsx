@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { SkeletonForm, SkeletonList } from "@/components/ui/loading";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import SectionEditor from "@/components/sections/SectionEditor";
 import SectionPreview from "@/components/sections/SectionPreview";
@@ -27,11 +28,9 @@ export default function EditPagePage() {
   const [slug, setSlug] = useState("");
   const [description, setDescription] = useState("");
 
-  // Section form
   const [showSectionForm, setShowSectionForm] = useState(false);
   const [editingSection, setEditingSection] = useState<any>(null);
 
-  // Set form values when page loads
   useEffect(() => {
     if (page) {
       setTitle(page.title);
@@ -45,8 +44,8 @@ export default function EditPagePage() {
     updatePage(
       { id: pageId, data: { title, slug, description } },
       {
-        onSuccess: () => toast.success("Đã lưu thành công!"),
-        onError: (error: any) => toast.error(error.message || "Lưu thất bại"),
+        onSuccess: () => toast.success("Da luu thanh cong!"),
+        onError: (error: any) => toast.error(error.message || "Luu that bai"),
       }
     );
   };
@@ -62,18 +61,18 @@ export default function EditPagePage() {
           onSuccess: () => {
             setShowSectionForm(false);
             setEditingSection(null);
-            toast.success("Đã cập nhật section!");
+            toast.success("Da cap nhat section!");
           },
-          onError: (error: any) => toast.error(error.message || "Cập nhật thất bại"),
+          onError: (error: any) => toast.error(error.message || "Cap nhat that bai"),
         }
       );
     } else {
       createSection(data, {
         onSuccess: () => {
           setShowSectionForm(false);
-          toast.success("Đã thêm section!");
+          toast.success("Da them section!");
         },
-        onError: (error: any) => toast.error(error.message || "Thêm section thất bại"),
+        onError: (error: any) => toast.error(error.message || "Them section that bai"),
       });
     }
   };
@@ -83,37 +82,50 @@ export default function EditPagePage() {
     setShowSectionForm(true);
   };
 
-  if (isLoading) return <div className="p-8">Đang tải...</div>;
+  if (isLoading) {
+    return (
+      <div>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Sua page</h1>
+          <Button variant="outline" disabled size="sm">Quay lai</Button>
+        </div>
+        <div className="max-w-4xl space-y-8">
+          <SkeletonForm />
+          <SkeletonList count={2} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
       <Breadcrumbs />
 
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Sửa page</h1>
-        <Button variant="outline" onClick={() => router.push("/dashboard")}>
-          ← Quay lại
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Sua page</h1>
+        <Button variant="outline" size="sm" onClick={() => router.push("/dashboard")}>
+          Quay lai
         </Button>
       </div>
 
-      <div className="max-w-4xl space-y-8">
+      <div className="max-w-4xl space-y-6">
         {/* Page form */}
         <Card>
-          <CardHeader>
-            <CardTitle>Thông tin page</CardTitle>
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg">Thong tin page</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSavePage} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSavePage} className="space-y-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Tiêu đề</Label>
+                  <Label className="text-sm font-medium">Tieu de</Label>
                   <Input
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Slug</Label>
+                  <Label className="text-sm font-medium">Slug</Label>
                   <Input
                     value={slug}
                     onChange={(e) => setSlug(e.target.value)}
@@ -122,7 +134,7 @@ export default function EditPagePage() {
               </div>
 
               <div className="space-y-2">
-                <Label>Mô tả</Label>
+                <Label className="text-sm font-medium">Mo ta</Label>
                 <Textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -130,8 +142,8 @@ export default function EditPagePage() {
                 />
               </div>
 
-              <Button type="submit" disabled={isUpdating}>
-                {isUpdating ? "Đang lưu..." : "Lưu thay đổi"}
+              <Button type="submit" disabled={isUpdating} size="sm">
+                {isUpdating ? "Dang luu..." : "Luu thay doi"}
               </Button>
             </form>
           </CardContent>
@@ -139,35 +151,36 @@ export default function EditPagePage() {
 
         {/* Sections */}
         <Card>
-          <CardHeader>
-            <div className="flex justify-between items-center">
-              <CardTitle>Sections</CardTitle>
+          <CardHeader className="pb-4">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+              <CardTitle className="text-lg">Sections</CardTitle>
               <Button
+                size="sm"
                 onClick={() => {
                   setEditingSection(null);
                   setShowSectionForm(true);
                 }}
               >
-                + Thêm section
+                + Them section
               </Button>
             </div>
           </CardHeader>
           <CardContent>
             {page?.sections?.length === 0 ? (
-              <p className="text-gray-500">Chưa có section nào</p>
+              <p className="text-sm text-gray-500 text-center py-8">Chua co section nao</p>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {page?.sections?.map((section: any) => (
                   <div
                     key={section.id}
-                    className="border rounded-lg overflow-hidden"
+                    className="border border-gray-200 rounded-lg overflow-hidden bg-white"
                   >
-                    <div className="flex items-center justify-between p-4 bg-gray-50">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-gray-50 border-b border-gray-200">
                       <div className="flex items-center gap-3">
-                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm font-medium">
+                        <span className="inline-flex items-center bg-blue-50 text-blue-700 px-2.5 py-1 rounded-md text-xs font-medium ring-1 ring-blue-600/20">
                           {section.type}
                         </span>
-                        <span className="text-gray-500 text-sm">
+                        <span className="text-xs text-gray-400 font-mono">
                           #{section.order}
                         </span>
                       </div>
@@ -177,19 +190,19 @@ export default function EditPagePage() {
                           size="sm"
                           onClick={() => handleEditSection(section)}
                         >
-                          Sửa
+                          Sua
                         </Button>
                         <Button
                           variant="destructive"
                           size="sm"
                           onClick={() => {
                             deleteSection(section.id, {
-                              onSuccess: () => toast.success("Đã xóa section!"),
-                              onError: (error: any) => toast.error(error.message || "Xóa thất bại"),
+                              onSuccess: () => toast.success("Da xoa section!"),
+                              onError: (error: any) => toast.error(error.message || "Xoa that bai"),
                             });
                           }}
                         >
-                          Xóa
+                          Xoa
                         </Button>
                       </div>
                     </div>
@@ -204,9 +217,8 @@ export default function EditPagePage() {
               </div>
             )}
 
-            {/* Section Editor */}
             {showSectionForm && (
-              <div className="mt-6 border-t pt-6">
+              <div className="mt-6 pt-6 border-t border-gray-200">
                 <SectionEditor
                   section={editingSection}
                   onSave={handleSaveSection}

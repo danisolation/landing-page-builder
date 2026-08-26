@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { usePages } from "@/hooks/usePages";
 import { Button } from "@/components/ui/button";
-import { LoadingPage } from "@/components/ui/loading";
+import { SkeletonStats, SkeletonList } from "@/components/ui/loading";
 import EmptyState from "@/components/ui/empty-state";
 import { showConfirm } from "@/components/ui/confirm-dialog";
 import StatsCards from "@/components/dashboard/StatsCards";
@@ -17,18 +17,15 @@ export default function DashboardPage() {
   const router = useRouter();
   const { pages, isLoading, deletePage } = usePages();
 
-  // Search & Filter state
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
 
-  // Filtered & sorted pages
   const filteredPages = useMemo(() => {
     if (!pages) return [];
 
     let result = [...pages];
 
-    // Search filter
     if (search) {
       const searchLower = search.toLowerCase();
       result = result.filter(
@@ -38,14 +35,12 @@ export default function DashboardPage() {
       );
     }
 
-    // Status filter
     if (status === "published") {
       result = result.filter((page) => page.isPublished);
     } else if (status === "draft") {
       result = result.filter((page) => !page.isPublished);
     }
 
-    // Sort
     switch (sortBy) {
       case "newest":
         result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -63,39 +58,46 @@ export default function DashboardPage() {
 
   const handleDelete = async (pageId: string, pageTitle: string) => {
     const confirmed = await showConfirm(
-      "Xóa page?",
-      `Bạn có chắc muốn xóa "${pageTitle}"? Hành động này không thể hoàn tác.`
+      "Xoa page?",
+      `Ban co chac muon xoa "${pageTitle}"? Hanh dong nay khong the hoan tac.`
     );
 
     if (confirmed) {
       deletePage(pageId, {
         onSuccess: () => {
-          toast.success("Đã xóa page thành công!");
+          toast.success("Da xoa page thanh cong!");
         },
         onError: (error: any) => {
-          toast.error(error.message || "Xóa page thất bại");
+          toast.error(error.message || "Xoa page that bai");
         },
       });
     }
   };
 
   if (isLoading) {
-    return <LoadingPage />;
+    return (
+      <div>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Dashboard</h1>
+          <Button disabled size="sm">+ Tao page moi</Button>
+        </div>
+        <SkeletonStats />
+        <SkeletonList count={3} />
+      </div>
+    );
   }
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Dashboard</h1>
         <Link href="/pages/new">
-          <Button>+ Tạo page mới</Button>
+          <Button size="sm">+ Tao page moi</Button>
         </Link>
       </div>
 
-      {/* Stats Cards */}
       {pages && pages.length > 0 && <StatsCards pages={pages} />}
 
-      {/* Search & Filter */}
       {pages && pages.length > 0 && (
         <SearchFilter
           search={search}
@@ -107,25 +109,24 @@ export default function DashboardPage() {
         />
       )}
 
-      {/* Page List */}
       {!pages || pages.length === 0 ? (
         <EmptyState
           icon="📄"
-          title="Chưa có page nào"
-          description="Tạo page đầu tiên để bắt đầu xây dựng landing page của bạn."
+          title="Chua co page nao"
+          description="Tao page dau tien de bat dau xay dung landing page cua ban."
           action={{
-            label: "+ Tạo page mới",
+            label: "+ Tao page moi",
             onClick: () => router.push("/pages/new"),
           }}
         />
       ) : filteredPages.length === 0 ? (
         <EmptyState
           icon="🔍"
-          title="Không tìm thấy page"
-          description="Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc."
+          title="Khong tim thay page"
+          description="Thu thay doi tu khoa tim kiem hoac bo loc."
         />
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-3">
           {filteredPages.map((page: any) => (
             <PageCard key={page.id} page={page} onDelete={handleDelete} />
           ))}

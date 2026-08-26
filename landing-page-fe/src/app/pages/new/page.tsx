@@ -24,11 +24,11 @@ export default function NewPagePage() {
       { title, slug, description },
       {
         onSuccess: () => {
-          toast.success("Tạo page thành công!");
+          toast.success("Tao page thanh cong!");
           router.push("/dashboard");
         },
         onError: (error: any) => {
-          toast.error(error.message || "Tạo page thất bại");
+          toast.error(error.message || "Tao page that bai");
         },
       },
     );
@@ -38,17 +38,17 @@ export default function NewPagePage() {
     <div>
       <Breadcrumbs />
 
-      <h1 className="text-2xl font-bold mb-6">Tạo page mới</h1>
+      <h1 className="text-2xl font-bold text-gray-900 tracking-tight mb-6">Tao page moi</h1>
 
       <div className="max-w-2xl">
         <Card>
-          <CardHeader>
-            <CardTitle>Thông tin page</CardTitle>
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg">Thong tin page</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="title">Tiêu đề *</Label>
+                <Label htmlFor="title" className="text-sm font-medium">Tieu de *</Label>
                 <Input
                   id="title"
                   value={title}
@@ -58,7 +58,7 @@ export default function NewPagePage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="slug">Slug *</Label>
+                <Label htmlFor="slug" className="text-sm font-medium">Slug *</Label>
                 <Input
                   id="slug"
                   value={slug}
@@ -66,11 +66,11 @@ export default function NewPagePage() {
                   placeholder="san-pham-moi"
                   required
                 />
-                <p className="text-sm text-gray-500">URL: /{slug || "..."}</p>
+                <p className="text-xs text-gray-400 font-mono">URL: /{slug || "..."}</p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Mô tả</Label>
+                <Label htmlFor="description" className="text-sm font-medium">Mo ta</Label>
                 <Textarea
                   id="description"
                   value={description}
@@ -79,16 +79,17 @@ export default function NewPagePage() {
                 />
               </div>
 
-              <div className="flex gap-4">
-                <Button type="submit" disabled={isCreating}>
-                  {isCreating ? "Đang tạo..." : "Tạo page"}
+              <div className="flex gap-3 pt-2">
+                <Button type="submit" disabled={isCreating} size="sm">
+                  {isCreating ? "Dang tao..." : "Tao page"}
                 </Button>
                 <Button
                   type="button"
                   variant="outline"
+                  size="sm"
                   onClick={() => router.push("/dashboard")}
                 >
-                  Hủy
+                  Huy
                 </Button>
               </div>
             </form>

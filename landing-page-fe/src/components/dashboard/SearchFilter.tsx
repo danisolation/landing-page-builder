@@ -27,34 +27,35 @@ export default function SearchFilter({
   onSortChange,
 }: SearchFilterProps) {
   return (
-    <div className="flex flex-col sm:flex-row gap-4 mb-6">
+    <div className="flex flex-col sm:flex-row gap-3 mb-6">
       <div className="flex-1">
         <Input
-          placeholder="🔍 Tìm kiếm pages..."
+          placeholder="Tim kiem pages..."
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
+          className="h-10"
         />
       </div>
 
-      <Select value={status} onValueChange={onStatusChange}>
-        <SelectTrigger className="w-full sm:w-40">
-          <SelectValue placeholder="Trạng thái" />
+      <Select value={status} onValueChange={(v) => onStatusChange(v ?? "all")}>
+        <SelectTrigger className="w-full sm:w-[160px] h-10">
+          <SelectValue placeholder="Trang thai" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Tất cả</SelectItem>
-          <SelectItem value="published">Đã xuất bản</SelectItem>
-          <SelectItem value="draft">Nháp</SelectItem>
+          <SelectItem value="all">Tat ca</SelectItem>
+          <SelectItem value="published">Da xuat ban</SelectItem>
+          <SelectItem value="draft">Nhap</SelectItem>
         </SelectContent>
       </Select>
 
-      <Select value={sortBy} onValueChange={onSortChange}>
-        <SelectTrigger className="w-full sm:w-40">
-          <SelectValue placeholder="Sắp xếp" />
+      <Select value={sortBy} onValueChange={(v) => onSortChange(v ?? "newest")}>
+        <SelectTrigger className="w-full sm:w-[160px] h-10">
+          <SelectValue placeholder="Sap xep" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="newest">Mới nhất</SelectItem>
-          <SelectItem value="oldest">Cũ nhất</SelectItem>
-          <SelectItem value="name">Tên A-Z</SelectItem>
+          <SelectItem value="newest">Moi nhat</SelectItem>
+          <SelectItem value="oldest">Cu nhat</SelectItem>
+          <SelectItem value="name">Ten A-Z</SelectItem>
         </SelectContent>
       </Select>
     </div>

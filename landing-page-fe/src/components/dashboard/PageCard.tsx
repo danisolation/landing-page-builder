@@ -15,52 +15,52 @@ export default function PageCard({ page, onDelete }: PageCardProps) {
   const uniqueTypes = [...new Set(sectionTypes)];
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <h3 className="text-lg font-semibold">{page.title}</h3>
+    <Card className="hover:shadow-md transition-all duration-200">
+      <CardContent className="p-4 sm:p-5">
+        <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 mb-1.5">
+              <h3 className="text-base font-semibold text-gray-900 truncate">{page.title}</h3>
               <span
-                className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
                   page.isPublished
-                    ? 'bg-green-100 text-green-700'
-                    : 'bg-gray-100 text-gray-600'
+                    ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20'
+                    : 'bg-gray-100 text-gray-600 ring-1 ring-gray-500/20'
                 }`}
               >
-                {page.isPublished ? 'Đã xuất bản' : 'Nháp'}
+                {page.isPublished ? 'Da xuat ban' : 'Nhap'}
               </span>
             </div>
 
-            <p className="text-gray-500 text-sm mb-3">/{page.slug}</p>
+            <p className="text-sm text-gray-400 font-mono mb-2">/{page.slug}</p>
 
             {page.description && (
-              <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+              <p className="text-sm text-gray-500 mb-3 line-clamp-2 leading-relaxed">
                 {page.description}
               </p>
             )}
 
-            <div className="flex items-center gap-4 text-sm text-gray-500">
-              <span className="flex items-center gap-1">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500">
+              <span className="inline-flex items-center gap-1">
                 🧩 {sectionCount} sections
               </span>
 
               {uniqueTypes.length > 0 && (
-                <span className="flex items-center gap-1">
+                <span className="inline-flex items-center gap-1">
                   📋 {uniqueTypes.join(', ')}
                 </span>
               )}
 
-              <span className="flex items-center gap-1">
+              <span className="inline-flex items-center gap-1">
                 📅 {new Date(page.createdAt).toLocaleDateString('vi-VN')}
               </span>
             </div>
           </div>
 
-          <div className="flex gap-2 ml-4">
+          <div className="flex items-center gap-2 sm:ml-4 sm:flex-shrink-0">
             <Link href={`/pages/${page.id}/edit`}>
               <Button variant="outline" size="sm">
-                Sửa
+                Sua
               </Button>
             </Link>
             <Button
@@ -68,7 +68,7 @@ export default function PageCard({ page, onDelete }: PageCardProps) {
               size="sm"
               onClick={() => onDelete(page.id, page.title)}
             >
-              Xóa
+              Xoa
             </Button>
           </div>
         </div>

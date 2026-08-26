@@ -14,28 +14,28 @@ export default function StatsCards({ pages }: StatsCardsProps) {
 
   const stats = [
     {
-      label: 'Tổng pages',
+      label: 'Tong pages',
       value: totalPages,
       icon: '📄',
-      color: 'bg-blue-50 text-blue-700',
+      color: 'bg-blue-50 text-blue-600',
     },
     {
-      label: 'Đã xuất bản',
+      label: 'Da xuat ban',
       value: publishedPages,
       icon: '✅',
-      color: 'bg-green-50 text-green-700',
+      color: 'bg-emerald-50 text-emerald-600',
     },
     {
-      label: 'Nháp',
+      label: 'Nhap',
       value: draftPages,
       icon: '📝',
-      color: 'bg-yellow-50 text-yellow-700',
+      color: 'bg-amber-50 text-amber-600',
     },
     {
-      label: 'Tổng sections',
+      label: 'Tong sections',
       value: totalSections,
       icon: '🧩',
-      color: 'bg-purple-50 text-purple-700',
+      color: 'bg-purple-50 text-purple-600',
     },
   ];
 
@@ -45,12 +45,12 @@ export default function StatsCards({ pages }: StatsCardsProps) {
         <Card key={stat.label}>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className={`p-3 rounded-lg ${stat.color}`}>
-                <span className="text-2xl">{stat.icon}</span>
+              <div className={`flex-shrink-0 w-11 h-11 flex items-center justify-center rounded-lg ${stat.color}`}>
+                <span className="text-xl">{stat.icon}</span>
               </div>
-              <div>
-                <p className="text-sm text-gray-600">{stat.label}</p>
-                <p className="text-2xl font-bold">{stat.value}</p>
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{stat.label}</p>
+                <p className="text-2xl font-bold text-gray-900 tabular-nums">{stat.value}</p>
               </div>
             </div>
           </CardContent>

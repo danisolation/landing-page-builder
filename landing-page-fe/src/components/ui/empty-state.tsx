@@ -14,16 +14,18 @@ interface EmptyStateProps {
 
 export default function EmptyState({ icon, title, description, action }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 px-4">
+    <div className="flex flex-col items-center justify-center py-20 px-4">
       {icon && (
-        <div className="text-6xl mb-6">{icon}</div>
+        <div className="text-5xl mb-5 opacity-80">{icon}</div>
       )}
 
-      <h3 className="text-xl font-semibold text-gray-800 mb-2">{title}</h3>
-      <p className="text-gray-600 text-center max-w-md mb-6">{description}</p>
+      <h3 className="text-lg font-semibold text-gray-900 mb-1.5">{title}</h3>
+      <p className="text-sm text-gray-500 text-center max-w-sm leading-relaxed mb-6">
+        {description}
+      </p>
 
       {action && (
-        <Button onClick={action.onClick}>
+        <Button onClick={action.onClick} size="sm">
           {action.label}
         </Button>
       )}
