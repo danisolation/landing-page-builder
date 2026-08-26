@@ -2,7 +2,6 @@
 
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { useTranslations } from 'next-intl';
 import { getPageBySlug } from '@/lib/api';
 import HeroSection from '@/components/sections/HeroSection';
 import FeaturesSection from '@/components/sections/FeaturesSection';
@@ -15,7 +14,6 @@ const sectionComponents: Record<string, any> = {
 };
 
 export default function PublicPage() {
-  const t = useTranslations('publicPage');
   const params = useParams();
   const slug = params.slug as string;
 
@@ -27,7 +25,7 @@ export default function PublicPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p>{t('loading', { ns: 'common' })}</p>
+        <p>Đang tải...</p>
       </div>
     );
   }
@@ -37,7 +35,7 @@ export default function PublicPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-bold mb-4">404</h1>
-          <p className="text-gray-600">{t('notFound')}</p>
+          <p className="text-gray-600">Không tìm thấy trang</p>
         </div>
       </div>
     );
@@ -51,7 +49,7 @@ export default function PublicPage() {
         if (!SectionComponent) {
           return (
             <div key={section.id} className="p-8 bg-yellow-50 text-center">
-              <p>{t('unsupportedSection', { type: section.type })}</p>
+              <p>Section type &quot;{section.type}&quot; chưa được hỗ trợ</p>
             </div>
           );
         }
