@@ -56,7 +56,7 @@ export default function SearchFilter({
       </div>
 
       <Select value={status} onValueChange={(v) => onStatusChange(v ?? "all")}>
-        <SelectTrigger className="w-full sm:w-[160px] h-10">
+        <SelectTrigger className="w-[160px] h-10">
           <SelectValue>{selectedStatusLabel}</SelectValue>
         </SelectTrigger>
         <SelectContent>
@@ -69,7 +69,7 @@ export default function SearchFilter({
       </Select>
 
       <Select value={sortBy} onValueChange={(v) => onSortChange(v ?? "newest")}>
-        <SelectTrigger className="w-full sm:w-[160px] h-10">
+        <SelectTrigger className="w-[160px] h-10">
           <SelectValue>{selectedSortLabel}</SelectValue>
         </SelectTrigger>
         <SelectContent>
