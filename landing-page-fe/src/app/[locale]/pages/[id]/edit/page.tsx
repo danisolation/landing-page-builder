@@ -14,7 +14,26 @@ import { Textarea } from "@/components/ui/textarea";
 import { SkeletonForm, SkeletonList } from "@/components/ui/loading";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import SectionEditor from "@/components/sections/SectionEditor";
-import SectionPreview from "@/components/sections/SectionPreview";
+import SectionPreviewModal from "@/components/sections/SectionPreviewModal";
+import FullPagePreview from "@/components/sections/FullPagePreview";
+import { Eye, GripVertical } from "lucide-react";
+
+function getSectionSummary(type: string, content: any): string {
+  switch (type) {
+    case "hero":
+      return content.heading || "—";
+    case "features":
+      return `${content.title || "Features"} (${content.items?.length || 0} items)`;
+    case "cta":
+      return content.heading || "—";
+    case "stats":
+      return `${content.title || "Stats"} (${content.items?.length || 0} items)`;
+    case "testimonials":
+      return `${content.title || "Testimonials"} (${content.items?.length || 0} items)`;
+    default:
+      return type;
+  }
+}
 
 export default function EditPagePage() {
   const t = useTranslations("editPage");
@@ -33,6 +52,10 @@ export default function EditPagePage() {
 
   const [showSectionForm, setShowSectionForm] = useState(false);
   const [editingSection, setEditingSection] = useState<any>(null);
+
+  // Preview state
+  const [previewSection, setPreviewSection] = useState<any>(null);
+  const [showFullPreview, setShowFullPreview] = useState(false);
 
   useEffect(() => {
     if (page) {
@@ -53,20 +76,22 @@ export default function EditPagePage() {
     );
   };
 
-  const handleSaveSection = (data: { type: string; content: any; order: number }) => {
+  const handleSaveSection = (data: {
+    type: string;
+    content: any;
+    order: number;
+  }) => {
     if (editingSection) {
       updateSection(
-        {
-          sectionId: editingSection.id,
-          data,
-        },
+        { sectionId: editingSection.id, data },
         {
           onSuccess: () => {
             setShowSectionForm(false);
             setEditingSection(null);
             toast.success(t("sectionUpdated"));
           },
-          onError: (error: any) => toast.error(error.message || t("sectionUpdateFailed")),
+          onError: (error: any) =>
+            toast.error(error.message || t("sectionUpdateFailed")),
         }
       );
     } else {
@@ -75,7 +100,8 @@ export default function EditPagePage() {
           setShowSectionForm(false);
           toast.success(t("sectionAdded"));
         },
-        onError: (error: any) => toast.error(error.message || t("sectionAddFailed")),
+        onError: (error: any) =>
+          toast.error(error.message || t("sectionAddFailed")),
       });
     }
   };
@@ -89,8 +115,12 @@ export default function EditPagePage() {
     return (
       <div>
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">{t("title")}</h1>
-          <Button variant="outline" disabled size="sm">{tCommon("back")}</Button>
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+            {t("title")}
+          </h1>
+          <Button variant="outline" disabled size="sm">
+            {tCommon("back")}
+          </Button>
         </div>
         <div className="max-w-4xl space-y-8">
           <SkeletonForm />
@@ -105,10 +135,26 @@ export default function EditPagePage() {
       <Breadcrumbs />
 
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">{t("title")}</h1>
-        <Button variant="outline" size="sm" onClick={() => router.push("/dashboard")}>
-          {tCommon("back")}
-        </Button>
+        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+          {t("title")}
+        </h1>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowFullPreview(true)}
+          >
+            <Eye size={14} className="mr-1.5" />
+            {t("previewPage")}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push("/dashboard")}
+          >
+            {tCommon("back")}
+          </Button>
+        </div>
       </div>
 
       <div className="max-w-4xl space-y-6">
@@ -121,14 +167,18 @@ export default function EditPagePage() {
             <form onSubmit={handleSavePage} className="space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium">{t("titleLabel")}</Label>
+                  <Label className="text-sm font-medium">
+                    {t("titleLabel")}
+                  </Label>
                   <Input
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium">{t("slugLabel")}</Label>
+                  <Label className="text-sm font-medium">
+                    {t("slugLabel")}
+                  </Label>
                   <Input
                     value={slug}
                     onChange={(e) => setSlug(e.target.value)}
@@ -170,24 +220,48 @@ export default function EditPagePage() {
           </CardHeader>
           <CardContent>
             {page?.sections?.length === 0 ? (
-              <p className="text-sm text-gray-500 text-center py-8">{t("noSections")}</p>
+              <p className="text-sm text-gray-500 text-center py-8">
+                {t("noSections")}
+              </p>
             ) : (
-              <div className="space-y-3">
-                {page?.sections?.map((section: any) => (
-                  <div
-                    key={section.id}
-                    className="border border-gray-200 rounded-lg overflow-hidden bg-white"
-                  >
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-gray-50 border-b border-gray-200">
-                      <div className="flex items-center gap-3">
-                        <span className="inline-flex items-center bg-blue-50 text-blue-700 px-2.5 py-1 rounded-md text-xs font-medium ring-1 ring-blue-600/20">
-                          {section.type}
-                        </span>
-                        <span className="text-xs text-gray-400 font-mono">
-                          #{section.order}
-                        </span>
+              <div className="space-y-2">
+                {page?.sections
+                  ?.sort((a: any, b: any) => a.order - b.order)
+                  .map((section: any) => (
+                    <div
+                      key={section.id}
+                      className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:border-gray-300 hover:bg-gray-50/50 transition-colors group"
+                    >
+                      {/* Drag handle (visual only) */}
+                      <div className="text-gray-300 group-hover:text-gray-400 cursor-grab">
+                        <GripVertical size={16} />
                       </div>
-                      <div className="flex gap-2">
+
+                      {/* Type badge */}
+                      <span className="inline-flex items-center bg-blue-50 text-blue-700 px-2.5 py-1 rounded-md text-xs font-medium ring-1 ring-blue-600/20 capitalize shrink-0">
+                        {section.type}
+                      </span>
+
+                      {/* Order */}
+                      <span className="text-xs text-gray-400 font-mono shrink-0">
+                        #{section.order}
+                      </span>
+
+                      {/* Summary */}
+                      <span className="text-sm text-gray-600 truncate flex-1 min-w-0">
+                        {getSectionSummary(section.type, section.content)}
+                      </span>
+
+                      {/* Actions */}
+                      <div className="flex gap-1.5 shrink-0">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setPreviewSection(section)}
+                          className="text-gray-500 hover:text-gray-700"
+                        >
+                          <Eye size={14} />
+                        </Button>
                         <Button
                           variant="outline"
                           size="sm"
@@ -200,8 +274,12 @@ export default function EditPagePage() {
                           size="sm"
                           onClick={() => {
                             deleteSection(section.id, {
-                              onSuccess: () => toast.success(t("sectionDeleted")),
-                              onError: (error: any) => toast.error(error.message || t("sectionDeleteFailed")),
+                              onSuccess: () =>
+                                toast.success(t("sectionDeleted")),
+                              onError: (error: any) =>
+                                toast.error(
+                                  error.message || t("sectionDeleteFailed")
+                                ),
                             });
                           }}
                         >
@@ -209,14 +287,7 @@ export default function EditPagePage() {
                         </Button>
                       </div>
                     </div>
-                    <div className="p-4">
-                      <SectionPreview
-                        type={section.type}
-                        content={section.content}
-                      />
-                    </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             )}
 
@@ -236,6 +307,25 @@ export default function EditPagePage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Section Preview Modal */}
+      {previewSection && (
+        <SectionPreviewModal
+          type={previewSection.type}
+          content={previewSection.content}
+          isOpen={!!previewSection}
+          onClose={() => setPreviewSection(null)}
+        />
+      )}
+
+      {/* Full Page Preview */}
+      {page && (
+        <FullPagePreview
+          page={page}
+          isOpen={showFullPreview}
+          onClose={() => setShowFullPreview(false)}
+        />
+      )}
     </div>
   );
 }

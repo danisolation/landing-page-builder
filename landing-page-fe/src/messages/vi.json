@@ -88,7 +88,9 @@
     "sectionAdded": "Đã thêm section!",
     "sectionAddFailed": "Thêm section thất bại",
     "sectionDeleted": "Đã xóa section!",
-    "sectionDeleteFailed": "Xóa thất bại"
+    "sectionDeleteFailed": "Xóa thất bại",
+    "previewPage": "Xem trước",
+    "previewSection": "Xem trước"
   },
   "sectionEditor": {
     "editSection": "Sửa Section",

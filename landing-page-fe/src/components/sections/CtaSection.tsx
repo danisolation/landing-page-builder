@@ -15,7 +15,7 @@ interface CtaSectionProps {
 
 export default function CtaSection({ content }: CtaSectionProps) {
   return (
-    <section className="relative py-24 overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-900 dark:via-indigo-900 dark:to-purple-900">
+    <section className="relative py-16 sm:py-20 md:py-24 overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-900 dark:via-indigo-900 dark:to-purple-900">
       {/* Decorative orbs */}
       <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-blue-400/15 rounded-full blur-[100px]" />
       <div className="absolute bottom-0 right-1/4 w-[350px] h-[350px] bg-purple-400/15 rounded-full blur-[100px]" />
@@ -37,7 +37,7 @@ export default function CtaSection({ content }: CtaSectionProps) {
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">
             {content.heading || 'Ready to get started?'}
           </h2>
           {content.description && (

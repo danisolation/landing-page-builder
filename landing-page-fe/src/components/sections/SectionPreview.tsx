@@ -46,7 +46,7 @@ export default function SectionPreview({ type, content }: SectionPreviewProps) {
           {type}
         </span>
       </div>
-      <div className="max-h-64 overflow-auto scrollbar-thin">
+      <div className="overflow-hidden">
         <SectionComponent content={content} />
       </div>
     </div>

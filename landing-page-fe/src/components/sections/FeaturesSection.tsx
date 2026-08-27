@@ -33,7 +33,7 @@ const itemVariants = {
 
 export default function FeaturesSection({ content }: FeaturesSectionProps) {
   return (
-    <section className="py-24 bg-gray-50 dark:bg-gray-900">
+    <section className="py-16 sm:py-20 md:py-24 bg-gray-50 dark:bg-gray-900">
       <div className="max-w-6xl mx-auto px-4">
         {/* Section Header */}
         <motion.div
@@ -48,7 +48,7 @@ export default function FeaturesSection({ content }: FeaturesSectionProps) {
               {content.subtitle}
             </p>
           )}
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             {content.title || 'Features'}
           </h2>
           {content.description && (
