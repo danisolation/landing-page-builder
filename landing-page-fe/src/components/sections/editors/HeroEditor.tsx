@@ -60,6 +60,26 @@ export default function HeroEditor({ content, onChange }: HeroEditorProps) {
           />
         </div>
       </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label>{t('secondaryButtonText')}</Label>
+          <Input
+            value={content.secondaryButtonText || ''}
+            onChange={(e) => handleChange('secondaryButtonText', e.target.value)}
+            placeholder="Xem demo"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label>{t('secondaryButtonLink')}</Label>
+          <Input
+            value={content.secondaryButtonLink || ''}
+            onChange={(e) => handleChange('secondaryButtonLink', e.target.value)}
+            placeholder="/demo"
+          />
+        </div>
+      </div>
     </div>
   );
 }

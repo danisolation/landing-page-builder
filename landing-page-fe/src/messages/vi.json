@@ -104,22 +104,51 @@
     "heading": "Heading",
     "subheading": "Subheading",
     "buttonText": "Button Text",
-    "buttonLink": "Button Link"
+    "buttonLink": "Button Link",
+    "secondaryButtonText": "Secondary Button Text",
+    "secondaryButtonLink": "Secondary Button Link"
   },
   "featuresEditor": {
     "sectionTitle": "Section Title",
+    "subtitle": "Subtitle",
+    "description": "Description",
     "featureItems": "Feature Items",
     "addItem": "+ Thêm item",
     "item": "Item {n}",
     "icon": "Icon",
     "name": "Name",
-    "description": "Description",
     "noFeatures": "Chưa có feature nào. Nhấn \"+ Thêm item\" để bắt đầu."
   },
   "ctaEditor": {
     "heading": "Heading",
+    "description": "Description",
     "buttonText": "Button Text",
-    "buttonLink": "Button Link"
+    "buttonLink": "Button Link",
+    "secondaryButtonText": "Secondary Button Text",
+    "secondaryButtonLink": "Secondary Button Link"
+  },
+  "statsEditor": {
+    "sectionTitle": "Section Title",
+    "statItems": "Stat Items",
+    "addItem": "+ Thêm item",
+    "item": "Item {n}",
+    "value": "Value",
+    "suffix": "Suffix",
+    "label": "Label",
+    "noItems": "Chưa có số liệu nào. Nhấn \"+ Thêm item\" để bắt đầu."
+  },
+  "testimonialsEditor": {
+    "subtitle": "Subtitle",
+    "sectionTitle": "Section Title",
+    "description": "Description",
+    "testimonialItems": "Testimonial Items",
+    "addItem": "+ Thêm item",
+    "item": "Item {n}",
+    "quote": "Quote",
+    "name": "Name",
+    "role": "Role",
+    "avatar": "Avatar URL",
+    "noItems": "Chưa có đánh giá nào. Nhấn \"+ Thêm item\" để bắt đầu."
   },
   "publicPage": {
     "notFound": "Không tìm thấy trang",

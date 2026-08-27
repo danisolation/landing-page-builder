@@ -30,6 +30,15 @@ export default function CtaEditor({ content, onChange }: CtaEditorProps) {
         />
       </div>
 
+      <div className="space-y-2">
+        <Label>{t('description')}</Label>
+        <Input
+          value={content.description || ''}
+          onChange={(e) => handleChange('description', e.target.value)}
+          placeholder="Tham gia cùng hàng nghìn khách hàng tin tưởng chúng tôi"
+        />
+      </div>
+
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>{t('buttonText')}</Label>
@@ -46,6 +55,26 @@ export default function CtaEditor({ content, onChange }: CtaEditorProps) {
             value={content.buttonLink || ''}
             onChange={(e) => handleChange('buttonLink', e.target.value)}
             placeholder="/lien-he"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label>{t('secondaryButtonText')}</Label>
+          <Input
+            value={content.secondaryButtonText || ''}
+            onChange={(e) => handleChange('secondaryButtonText', e.target.value)}
+            placeholder="Tìm hiểu thêm"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label>{t('secondaryButtonLink')}</Label>
+          <Input
+            value={content.secondaryButtonLink || ''}
+            onChange={(e) => handleChange('secondaryButtonLink', e.target.value)}
+            placeholder="/about"
           />
         </div>
       </div>

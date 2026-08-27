@@ -16,6 +16,8 @@ import { Button } from '@/components/ui/button';
 import HeroEditor from './editors/HeroEditor';
 import FeaturesEditor from './editors/FeaturesEditor';
 import CtaEditor from './editors/CtaEditor';
+import StatsEditor from './editors/StatsEditor';
+import TestimonialsEditor from './editors/TestimonialsEditor';
 import SectionPreview from './SectionPreview';
 
 interface SectionEditorProps {
@@ -31,15 +33,32 @@ const defaultContent: Record<string, any> = {
     subheading: '',
     buttonText: '',
     buttonLink: '',
+    secondaryButtonText: '',
+    secondaryButtonLink: '',
   },
   features: {
+    subtitle: '',
     title: '',
+    description: '',
     items: [],
   },
   cta: {
     heading: '',
+    description: '',
     buttonText: '',
     buttonLink: '',
+    secondaryButtonText: '',
+    secondaryButtonLink: '',
+  },
+  stats: {
+    title: '',
+    items: [],
+  },
+  testimonials: {
+    subtitle: '',
+    title: '',
+    description: '',
+    items: [],
   },
 };
 
@@ -47,6 +66,8 @@ const editors: Record<string, any> = {
   hero: HeroEditor,
   features: FeaturesEditor,
   cta: CtaEditor,
+  stats: StatsEditor,
+  testimonials: TestimonialsEditor,
 };
 
 export default function SectionEditor({
@@ -96,6 +117,8 @@ export default function SectionEditor({
                   <SelectItem value="hero">Hero</SelectItem>
                   <SelectItem value="features">Features</SelectItem>
                   <SelectItem value="cta">CTA</SelectItem>
+                  <SelectItem value="stats">Stats</SelectItem>
+                  <SelectItem value="testimonials">Testimonials</SelectItem>
                 </SelectContent>
               </Select>
             </div>

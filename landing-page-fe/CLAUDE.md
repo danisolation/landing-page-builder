@@ -1,1 +1,144 @@
-@AGENTS.md
+# Frontend Rules — Landing Page Builder
+
+## Tech Stack
+
+- Next.js 16.3.2 App Router + React 19
+- TypeScript, Tailwind CSS v4
+- shadcn/ui base-nova style (`@base-ui/react` primitives, NOT Radix — except Select)
+- TanStack React Query for data fetching
+- next-intl for i18n (vi/en, default: vi)
+- Framer Motion for animations
+- Sonner for toast notifications
+- Lucide React for icons
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── layout.tsx              # Root layout (font, QueryProvider)
+│   ├── page.tsx                # Redirect / → /vi
+│   └── [locale]/
+│       ├── layout.tsx          # Locale layout (NextIntlClientProvider, AppLayout, Toaster)
+│       ├── login/              # Login page
+│       ├── dashboard/          # Dashboard — page list
+│       ├── pages/
+│       │   ├── new/            # Create page
+│       │   └── [id]/edit/      # Edit page + sections
+│       └── [slug]/             # Public landing page render
+├── components/
+│   ├── layout/                 # AppLayout, Breadcrumbs, LanguageSwitcher
+│   ├── dashboard/              # StatsCards, SearchFilter, PageCard
+│   ├── sections/               # Section renderers + editors
+│   │   └── editors/            # Section editor forms
+│   ├── public/                 # Public page components (Nav, Footer, AnimatedSection)
+│   └── ui/                     # shadcn/ui primitives
+├── hooks/                      # Custom hooks (useAuth, usePages, useSections)
+├── i18n/                       # next-intl config
+├── lib/
+│   ├── api.ts                  # Centralized fetch wrapper + API functions
+│   └── utils.ts                # cn() helper
+├── messages/                   # i18n translations (vi.json, en.json)
+└── providers/                  # QueryProvider
+```
+
+## Routing
+
+All routes are under `[locale]/` (vi or en). Root `/` redirects to `/vi`.
+
+| Route | Purpose |
+|---|---|
+| `/{locale}/login` | Login |
+| `/{locale}/dashboard` | Dashboard |
+| `/{locale}/pages/new` | Create page |
+| `/{locale}/pages/{id}/edit` | Edit page + sections |
+| `/{locale}/{slug}` | Public landing page |
+
+## Component Conventions
+
+- **Client components by default** — pages and interactive components use `"use client"`
+- **Server components** — only for layouts and root redirect
+- **Path alias** — `@/*` maps to `./src/*`
+- **Props typing** — always define interfaces for component props, avoid `any` where practical
+
+## Data Fetching Pattern
+
+```typescript
+// ✅ Custom hook wrapping TanStack Query
+export function usePages() {
+  return useQuery({ queryKey: ['pages'], queryFn: getPages });
+}
+
+// ✅ Mutation with invalidation
+export function useCreatePage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createPage,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['pages'] }),
+  });
+}
+
+// ❌ Don't call api.ts functions directly in components (except public page)
+```
+
+## UI Components
+
+- Uses **shadcn/ui base-nova style** — headless primitives from `@base-ui/react`
+- **Select** component uses `@radix-ui/react-select` (refactored from base-ui)
+- **CVA** (class-variance-authority) for component variants
+- **cn()** utility for merging Tailwind classes
+- **Sonner** for toast notifications (NOT the base-ui toast in ui/toast.tsx)
+
+## Adding a New Section Type
+
+1. Create renderer: `components/sections/XxxSection.tsx`
+2. Create editor: `components/sections/editors/XxxEditor.tsx`
+3. Add to `SectionEditor.tsx`: import, add to `editors` map, add to `defaultContent`, add `<SelectItem>`
+4. Add to `SectionPreview.tsx`: import, add to `sectionComponents` map
+5. Add to public page `[slug]/page.tsx`: import, add to `sectionComponents` map
+6. Add i18n keys to `messages/vi.json` and `messages/en.json`
+7. **No BE changes needed** — content is JSON, FE defines the shape
+
+## i18n
+
+- Library: `next-intl` v4
+- Locales: `vi` (default), `en`
+- Usage: `const t = useTranslations('namespace')` then `t('key')`
+- Messages in `src/messages/vi.json` and `src/messages/en.json`
+- **Public page does NOT use i18n** — hardcoded Vietnamese
+
+## Dark Mode
+
+- CSS class `dark` on `<html>` element
+- Toggle in PublicNav, preference in localStorage
+- Every section component has `dark:` variants
+- CSS variables defined in `globals.css` for light/dark
+
+## Animations
+
+- **Framer Motion** for scroll-triggered animations (`whileInView`)
+- **Staggered children** via `variants` + `staggerChildren`
+- **CSS keyframes** in `globals.css` for floating decorative elements
+- **AnimatedSection** wrapper for consistent fade-in-up on scroll
+
+## Auth Flow
+
+1. Login → POST `/auth/login` → `access_token`
+2. Token in `localStorage` + cookie (for middleware)
+3. Middleware guards protected routes (redirect to login if no token)
+4. `fetchAPI()` attaches `Authorization: Bearer <token>` to all requests
+5. Logout → clear localStorage + cookie → redirect
+
+## API Layer
+
+- All API functions in `src/lib/api.ts`
+- Base URL: `http://localhost:3000` (hardcoded)
+- `fetchAPI()` wrapper handles auth headers and error throwing
+
+## Common Commands
+
+```bash
+npm run dev         # Dev server on port 3001
+npm run build       # Production build (type-checks)
+npm run lint        # ESLint
+```

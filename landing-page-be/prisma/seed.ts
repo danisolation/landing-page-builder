@@ -35,7 +35,11 @@ async function main() {
   });
   console.log('Page created:', page.title);
 
-  // 3. Tạo Sections mẫu
+  // 3. Xóa sections cũ và tạo lại
+  await prisma.section.deleteMany({
+    where: { pageId: page.id },
+  });
+
   const sections = [
     {
       type: 'hero',

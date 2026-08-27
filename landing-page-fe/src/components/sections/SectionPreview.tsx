@@ -4,6 +4,8 @@ import { useTranslations } from 'next-intl';
 import HeroSection from './HeroSection';
 import FeaturesSection from './FeaturesSection';
 import CtaSection from './CtaSection';
+import StatsSection from './StatsSection';
+import TestimonialsSection from './TestimonialsSection';
 
 interface SectionPreviewProps {
   type: string;
@@ -14,6 +16,8 @@ const sectionComponents: Record<string, any> = {
   hero: HeroSection,
   features: FeaturesSection,
   cta: CtaSection,
+  stats: StatsSection,
+  testimonials: TestimonialsSection,
 };
 
 export default function SectionPreview({ type, content }: SectionPreviewProps) {

@@ -104,22 +104,51 @@
     "heading": "Heading",
     "subheading": "Subheading",
     "buttonText": "Button Text",
-    "buttonLink": "Button Link"
+    "buttonLink": "Button Link",
+    "secondaryButtonText": "Secondary Button Text",
+    "secondaryButtonLink": "Secondary Button Link"
   },
   "featuresEditor": {
     "sectionTitle": "Section Title",
+    "subtitle": "Subtitle",
+    "description": "Description",
     "featureItems": "Feature Items",
     "addItem": "+ Add Item",
     "item": "Item {n}",
     "icon": "Icon",
     "name": "Name",
-    "description": "Description",
     "noFeatures": "No features yet. Click \"+ Add Item\" to get started."
   },
   "ctaEditor": {
     "heading": "Heading",
+    "description": "Description",
     "buttonText": "Button Text",
-    "buttonLink": "Button Link"
+    "buttonLink": "Button Link",
+    "secondaryButtonText": "Secondary Button Text",
+    "secondaryButtonLink": "Secondary Button Link"
+  },
+  "statsEditor": {
+    "sectionTitle": "Section Title",
+    "statItems": "Stat Items",
+    "addItem": "+ Add Item",
+    "item": "Item {n}",
+    "value": "Value",
+    "suffix": "Suffix",
+    "label": "Label",
+    "noItems": "No stats yet. Click \"+ Add Item\" to get started."
+  },
+  "testimonialsEditor": {
+    "subtitle": "Subtitle",
+    "sectionTitle": "Section Title",
+    "description": "Description",
+    "testimonialItems": "Testimonial Items",
+    "addItem": "+ Add Item",
+    "item": "Item {n}",
+    "quote": "Quote",
+    "name": "Name",
+    "role": "Role",
+    "avatar": "Avatar URL",
+    "noItems": "No testimonials yet. Click \"+ Add Item\" to get started."
   },
   "publicPage": {
     "notFound": "Page not found",
