@@ -13,18 +13,23 @@ export default function Breadcrumbs() {
   const pathWithoutLocale = pathname.replace(`/${locale}`, '') || '/';
   const pathSegments = pathWithoutLocale.split('/').filter(Boolean);
 
-  // Filter out "pages" segment (it's just a folder, not a real page)
-  const filteredSegments = pathSegments.filter(s => s !== 'pages');
+  // Filter out "pages" segment and UUID segments (not real navigable pages)
+  const isUUID = (s: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
 
   const pathNames: Record<string, string> = {
     new: t('createNew'),
     edit: t('editPage'),
   };
 
-  const breadcrumbs = filteredSegments.map((segment, index) => {
+  // Keep original indices so href is built from pathSegments (correct URL)
+  const visibleSegments = pathSegments
+    .map((segment, index) => ({ segment, index }))
+    .filter(({ segment }) => segment !== 'pages' && !isUUID(segment));
+
+  const breadcrumbs = visibleSegments.map(({ segment, index }, i) => {
     const href = '/' + pathSegments.slice(0, index + 1).join('/');
     const label = pathNames[segment] || segment;
-    const isLast = index === filteredSegments.length - 1;
+    const isLast = i === visibleSegments.length - 1;
     return { href, label, isLast };
   });
 
