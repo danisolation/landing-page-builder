@@ -134,30 +134,31 @@ export default function EditPagePage() {
     <div>
       <Breadcrumbs />
 
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-          {t("title")}
-        </h1>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowFullPreview(true)}
-          >
-            <Eye size={14} className="mr-1.5" />
-            {t("previewPage")}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => router.push("/dashboard")}
-          >
-            {tCommon("back")}
-          </Button>
+      <div className="max-w-4xl">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+            {t("title")}
+          </h1>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowFullPreview(true)}
+            >
+              <Eye size={14} className="mr-1.5" />
+              {t("previewPage")}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.push("/dashboard")}
+            >
+              {tCommon("back")}
+            </Button>
+          </div>
         </div>
-      </div>
 
-      <div className="max-w-4xl space-y-6">
+        <div className="space-y-6">
         {/* Page form */}
         <Card>
           <CardHeader className="pb-4">
@@ -306,6 +307,7 @@ export default function EditPagePage() {
             )}
           </CardContent>
         </Card>
+      </div>
       </div>
 
       {/* Section Preview Modal */}
