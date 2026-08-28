@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { X, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParams } from 'next/navigation';
@@ -49,6 +49,12 @@ export default function FullPagePreview({ page, isOpen, onClose }: FullPagePrevi
     };
   }, [isOpen]);
 
+  // Sort sections by order as safety net
+  const sortedSections = useMemo(() => {
+    if (!page.sections) return [];
+    return [...page.sections].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  }, [page.sections]);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -65,11 +71,11 @@ export default function FullPagePreview({ page, isOpen, onClose }: FullPagePrevi
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="absolute inset-4 md:inset-6 lg:inset-10 bg-background rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+            className="absolute inset-4 md:inset-6 lg:inset-10 bg-white dark:bg-gray-950 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-card shrink-0">
+            {/* Admin toolbar */}
+            <div className="flex items-center justify-between px-6 py-3 border-b border-border bg-card shrink-0 z-30">
               <div className="flex items-center gap-3">
                 <h2 className="font-semibold text-foreground">
                   {page.title}
@@ -99,15 +105,15 @@ export default function FullPagePreview({ page, isOpen, onClose }: FullPagePrevi
               </div>
             </div>
 
-            {/* Content — scrollable */}
-            <div className="flex-1 overflow-auto bg-background">
-              {page.sections?.length === 0 ? (
+            {/* Page preview content — scrollable */}
+            <div className="flex-1 overflow-auto min-h-full bg-white dark:bg-gray-950 scroll-smooth">
+              {sortedSections.length === 0 ? (
                 <div className="flex items-center justify-center h-full text-muted-foreground">
                   <p>{t('noSections')}</p>
                 </div>
               ) : (
-                <div>
-                  {page.sections?.map((section: any) => {
+                <>
+                  {sortedSections.map((section: any) => {
                     const SectionComponent = sectionComponents[section.type];
 
                     if (!SectionComponent) {
@@ -130,8 +136,9 @@ export default function FullPagePreview({ page, isOpen, onClose }: FullPagePrevi
                       </AnimatedSection>
                     );
                   })}
+
                   <PublicFooter pageTitle={page.title} />
-                </div>
+                </>
               )}
             </div>
           </motion.div>

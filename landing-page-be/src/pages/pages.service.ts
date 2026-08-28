@@ -16,14 +16,14 @@ export class PagesService {
 
   async findAll() {
     return this.prisma.page.findMany({
-      include: { sections: true }, // Lấy luôn sections của mỗi page
+      include: { sections: { orderBy: { order: 'asc' } } }, // Lấy sections sắp xếp theo order
     });
   }
 
   async findOne(id: string) {
     const page = await this.prisma.page.findUnique({
       where: { id },
-      include: { sections: true },
+      include: { sections: { orderBy: { order: 'asc' } } },
     });
 
     if (!page) {
