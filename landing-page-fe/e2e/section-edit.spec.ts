@@ -127,17 +127,17 @@ test.describe('Section Edit Page', () => {
     await page.click('button[type="submit"]');
     await page.waitForURL('**/dashboard', { timeout: 10000 });
 
-    // Navigate to edit page
-    await page.goto(`${BASE_URL}/vi/dashboard`);
+    // Navigate to pages list
+    await page.goto(`${BASE_URL}/vi/pages`);
     await page.waitForTimeout(1000);
 
-    const editButtons = page.locator('text=Sửa');
-    if (await editButtons.count() === 0) {
+    const editLinks = page.locator('a[href*="/edit"]');
+    if (await editLinks.count() === 0) {
       test.skip();
       return;
     }
 
-    await editButtons.first().click();
+    await editLinks.first().click();
     await page.waitForURL('**/edit', { timeout: 10000 });
 
     // Click "Add Section" button

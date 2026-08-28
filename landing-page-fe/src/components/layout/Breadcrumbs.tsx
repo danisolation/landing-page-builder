@@ -4,73 +4,118 @@ import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 
-export default function Breadcrumbs() {
+interface BreadcrumbsProps {
+  pageTitle?: string;
+}
+
+interface Crumb {
+  label: string;
+  href?: string; // undefined = current page (not clickable)
+}
+
+export default function Breadcrumbs({ pageTitle }: BreadcrumbsProps) {
   const t = useTranslations('nav');
   const tAria = useTranslations('aria');
+  const tEditor = useTranslations('sectionEditor');
+  const tNewPage = useTranslations('newPage');
   const pathname = usePathname();
 
-  // Extract locale from pathname
   const locale = pathname.split('/')[1] || 'vi';
   const pathWithoutLocale = pathname.replace(`/${locale}`, '') || '/';
-  const pathSegments = pathWithoutLocale.split('/').filter(Boolean);
 
-  // Filter out "pages" segment and UUID segments (not real navigable pages)
-  const isUUID = (s: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
+  const crumbs = buildCrumbs(pathWithoutLocale, pageTitle, t, tEditor, tNewPage);
 
-  const pathNames: Record<string, string> = {
-    sections: t('sections'),
-    new: t('createNew'),
-    edit: t('editPage'),
-  };
-
-  // Keep original indices so href is built from pathSegments (correct URL)
-  const visibleSegments = pathSegments
-    .map((segment, index) => ({ segment, index }))
-    .filter(({ segment }) => segment !== 'pages' && !isUUID(segment));
-
-  const breadcrumbs = visibleSegments.map(({ segment, index }, i) => {
-    const href = '/' + pathSegments.slice(0, index + 1).join('/');
-    const label = pathNames[segment] || segment;
-    const isLast = i === visibleSegments.length - 1;
-    return { href, label, isLast };
-  });
-
-  if (pathWithoutLocale === '/login' || pathWithoutLocale === '/dashboard') {
-    return null;
-  }
+  if (!crumbs) return null;
 
   return (
     <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6" aria-label={tAria('breadcrumb')}>
-      <Link
-        href="/dashboard"
-        className="px-1.5 py-0.5 rounded hover:text-foreground hover:bg-accent transition-colors"
-      >
-        {t('dashboard')}
-      </Link>
-
-      {breadcrumbs.map((crumb) => (
-        <span key={crumb.href} className="flex items-center gap-1.5">
-          <svg
-            className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-          {crumb.isLast ? (
-            <span className="px-1.5 py-0.5 text-foreground font-medium">{crumb.label}</span>
-          ) : (
-            <Link
-              href={crumb.href}
-              className="px-1.5 py-0.5 rounded hover:text-foreground hover:bg-accent transition-colors"
-            >
-              {crumb.label}
-            </Link>
-          )}
-        </span>
-      ))}
+      {crumbs.map((crumb, i) => {
+        const isLast = i === crumbs.length - 1;
+        return (
+          <span key={i} className="flex items-center gap-1.5">
+            {i > 0 && <Chevron />}
+            {crumb.href && !isLast ? (
+              <Link
+                href={crumb.href}
+                className="px-1.5 py-0.5 rounded hover:text-foreground hover:bg-accent transition-colors max-w-[200px] truncate inline-block"
+                title={crumb.label}
+              >
+                {crumb.label}
+              </Link>
+            ) : (
+              <span className={`px-1.5 py-0.5 max-w-[200px] truncate inline-block ${isLast ? 'text-foreground font-medium' : ''}`} title={crumb.label}>
+                {crumb.label}
+              </span>
+            )}
+          </span>
+        );
+      })}
     </nav>
+  );
+}
+
+function buildCrumbs(
+  path: string,
+  pageTitle: string | undefined,
+  t: (key: string) => string,
+  tEditor: (key: string) => string,
+  tNewPage: (key: string) => string,
+): Crumb[] | null {
+  // Hidden routes
+  if (path === '/login' || path === '/dashboard' || path === '/pages') return null;
+
+  const segments = path.split('/').filter(Boolean);
+
+  // /pages/new
+  if (path === '/pages/new') {
+    return [
+      { label: t('pages'), href: '/pages' },
+      { label: tNewPage('title') },
+    ];
+  }
+
+  // /pages/[id]/edit
+  const editMatch = path.match(/^\/pages\/[^/]+\/edit$/);
+  if (editMatch) {
+    return [
+      { label: t('pages'), href: '/pages' },
+      { label: pageTitle || t('editPage') },
+    ];
+  }
+
+  // /pages/[id]/sections/new
+  const sectionNewMatch = path.match(/^\/pages\/[^/]+\/sections\/new$/);
+  if (sectionNewMatch) {
+    return [
+      { label: t('pages'), href: '/pages' },
+      ...(pageTitle ? [{ label: pageTitle, href: `/pages/${segments[1]}/edit` }] : []),
+      { label: tEditor('addSection') },
+    ];
+  }
+
+  // /pages/[id]/sections/[sectionId]/edit
+  const sectionEditMatch = path.match(/^\/pages\/[^/]+\/sections\/[^/]+\/edit$/);
+  if (sectionEditMatch) {
+    return [
+      { label: t('pages'), href: '/pages' },
+      ...(pageTitle ? [{ label: pageTitle, href: `/pages/${segments[1]}/edit` }] : []),
+      { label: tEditor('editSection') },
+    ];
+  }
+
+  return null;
+}
+
+function Chevron() {
+  return (
+    <svg
+      className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
   );
 }

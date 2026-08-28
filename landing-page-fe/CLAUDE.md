@@ -9,7 +9,8 @@ All routes under `[locale]/` (vi/en). Root `/` redirects to `/vi`.
 | Route | Purpose |
 |---|---|
 | `/{locale}/login` | Login |
-| `/{locale}/dashboard` | Dashboard |
+| `/{locale}/dashboard` | Dashboard (stats overview only) |
+| `/{locale}/pages` | Pages list (search, filter, sort, create) |
 | `/{locale}/pages/new` | Create page |
 | `/{locale}/pages/{id}/edit` | Edit page + sections list |
 | `/{locale}/pages/{id}/sections/new` | Add section |
@@ -43,11 +44,14 @@ All routes under `[locale]/` (vi/en). Root `/` redirects to `/vi`.
 - Rule: if you're about to add `max-w-*` to a page `<div>`, STOP — it's wrong
 
 ### Breadcrumbs
-- Shown on ALL admin pages EXCEPT `/dashboard` and `/login`
+- Shown on ALL admin pages EXCEPT `/dashboard`, `/pages`, and `/login`
 - Auto-generated from URL path — NOT a fixed pattern
-- Always starts with "Dashboard" link
+- Starts with "Pages" for pages routes, "Dashboard" for others
 - Filters out: `pages` segment, UUID segments
 - Maps segments to labels: `sections` → "Sections", `new` → "Tạo mới", `edit` → "Chỉnh sửa"
+- **NEVER create links to routes that don't exist** — if a segment's href doesn't match a real route, render as plain text (not a link)
+- If a parent page has data (e.g. page title), pass it via `pageTitle` prop to show in breadcrumbs
+- Extract repeated UI patterns into small components (e.g. `Chevron`)
 - Uses semantic token colors: `text-muted-foreground`, `hover:text-foreground`, `hover:bg-accent`
 
 ### Section Pages
@@ -320,6 +324,17 @@ When ANY admin UI change is made, you MUST:
 5. Check dark mode works (toggle if possible)
 6. Check responsive: mobile and desktop both look correct
 7. If you changed a page's layout, add/update Playwright test for that page
+
+## Related Page Updates (CRITICAL)
+
+When modifying a page, ALWAYS check and update related pages:
+- **Layout changes**: if you change a page's layout, check all sibling/child pages for consistency
+- **Redirects**: if a page's redirect target changed, update all pages that redirect to it
+- **Sidebar nav**: if you add/remove/rename a route, update sidebar nav items
+- **Breadcrumbs**: if you change breadcrumb visibility rules, check all affected routes
+- **i18n**: if you add keys for one page, check if related pages need the same keys
+- **Components**: if a shared component changed behavior, verify all pages using it still work
+- **Rule of thumb**: before finishing a task, list all files that reference the changed file/feature and check each one
 
 ## Common Commands
 

@@ -142,7 +142,7 @@ export default function EditPagePage() {
 
   return (
     <div>
-      <Breadcrumbs />
+      <Breadcrumbs pageTitle={page?.title} />
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
@@ -161,7 +161,7 @@ export default function EditPagePage() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => router.push('/dashboard')}
+            onClick={() => router.push('/pages')}
           >
             {tCommon('back')}
           </Button>

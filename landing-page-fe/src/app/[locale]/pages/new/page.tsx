@@ -51,7 +51,7 @@ export default function NewPagePage() {
     createPage(data, {
       onSuccess: () => {
         toast.success(t("success"));
-        router.push("/dashboard");
+        router.push("/pages");
       },
       onError: (error: any) => {
         toast.error(error.message || t("failed"));
@@ -113,7 +113,7 @@ export default function NewPagePage() {
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => router.push("/dashboard")}
+                  onClick={() => router.push("/pages")}
                 >
                   {t("cancel")}
                 </Button>

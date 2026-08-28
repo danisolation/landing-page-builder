@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { usePage } from '@/hooks/usePages';
 import { useSections } from '@/hooks/useSections';
 import { Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -39,6 +40,7 @@ export default function NewSectionPage() {
   const params = useParams();
   const pageId = params.id as string;
 
+  const { data: page } = usePage(pageId);
   const { createSection, isCreating } = useSections(pageId);
 
   const {
@@ -83,7 +85,7 @@ export default function NewSectionPage() {
 
   return (
     <div>
-      <Breadcrumbs />
+      <Breadcrumbs pageTitle={page?.title} />
 
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <h1 className="text-2xl font-bold text-foreground tracking-tight">

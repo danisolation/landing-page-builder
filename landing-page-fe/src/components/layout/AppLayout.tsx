@@ -64,7 +64,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   const navItems = [
     { href: '/dashboard', label: t('nav.dashboard'), icon: Icons.dashboard },
-    { href: '/pages/new', label: t('nav.createPage'), icon: Icons.pages },
+    { href: '/pages', label: t('nav.pages'), icon: Icons.pages },
   ];
 
   return (

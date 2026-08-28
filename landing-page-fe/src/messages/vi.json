@@ -20,6 +20,18 @@
     "editPage": "Chỉnh sửa",
     "createPage": "Tạo page mới"
   },
+  "pages": {
+    "title": "Pages",
+    "createPage": "+ Tạo page mới",
+    "noPages": "Chưa có page nào",
+    "noPagesDesc": "Tạo page đầu tiên để bắt đầu xây dựng landing page của bạn.",
+    "noResults": "Không tìm thấy page",
+    "noResultsDesc": "Thử thay đổi từ khóa tìm kiếm hoặc bỏ lọc.",
+    "deleteSuccess": "Đã xóa page thành công!",
+    "deleteFailed": "Xóa page thất bại",
+    "deleteConfirmTitle": "Xóa page?",
+    "deleteConfirmMsg": "Bạn có chắc muốn xóa \"{title}\"? Hành động này không thể hoàn tác."
+  },
   "login": {
     "title": "Đăng nhập",
     "loggingIn": "Đang đăng nhập...",
@@ -42,7 +54,12 @@
   "pageCard": {
     "published": "Đã xuất bản",
     "draft": "Nháp",
-    "sections": "{count} sections"
+    "sections": "{count} sections",
+    "titleLabel": "Tiêu đề",
+    "slugLabel": "Slug",
+    "statusLabel": "Trạng thái",
+    "sectionsLabel": "Sections",
+    "dateLabel": "Ngày tạo"
   },
   "searchFilter": {
     "searchPlaceholder": "Tìm kiếm pages...",

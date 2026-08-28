@@ -95,7 +95,7 @@ export default function EditSectionPage() {
   if (isLoading) {
     return (
       <div>
-        <Breadcrumbs />
+        <Breadcrumbs pageTitle={(page as any)?.title} />
         <h1 className="text-2xl font-bold text-foreground tracking-tight mb-6">
           {t('editSection')}
         </h1>
@@ -107,7 +107,7 @@ export default function EditSectionPage() {
   if (!section) {
     return (
       <div>
-        <Breadcrumbs />
+        <Breadcrumbs pageTitle={(page as any)?.title} />
         <h1 className="text-2xl font-bold text-foreground tracking-tight mb-6">
           {t('editSection')}
         </h1>
@@ -120,7 +120,7 @@ export default function EditSectionPage() {
 
   return (
     <div>
-      <Breadcrumbs />
+      <Breadcrumbs pageTitle={(page as any)?.title} />
 
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <h1 className="text-2xl font-bold text-foreground tracking-tight">

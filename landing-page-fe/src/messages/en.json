@@ -20,6 +20,18 @@
     "editPage": "Edit",
     "createPage": "Create Page"
   },
+  "pages": {
+    "title": "Pages",
+    "createPage": "+ Create Page",
+    "noPages": "No pages yet",
+    "noPagesDesc": "Create your first page to start building your landing page.",
+    "noResults": "No pages found",
+    "noResultsDesc": "Try changing your search keywords or remove filters.",
+    "deleteSuccess": "Page deleted successfully!",
+    "deleteFailed": "Failed to delete page",
+    "deleteConfirmTitle": "Delete page?",
+    "deleteConfirmMsg": "Are you sure you want to delete \"{title}\"? This action cannot be undone."
+  },
   "login": {
     "title": "Login",
     "loggingIn": "Logging in...",
@@ -42,7 +54,12 @@
   "pageCard": {
     "published": "Published",
     "draft": "Draft",
-    "sections": "{count} sections"
+    "sections": "{count} sections",
+    "titleLabel": "Title",
+    "slugLabel": "Slug",
+    "statusLabel": "Status",
+    "sectionsLabel": "Sections",
+    "dateLabel": "Created"
   },
   "searchFilter": {
     "searchPlaceholder": "Search pages...",
