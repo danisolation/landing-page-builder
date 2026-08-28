@@ -83,7 +83,7 @@ export default function NewSectionPage() {
         </div>
       </div>
 
-      <div className="max-w-3xl space-y-5">
+      <div className="space-y-5">
         {/* Type + Order */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">

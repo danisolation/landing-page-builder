@@ -93,6 +93,23 @@ Every admin page follows this pattern:
 </div>
 ```
 
+### Content Width (CRITICAL)
+- ALL admin pages inherit `max-w-7xl mx-auto` from AppLayout `<main>`
+- NEVER add additional `max-w-*` constraints inside page content — this breaks layout consistency
+- The ONLY exception: form fields inside cards (which naturally size to their container)
+- Dashboard, pages/new, pages/edit, sections/new, sections/[sectionId]/edit — ALL must have the same outer width
+- Rule: if you're about to add `max-w-*` to a page `<div>`, STOP — it's wrong
+
+### Mandatory Verification (CRITICAL)
+When ANY admin UI change is made, you MUST:
+1. Run `npm run build` — no type errors
+2. Run Playwright tests — `npx playwright test`
+3. Visually verify layout matches dashboard (same width, same spacing)
+4. Check breadcrumbs are correct for the route
+5. Check dark mode works (toggle if possible)
+6. Check responsive: mobile and desktop both look correct
+7. If you changed a page's layout, add/update Playwright test for that page
+
 ### Breadcrumbs
 - Shown on ALL admin pages EXCEPT `/dashboard` and `/login`
 - Pattern: `Dashboard > Section > Action`
