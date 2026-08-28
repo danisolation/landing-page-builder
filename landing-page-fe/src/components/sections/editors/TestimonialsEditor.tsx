@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import FieldHint from '@/components/ui/field-hint';
 
 interface TestimonialsEditorProps {
   content: any;
@@ -40,7 +41,10 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label>{t('subtitle')}</Label>
+        <div className="flex items-center">
+          <Label>{t('subtitle')}</Label>
+          <FieldHint text={t('subtitleHint')} />
+        </div>
         <Input
           value={content.subtitle || ''}
           onChange={(e) => handleFieldChange('subtitle', e.target.value)}
@@ -49,7 +53,10 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
       </div>
 
       <div className="space-y-2">
-        <Label>{t('sectionTitle')}</Label>
+        <div className="flex items-center">
+          <Label>{t('sectionTitle')}</Label>
+          <FieldHint text={t('titleHint')} />
+        </div>
         <Input
           value={content.title || ''}
           onChange={(e) => handleFieldChange('title', e.target.value)}
@@ -58,7 +65,10 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
       </div>
 
       <div className="space-y-2">
-        <Label>{t('description')}</Label>
+        <div className="flex items-center">
+          <Label>{t('description')}</Label>
+          <FieldHint text={t('descriptionHint')} />
+        </div>
         <Input
           value={content.description || ''}
           onChange={(e) => handleFieldChange('description', e.target.value)}
@@ -90,7 +100,10 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
             </div>
 
             <div className="space-y-2">
-              <Label>{t('quote')}</Label>
+              <div className="flex items-center">
+                <Label>{t('quote')}</Label>
+                <FieldHint text={t('quoteHint')} />
+              </div>
               <Textarea
                 value={item.quote || ''}
                 onChange={(e) => handleItemChange(index, 'quote', e.target.value)}
@@ -101,7 +114,10 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
-                <Label>{t('name')}</Label>
+                <div className="flex items-center">
+                  <Label>{t('name')}</Label>
+                  <FieldHint text={t('nameHint')} />
+                </div>
                 <Input
                   value={item.name || ''}
                   onChange={(e) => handleItemChange(index, 'name', e.target.value)}
@@ -110,7 +126,10 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
               </div>
 
               <div className="space-y-2">
-                <Label>{t('role')}</Label>
+                <div className="flex items-center">
+                  <Label>{t('role')}</Label>
+                  <FieldHint text={t('roleHint')} />
+                </div>
                 <Input
                   value={item.role || ''}
                   onChange={(e) => handleItemChange(index, 'role', e.target.value)}
@@ -120,7 +139,10 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
             </div>
 
             <div className="space-y-2">
-              <Label>{t('avatar')}</Label>
+              <div className="flex items-center">
+                <Label>{t('avatar')}</Label>
+                <FieldHint text={t('avatarHint')} />
+              </div>
               <Input
                 value={item.avatar || ''}
                 onChange={(e) => handleItemChange(index, 'avatar', e.target.value)}

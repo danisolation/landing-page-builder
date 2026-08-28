@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import FieldHint from '@/components/ui/field-hint';
 
 interface StatsEditorProps {
   content: any;
@@ -39,7 +40,10 @@ export default function StatsEditor({ content, onChange }: StatsEditorProps) {
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label>{t('sectionTitle')}</Label>
+        <div className="flex items-center">
+          <Label>{t('sectionTitle')}</Label>
+          <FieldHint text={t('titleHint')} />
+        </div>
         <Input
           value={content.title || ''}
           onChange={(e) => handleTitleChange(e.target.value)}
@@ -72,7 +76,10 @@ export default function StatsEditor({ content, onChange }: StatsEditorProps) {
 
             <div className="grid grid-cols-3 gap-3">
               <div className="space-y-2">
-                <Label>{t('value')}</Label>
+                <div className="flex items-center">
+                  <Label>{t('value')}</Label>
+                  <FieldHint text={t('valueHint')} />
+                </div>
                 <Input
                   type="number"
                   value={item.value || ''}
@@ -82,7 +89,10 @@ export default function StatsEditor({ content, onChange }: StatsEditorProps) {
               </div>
 
               <div className="space-y-2">
-                <Label>{t('suffix')}</Label>
+                <div className="flex items-center">
+                  <Label>{t('suffix')}</Label>
+                  <FieldHint text={t('suffixHint')} />
+                </div>
                 <Input
                   value={item.suffix || ''}
                   onChange={(e) => handleItemChange(index, 'suffix', e.target.value)}
@@ -91,7 +101,10 @@ export default function StatsEditor({ content, onChange }: StatsEditorProps) {
               </div>
 
               <div className="space-y-2">
-                <Label>{t('label')}</Label>
+                <div className="flex items-center">
+                  <Label>{t('label')}</Label>
+                  <FieldHint text={t('labelHint')} />
+                </div>
                 <Input
                   value={item.label || ''}
                   onChange={(e) => handleItemChange(index, 'label', e.target.value)}

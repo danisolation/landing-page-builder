@@ -16,6 +16,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { SkeletonForm } from '@/components/ui/loading';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
+import FieldHint from '@/components/ui/field-hint';
 import SectionList from '@/components/sections/SectionList';
 import SectionPreviewModal from '@/components/sections/SectionPreviewModal';
 import FullPagePreview from '@/components/sections/FullPagePreview';
@@ -177,23 +178,21 @@ export default function EditPagePage() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-sm font-medium">
-                  {t('titleLabel')}
-                </Label>
-                <Input
-                  {...register('title')}
-                />
+                <div className="flex items-center">
+                  <Label className="text-sm font-medium">{t('titleLabel')}</Label>
+                  <FieldHint text={t('titleHint')} />
+                </div>
+                <Input {...register('title')} />
                 {errors.title && (
                   <p className="text-xs text-destructive">{errors.title.message}</p>
                 )}
               </div>
               <div className="space-y-2">
-                <Label className="text-sm font-medium">
-                  {t('slugLabel')}
-                </Label>
-                <Input
-                  {...register('slug')}
-                />
+                <div className="flex items-center">
+                  <Label className="text-sm font-medium">{t('slugLabel')}</Label>
+                  <FieldHint text={t('slugHint')} />
+                </div>
+                <Input {...register('slug')} />
                 {errors.slug && (
                   <p className="text-xs text-destructive">{errors.slug.message}</p>
                 )}
@@ -201,13 +200,11 @@ export default function EditPagePage() {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-sm font-medium">
-                {t('descLabel')}
-              </Label>
-              <Textarea
-                {...register('description')}
-                rows={2}
-              />
+              <div className="flex items-center">
+                <Label className="text-sm font-medium">{t('descLabel')}</Label>
+                <FieldHint text={t('descHint')} />
+              </div>
+              <Textarea {...register('description')} rows={2} />
             </div>
 
             <Button type="submit" disabled={isUpdating} size="sm">

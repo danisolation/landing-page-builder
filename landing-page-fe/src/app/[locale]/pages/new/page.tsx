@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
+import FieldHint from "@/components/ui/field-hint";
 
 export default function NewPagePage() {
   const t = useTranslations("newPage");
@@ -73,7 +74,10 @@ export default function NewPagePage() {
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="title" className="text-sm font-medium">{t("titleLabel")}</Label>
+                <div className="flex items-center">
+                  <Label htmlFor="title" className="text-sm font-medium">{t("titleLabel")}</Label>
+                  <FieldHint text={t("titleHint")} />
+                </div>
                 <Input
                   id="title"
                   {...register("title")}
@@ -84,7 +88,10 @@ export default function NewPagePage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="slug" className="text-sm font-medium">{t("slugLabel")}</Label>
+                <div className="flex items-center">
+                  <Label htmlFor="slug" className="text-sm font-medium">{t("slugLabel")}</Label>
+                  <FieldHint text={t("slugHint")} />
+                </div>
                 <Input
                   id="slug"
                   {...register("slug")}
@@ -97,7 +104,10 @@ export default function NewPagePage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description" className="text-sm font-medium">{t("descLabel")}</Label>
+                <div className="flex items-center">
+                  <Label htmlFor="description" className="text-sm font-medium">{t("descLabel")}</Label>
+                  <FieldHint text={t("descHint")} />
+                </div>
                 <Textarea
                   id="description"
                   {...register("description")}

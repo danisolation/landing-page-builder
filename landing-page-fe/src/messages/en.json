@@ -88,7 +88,10 @@
     "create": "Create Page",
     "cancel": "Cancel",
     "success": "Page created successfully!",
-    "failed": "Failed to create page"
+    "failed": "Failed to create page",
+    "titleHint": "Display name shown in the dashboard",
+    "slugHint": "URL path, only lowercase letters, numbers, and hyphens",
+    "descHint": "Short description shown when sharing the link"
   },
   "editPage": {
     "title": "Edit Page",
@@ -96,6 +99,9 @@
     "titleLabel": "Title",
     "slugLabel": "Slug",
     "descLabel": "Description",
+    "titleHint": "Display name shown in the dashboard",
+    "slugHint": "URL path, only lowercase letters, numbers, and hyphens",
+    "descHint": "Short description shown when sharing the link",
     "saveSuccess": "Saved successfully!",
     "saveFailed": "Failed to save",
     "sections": "Sections",
@@ -157,7 +163,16 @@
     "secondaryButtonLink": "Secondary Button Link",
     "headingPlaceholder": "Welcome to ABC",
     "subheadingPlaceholder": "The best solution for you",
-    "buttonPlaceholder": "Sign up now"
+    "buttonPlaceholder": "Sign up now",
+    "secondaryButtonPlaceholder": "View demo",
+    "buttonLinkPlaceholder": "/sign-up",
+    "secondaryButtonLinkPlaceholder": "/demo",
+    "headingHint": "The largest title, prominently displayed at the top",
+    "subheadingHint": "Short description below the heading",
+    "buttonTextHint": "Text displayed on the primary button",
+    "buttonLinkHint": "URL when clicking the button (e.g. /sign-up)",
+    "secondaryButtonTextHint": "Secondary button text (optional)",
+    "secondaryButtonLinkHint": "Secondary button URL (optional)"
   },
   "featuresEditor": {
     "sectionTitle": "Section Title",
@@ -171,7 +186,11 @@
     "noFeatures": "No features yet. Click \"+ Add Item\" to get started.",
     "titlePlaceholder": "Key Features",
     "namePlaceholder": "Fast",
-    "descriptionPlaceholder": "Lightning-fast processing speed"
+    "descriptionPlaceholder": "Lightning-fast processing speed",
+    "titleHint": "General title of the features section",
+    "iconHint": "Emoji or icon (e.g. ⚡ 🔒 💡)",
+    "nameHint": "Short feature name",
+    "descriptionHint": "Detailed feature description"
   },
   "ctaEditor": {
     "heading": "Heading",
@@ -183,7 +202,15 @@
     "headingPlaceholder": "Ready to get started?",
     "descriptionPlaceholder": "Join thousands of satisfied customers",
     "buttonPlaceholder": "Contact us now",
-    "secondaryButtonPlaceholder": "Learn more"
+    "secondaryButtonPlaceholder": "Learn more",
+    "buttonLinkPlaceholder": "/contact",
+    "secondaryButtonLinkPlaceholder": "/about",
+    "headingHint": "Call-to-action headline",
+    "descriptionHint": "Persuasive text to get users to click",
+    "buttonTextHint": "Primary button text (e.g. Contact us now)",
+    "buttonLinkHint": "Primary button URL",
+    "secondaryButtonTextHint": "Secondary button text (optional)",
+    "secondaryButtonLinkHint": "Secondary button URL"
   },
   "statsEditor": {
     "sectionTitle": "Section Title",
@@ -195,7 +222,11 @@
     "label": "Label",
     "noItems": "No stats yet. Click \"+ Add Item\" to get started.",
     "titlePlaceholder": "Impressive Numbers",
-    "labelPlaceholder": "Customers"
+    "labelPlaceholder": "Customers",
+    "titleHint": "Stats section title",
+    "valueHint": "Numeric value (e.g. 10000)",
+    "suffixHint": "Unit displayed after the number (e.g. +, %, K)",
+    "labelHint": "Label describing the number (e.g. Customers)"
   },
   "testimonialsEditor": {
     "subtitle": "Subtitle",
@@ -213,7 +244,16 @@
     "titlePlaceholder": "What our customers say",
     "descriptionPlaceholder": "From those who trust and use our product",
     "quotePlaceholder": "This product is amazing, it saves me so much time...",
-    "namePlaceholder": "John Doe"
+    "namePlaceholder": "John Doe",
+    "rolePlaceholder": "CEO, Company X",
+    "avatarPlaceholder": "https://example.com/avatar.jpg",
+    "subtitleHint": "Small subtitle above the main title",
+    "titleHint": "Main title of the testimonials section",
+    "descriptionHint": "Short description below the title",
+    "quoteHint": "Customer testimonial content",
+    "nameHint": "Reviewer's full name",
+    "roleHint": "Role, title (e.g. CEO, Company X)",
+    "avatarHint": "Profile image URL (optional)"
   },
   "publicPage": {
     "notFound": "Page not found",
@@ -257,53 +297,5 @@
     "breadcrumb": "Breadcrumb",
     "closePreview": "Close preview",
     "toggleDarkMode": "Toggle dark mode"
-  },
-  "heroEditor": {
-    "heading": "Heading",
-    "subheading": "Subheading",
-    "buttonText": "Button Text",
-    "buttonLink": "Button Link",
-    "secondaryButtonText": "Secondary Button Text",
-    "secondaryButtonLink": "Secondary Button Link",
-    "headingPlaceholder": "Welcome to ABC",
-    "subheadingPlaceholder": "The best solution for you",
-    "buttonPlaceholder": "Sign up now",
-    "secondaryButtonPlaceholder": "View demo",
-    "buttonLinkPlaceholder": "/sign-up",
-    "secondaryButtonLinkPlaceholder": "/demo"
-  },
-  "ctaEditor": {
-    "heading": "Heading",
-    "description": "Description",
-    "buttonText": "Button Text",
-    "buttonLink": "Button Link",
-    "secondaryButtonText": "Secondary Button Text",
-    "secondaryButtonLink": "Secondary Button Link",
-    "headingPlaceholder": "Ready to get started?",
-    "descriptionPlaceholder": "Join thousands of satisfied customers",
-    "buttonPlaceholder": "Contact us now",
-    "secondaryButtonPlaceholder": "Learn more",
-    "buttonLinkPlaceholder": "/contact",
-    "secondaryButtonLinkPlaceholder": "/about"
-  },
-  "testimonialsEditor": {
-    "subtitle": "Subtitle",
-    "sectionTitle": "Section Title",
-    "description": "Description",
-    "testimonialItems": "Testimonial Items",
-    "addItem": "+ Add Item",
-    "item": "Item {n}",
-    "quote": "Quote",
-    "name": "Name",
-    "role": "Role",
-    "avatar": "Avatar URL",
-    "noItems": "No testimonials yet. Click \"+ Add Item\" to get started.",
-    "subtitlePlaceholder": "Testimonials",
-    "titlePlaceholder": "What our customers say",
-    "descriptionPlaceholder": "From those who trust and use our product",
-    "quotePlaceholder": "This product is amazing, it saves me so much time...",
-    "namePlaceholder": "John Doe",
-    "rolePlaceholder": "CEO, Company X",
-    "avatarPlaceholder": "https://example.com/avatar.jpg"
   }
 }

@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import FieldHint from '@/components/ui/field-hint';
 
 interface FeaturesEditorProps {
   content: any;
@@ -55,7 +56,10 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label>{t('sectionTitle')}</Label>
+        <div className="flex items-center">
+          <Label>{t('sectionTitle')}</Label>
+          <FieldHint text={t('titleHint')} />
+        </div>
         <Input
           value={content.title || ''}
           onChange={(e) => handleTitleChange(e.target.value)}
@@ -88,7 +92,10 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
 
             <div className="grid grid-cols-3 gap-3">
               <div className="space-y-2">
-                <Label>{t('icon')}</Label>
+                <div className="flex items-center">
+                  <Label>{t('icon')}</Label>
+                  <FieldHint text={t('iconHint')} />
+                </div>
                 <Input
                   value={item.icon || ''}
                   onChange={(e) => handleItemChange(index, 'icon', e.target.value)}
@@ -97,7 +104,10 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
               </div>
 
               <div className="space-y-2">
-                <Label>{t('name')}</Label>
+                <div className="flex items-center">
+                  <Label>{t('name')}</Label>
+                  <FieldHint text={t('nameHint')} />
+                </div>
                 <Input
                   value={item.name || ''}
                   onChange={(e) => handleItemChange(index, 'name', e.target.value)}
@@ -106,7 +116,10 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
               </div>
 
               <div className="space-y-2">
-                <Label>{t('description')}</Label>
+                <div className="flex items-center">
+                  <Label>{t('description')}</Label>
+                  <FieldHint text={t('descriptionHint')} />
+                </div>
                 <Input
                   value={item.description || ''}
                   onChange={(e) => handleItemChange(index, 'description', e.target.value)}

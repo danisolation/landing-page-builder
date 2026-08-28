@@ -88,7 +88,10 @@
     "create": "Tạo page",
     "cancel": "Hủy",
     "success": "Tạo page thành công!",
-    "failed": "Tạo page thất bại"
+    "failed": "Tạo page thất bại",
+    "titleHint": "Tên hiển thị của page trong dashboard",
+    "slugHint": "Địa chỉ URL, chỉ chữ thường, số và dấu gạch ngang",
+    "descHint": "Mô tả ngắn, hiển thị khi chia sẻ link"
   },
   "editPage": {
     "title": "Sửa page",
@@ -96,6 +99,9 @@
     "titleLabel": "Tiêu đề",
     "slugLabel": "Slug",
     "descLabel": "Mô tả",
+    "titleHint": "Tên hiển thị của page trong dashboard",
+    "slugHint": "Địa chỉ URL, chỉ chữ thường, số và dấu gạch ngang",
+    "descHint": "Mô tả ngắn, hiển thị khi chia sẻ link",
     "saveSuccess": "Đã lưu thành công!",
     "saveFailed": "Lưu thất bại",
     "sections": "Sections",
@@ -157,7 +163,16 @@
     "secondaryButtonLink": "Secondary Button Link",
     "headingPlaceholder": "Chào mừng đến với ABC",
     "subheadingPlaceholder": "Giải pháp tốt nhất cho bạn",
-    "buttonPlaceholder": "Đăng ký ngay"
+    "buttonPlaceholder": "Đăng ký ngay",
+    "secondaryButtonPlaceholder": "Xem demo",
+    "buttonLinkPlaceholder": "/dang-ky",
+    "secondaryButtonLinkPlaceholder": "/demo",
+    "headingHint": "Tiêu đề lớn nhất, hiển thị nổi bật ở đầu trang",
+    "subheadingHint": "Mô tả ngắn bên dưới heading",
+    "buttonTextHint": "Text hiển thị trên nút bấm chính",
+    "buttonLinkHint": "Đường dẫn khi click nút (VD: /dang-ky)",
+    "secondaryButtonTextHint": "Text nút phụ (tùy chọn)",
+    "secondaryButtonLinkHint": "Đường dẫn nút phụ (tùy chọn)"
   },
   "featuresEditor": {
     "sectionTitle": "Section Title",
@@ -171,7 +186,11 @@
     "noFeatures": "Chưa có feature nào. Nhấn \"+ Thêm item\" để bắt đầu.",
     "titlePlaceholder": "Tính năng nổi bật",
     "namePlaceholder": "Nhanh chóng",
-    "descriptionPlaceholder": "Tốc độ xử lý nhanh"
+    "descriptionPlaceholder": "Tốc độ xử lý nhanh",
+    "titleHint": "Tiêu đề chung của section features",
+    "iconHint": "Emoji hoặc icon (VD: ⚡ 🔒 💡)",
+    "nameHint": "Tên tính năng ngắn gọn",
+    "descriptionHint": "Mô tả chi tiết tính năng"
   },
   "ctaEditor": {
     "heading": "Heading",
@@ -183,7 +202,15 @@
     "headingPlaceholder": "Sẵn sàng bắt đầu?",
     "descriptionPlaceholder": "Tham gia cùng hàng nghìn khách hàng tin tưởng chúng tôi",
     "buttonPlaceholder": "Liên hệ ngay",
-    "secondaryButtonPlaceholder": "Tìm hiểu thêm"
+    "secondaryButtonPlaceholder": "Tìm hiểu thêm",
+    "buttonLinkPlaceholder": "/lien-he",
+    "secondaryButtonLinkPlaceholder": "/about",
+    "headingHint": "Tiêu đề kêu gọi hành động",
+    "descriptionHint": "Mô tả thuyết phục người dùng click",
+    "buttonTextHint": "Text nút chính (VD: Liên hệ ngay)",
+    "buttonLinkHint": "Đường dẫn nút chính",
+    "secondaryButtonTextHint": "Text nút phụ (tùy chọn)",
+    "secondaryButtonLinkHint": "Đường dẫn nút phụ"
   },
   "statsEditor": {
     "sectionTitle": "Section Title",
@@ -195,7 +222,11 @@
     "label": "Label",
     "noItems": "Chưa có số liệu nào. Nhấn \"+ Thêm item\" để bắt đầu.",
     "titlePlaceholder": "Con số ấn tượng",
-    "labelPlaceholder": "Khách hàng"
+    "labelPlaceholder": "Khách hàng",
+    "titleHint": "Tiêu đề section thống kê",
+    "valueHint": "Giá trị số (VD: 10000)",
+    "suffixHint": "Đơn vị hiển thị sau số (VD: +, %, K)",
+    "labelHint": "Nhãn mô tả con số (VD: Khách hàng)"
   },
   "testimonialsEditor": {
     "subtitle": "Subtitle",
@@ -213,7 +244,16 @@
     "titlePlaceholder": "Khách hàng nói gì về chúng tôi",
     "descriptionPlaceholder": "Từ những người đã tin tưởng sử dụng",
     "quotePlaceholder": "Sản phẩm tuyệt vời, giúp tôi tiết kiệm rất nhiều thời gian...",
-    "namePlaceholder": "Nguyễn Văn A"
+    "namePlaceholder": "Nguyễn Văn A",
+    "rolePlaceholder": "CEO, Company X",
+    "avatarPlaceholder": "https://example.com/avatar.jpg",
+    "subtitleHint": "Phụ đề nhỏ phía trên tiêu đề",
+    "titleHint": "Tiêu đề chính của section đánh giá",
+    "descriptionHint": "Mô tả ngắn bên dưới tiêu đề",
+    "quoteHint": "Nội dung đánh giá của khách hàng",
+    "nameHint": "Họ tên người đánh giá",
+    "roleHint": "Vai trò, chức danh (VD: CEO, Company X)",
+    "avatarHint": "URL ảnh đại diện (tùy chọn)"
   },
   "publicPage": {
     "notFound": "Không tìm thấy trang",
@@ -257,53 +297,5 @@
     "breadcrumb": "Breadcrumb",
     "closePreview": "Đóng preview",
     "toggleDarkMode": "Toggle dark mode"
-  },
-  "heroEditor": {
-    "heading": "Heading",
-    "subheading": "Subheading",
-    "buttonText": "Button Text",
-    "buttonLink": "Button Link",
-    "secondaryButtonText": "Secondary Button Text",
-    "secondaryButtonLink": "Secondary Button Link",
-    "headingPlaceholder": "Chào mừng đến với ABC",
-    "subheadingPlaceholder": "Giải pháp tốt nhất cho bạn",
-    "buttonPlaceholder": "Đăng ký ngay",
-    "secondaryButtonPlaceholder": "Xem demo",
-    "buttonLinkPlaceholder": "/dang-ky",
-    "secondaryButtonLinkPlaceholder": "/demo"
-  },
-  "ctaEditor": {
-    "heading": "Heading",
-    "description": "Description",
-    "buttonText": "Button Text",
-    "buttonLink": "Button Link",
-    "secondaryButtonText": "Secondary Button Text",
-    "secondaryButtonLink": "Secondary Button Link",
-    "headingPlaceholder": "Sẵn sàng bắt đầu?",
-    "descriptionPlaceholder": "Tham gia cùng hàng nghìn khách hàng tin tưởng chúng tôi",
-    "buttonPlaceholder": "Liên hệ ngay",
-    "secondaryButtonPlaceholder": "Tìm hiểu thêm",
-    "buttonLinkPlaceholder": "/lien-he",
-    "secondaryButtonLinkPlaceholder": "/about"
-  },
-  "testimonialsEditor": {
-    "subtitle": "Subtitle",
-    "sectionTitle": "Section Title",
-    "description": "Description",
-    "testimonialItems": "Testimonial Items",
-    "addItem": "+ Thêm item",
-    "item": "Item {n}",
-    "quote": "Quote",
-    "name": "Name",
-    "role": "Role",
-    "avatar": "Avatar URL",
-    "noItems": "Chưa có đánh giá nào. Nhấn \"+ Thêm item\" để bắt đầu.",
-    "subtitlePlaceholder": "Đánh giá",
-    "titlePlaceholder": "Khách hàng nói gì về chúng tôi",
-    "descriptionPlaceholder": "Từ những người đã tin tưởng sử dụng",
-    "quotePlaceholder": "Sản phẩm tuyệt vời, giúp tôi tiết kiệm rất nhiều thời gian...",
-    "namePlaceholder": "Nguyễn Văn A",
-    "rolePlaceholder": "CEO, Company X",
-    "avatarPlaceholder": "https://example.com/avatar.jpg"
   }
 }
