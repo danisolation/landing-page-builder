@@ -20,13 +20,12 @@ import { useTranslations } from 'next-intl';
 import { Plus, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Link } from '@/i18n/navigation';
 import SectionCard from './SectionCard';
 
 interface SectionListProps {
   sections: any[];
-  activeSectionId?: string | null;
-  onEdit: (section: any) => void;
-  onAdd: () => void;
+  pageId: string;
   onPreview: (section: any) => void;
   onDuplicate: (section: any) => void;
   onDelete: (section: any) => void;
@@ -35,9 +34,7 @@ interface SectionListProps {
 
 export default function SectionList({
   sections,
-  activeSectionId,
-  onEdit,
-  onAdd,
+  pageId,
   onPreview,
   onDuplicate,
   onDelete,
@@ -85,10 +82,12 @@ export default function SectionList({
               ({sections.length})
             </span>
           </CardTitle>
-          <Button size="sm" onClick={onAdd}>
-            <Plus size={14} className="mr-1.5" />
-            {t('addSection')}
-          </Button>
+          <Link href={`/pages/${pageId}/sections/new`}>
+            <Button size="sm">
+              <Plus size={14} className="mr-1.5" />
+              {t('addSection')}
+            </Button>
+          </Link>
         </div>
       </CardHeader>
       <CardContent>
@@ -96,10 +95,12 @@ export default function SectionList({
           <div className="text-center py-12">
             <Layers size={40} className="mx-auto text-muted-foreground/30 mb-3" />
             <p className="text-sm text-muted-foreground mb-4">{t('noSections')}</p>
-            <Button size="sm" variant="outline" onClick={onAdd}>
-              <Plus size={14} className="mr-1.5" />
-              {t('addSection')}
-            </Button>
+            <Link href={`/pages/${pageId}/sections/new`}>
+              <Button size="sm" variant="outline">
+                <Plus size={14} className="mr-1.5" />
+                {t('addSection')}
+              </Button>
+            </Link>
           </div>
         ) : (
           <DndContext
@@ -116,8 +117,7 @@ export default function SectionList({
                   <SectionCard
                     key={section.id}
                     section={section}
-                    isActive={activeSectionId === section.id}
-                    onEdit={() => onEdit(section)}
+                    pageId={pageId}
                     onPreview={() => onPreview(section)}
                     onDuplicate={() => onDuplicate(section)}
                     onDelete={() => onDelete(section)}

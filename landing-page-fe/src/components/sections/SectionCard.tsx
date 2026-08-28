@@ -5,6 +5,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { useTranslations } from 'next-intl';
 import { GripVertical, Eye, Pencil, Copy, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Link } from '@/i18n/navigation';
 import HeroSection from './HeroSection';
 import FeaturesSection from './FeaturesSection';
 import CtaSection from './CtaSection';
@@ -46,8 +47,7 @@ function getSectionSummary(type: string, content: any): string {
 
 interface SectionCardProps {
   section: any;
-  isActive: boolean;
-  onEdit: () => void;
+  pageId: string;
   onPreview: () => void;
   onDuplicate: () => void;
   onDelete: () => void;
@@ -55,8 +55,7 @@ interface SectionCardProps {
 
 export default function SectionCard({
   section,
-  isActive,
-  onEdit,
+  pageId,
   onPreview,
   onDuplicate,
   onDelete,
@@ -85,8 +84,7 @@ export default function SectionCard({
       className={`
         group relative flex items-center gap-0 border rounded-xl overflow-hidden
         transition-all duration-200 bg-card
-        ${isDragging ? 'shadow-lg ring-2 ring-blue-400 opacity-90 z-50' : ''}
-        ${isActive ? 'ring-2 ring-blue-500 border-blue-300 shadow-md' : 'border-border hover:border-border/80 hover:shadow-sm'}
+        ${isDragging ? 'shadow-lg ring-2 ring-blue-400 opacity-90 z-50' : 'border-border hover:border-border/80 hover:shadow-sm'}
       `}
     >
       {/* Drag handle */}
@@ -140,15 +138,13 @@ export default function SectionCard({
         >
           <Eye size={14} />
         </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onEdit}
-          className="text-muted-foreground hover:text-blue-600 h-8 w-8 p-0"
+        <Link
+          href={`/pages/${pageId}/sections/${section.id}/edit`}
+          className="inline-flex items-center justify-center text-muted-foreground hover:text-blue-600 h-8 w-8 p-0 rounded-md hover:bg-accent transition-colors"
           title={t('edit')}
         >
           <Pencil size={14} />
-        </Button>
+        </Link>
         <Button
           variant="ghost"
           size="sm"

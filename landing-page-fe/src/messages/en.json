@@ -15,6 +15,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "pages": "Pages",
+    "sections": "Sections",
     "createNew": "Create New",
     "editPage": "Edit",
     "createPage": "Create Page"
@@ -89,15 +90,43 @@
     "sectionAddFailed": "Failed to add section",
     "sectionDeleted": "Section deleted!",
     "sectionDeleteFailed": "Failed to delete",
+    "sectionDuplicated": "Section duplicated!",
+    "sectionDuplicateFailed": "Failed to duplicate",
+    "deleteConfirmTitle": "Delete section?",
+    "deleteConfirmMessage": "Are you sure you want to delete this section? This action cannot be undone.",
     "previewPage": "Preview",
     "previewSection": "Preview"
+  },
+  "sectionList": {
+    "title": "Sections",
+    "addSection": "Add Section",
+    "noSections": "No sections yet. Click \"Add Section\" to get started."
+  },
+  "sectionCard": {
+    "preview": "Preview",
+    "edit": "Edit",
+    "duplicate": "Duplicate",
+    "delete": "Delete"
+  },
+  "editPanel": {
+    "editSection": "Edit Section",
+    "addSection": "Add New Section",
+    "sectionType": "Section Type",
+    "typeLocked": "Cannot change section type when editing",
+    "order": "Order",
+    "preview": "Preview"
   },
   "sectionEditor": {
     "editSection": "Edit Section",
     "addSection": "Add New Section",
     "sectionType": "Section Type",
+    "typeLocked": "Cannot change section type when editing",
     "order": "Order",
-    "preview": "Preview"
+    "preview": "Preview",
+    "sectionAdded": "Section added!",
+    "sectionAddFailed": "Failed to add section",
+    "sectionUpdated": "Section updated!",
+    "sectionUpdateFailed": "Failed to update section"
   },
   "sectionPreview": {
     "unsupported": "Section type \"{type}\" is not supported for preview"

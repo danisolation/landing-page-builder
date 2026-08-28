@@ -17,6 +17,7 @@ export default function Breadcrumbs() {
   const isUUID = (s: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
 
   const pathNames: Record<string, string> = {
+    sections: t('sections'),
     new: t('createNew'),
     edit: t('editPage'),
   };

@@ -15,6 +15,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "pages": "Pages",
+    "sections": "Sections",
     "createNew": "Tạo mới",
     "editPage": "Chỉnh sửa",
     "createPage": "Tạo page mới"
@@ -89,15 +90,43 @@
     "sectionAddFailed": "Thêm section thất bại",
     "sectionDeleted": "Đã xóa section!",
     "sectionDeleteFailed": "Xóa thất bại",
+    "sectionDuplicated": "Đã nhân bản section!",
+    "sectionDuplicateFailed": "Nhân bản thất bại",
+    "deleteConfirmTitle": "Xóa section?",
+    "deleteConfirmMessage": "Bạn có chắc muốn xóa section này? Hành động này không thể hoàn tác.",
     "previewPage": "Xem trước",
     "previewSection": "Xem trước"
+  },
+  "sectionList": {
+    "title": "Sections",
+    "addSection": "Thêm Section",
+    "noSections": "Chưa có section nào. Nhấn \"Thêm Section\" để bắt đầu."
+  },
+  "sectionCard": {
+    "preview": "Xem trước",
+    "edit": "Sửa",
+    "duplicate": "Nhân bản",
+    "delete": "Xóa"
+  },
+  "editPanel": {
+    "editSection": "Sửa Section",
+    "addSection": "Thêm Section Mới",
+    "sectionType": "Loại Section",
+    "typeLocked": "Không thể đổi loại section khi đang sửa",
+    "order": "Thứ tự",
+    "preview": "Preview"
   },
   "sectionEditor": {
     "editSection": "Sửa Section",
     "addSection": "Thêm Section Mới",
     "sectionType": "Loại Section",
+    "typeLocked": "Không thể đổi loại section khi đang sửa",
     "order": "Thứ tự",
-    "preview": "Preview"
+    "preview": "Preview",
+    "sectionAdded": "Đã thêm section!",
+    "sectionAddFailed": "Thêm section thất bại",
+    "sectionUpdated": "Đã cập nhật section!",
+    "sectionUpdateFailed": "Cập nhật thất bại"
   },
   "sectionPreview": {
     "unsupported": "Section type \"{type}\" chưa được hỗ trợ preview"
