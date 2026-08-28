@@ -1,7 +1,10 @@
 'use client';
 
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { useRef, useEffect, useState } from 'react';
+import {
+  draggable,
+  dropTargetForElements,
+} from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { useTranslations } from 'next-intl';
 import { GripVertical, Eye, Pencil, Copy, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -45,53 +48,125 @@ function getSectionSummary(type: string, content: any, tTypes: (key: string) => 
   }
 }
 
+interface DragOverlayData {
+  sectionId: string;
+  sectionType: string;
+  sectionContent: any;
+  sectionOrder: number;
+}
+
 interface SectionCardProps {
   section: any;
+  index: number;
   pageId: string;
   onPreview: () => void;
   onDuplicate: () => void;
   onDelete: () => void;
+  onDragOverlayChange?: (data: DragOverlayData | null) => void;
 }
 
 export default function SectionCard({
   section,
+  index,
   pageId,
   onPreview,
   onDuplicate,
   onDelete,
+  onDragOverlayChange,
 }: SectionCardProps) {
   const t = useTranslations('sectionCard');
   const tTypes = useTranslations('sectionTypes');
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: section.id });
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
+  const cardRef = useRef<HTMLDivElement>(null);
+  const handleRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [closestEdge, setClosestEdge] = useState<'top' | 'bottom' | null>(null);
+
+  useEffect(() => {
+    const card = cardRef.current;
+    const handle = handleRef.current;
+    if (!card || !handle) return;
+
+    const unsubs: (() => void)[] = [];
+
+    // Make the card draggable via the handle only
+    unsubs.push(
+      draggable({
+        element: handle,
+        getInitialData: (): Record<string, unknown> => ({
+          index,
+          type: 'section-card',
+          sectionId: section.id,
+        }),
+        onDragStart: () => {
+          setIsDragging(true);
+          onDragOverlayChange?.({
+            sectionId: section.id,
+            sectionType: section.type,
+            sectionContent: section.content,
+            sectionOrder: section.order,
+          });
+        },
+        onDrop: () => {
+          setIsDragging(false);
+          onDragOverlayChange?.(null);
+        },
+      })
+    );
+
+    // Make the card a drop target
+    unsubs.push(
+      dropTargetForElements({
+        element: card,
+        canDrop: ({ source }) =>
+          (source.data as Record<string, unknown>)?.type === 'section-card',
+        getData: ({ input, element }) => {
+          const rect = element.getBoundingClientRect();
+          const midY = rect.top + rect.height / 2;
+          const edge = input.clientY < midY ? 'top' : 'bottom';
+          return { index, sectionId: section.id, closestEdge: edge };
+        },
+        onDrag: ({ self }) => {
+          setClosestEdge((self.data.closestEdge as 'top' | 'bottom') ?? null);
+        },
+        onDragLeave: () => setClosestEdge(null),
+        onDrop: () => setClosestEdge(null),
+      })
+    );
+
+    return () => unsubs.forEach((unsub) => unsub());
+  }, [index, section.id, section.type, section.content, section.order, onDragOverlayChange]);
 
   const SectionComponent = sectionComponents[section.type];
 
   return (
     <div
-      ref={setNodeRef}
-      style={style}
+      ref={cardRef}
       className={`
         group relative flex items-center gap-0 border rounded-xl overflow-hidden
-        transition-all duration-200 bg-card
-        ${isDragging ? 'shadow-lg ring-2 ring-blue-400 opacity-90 z-50' : 'border-border hover:border-border/80 hover:shadow-sm'}
+        transition-all duration-200 ease-out
+        bg-card
+        ${isDragging
+          ? 'opacity-30 scale-[0.98] border-dashed border-blue-300 dark:border-blue-700 bg-blue-50/30 dark:bg-blue-950/20'
+          : 'border-border hover:border-border/80 hover:shadow-sm'
+        }
       `}
     >
+      {/* Drop indicator - top */}
+      <div
+        className={`
+          absolute left-0 right-0 top-0 h-0.5 z-10 rounded-full
+          transition-all duration-150 ease-out
+          ${closestEdge === 'top'
+            ? 'opacity-100 bg-gradient-to-r from-transparent via-blue-500 to-transparent shadow-[0_0_8px_rgba(59,130,246,0.6)]'
+            : 'opacity-0'
+          }
+        `}
+      />
+
       {/* Drag handle */}
       <div
-        {...attributes}
-        {...listeners}
+        ref={handleRef}
         className="flex items-center px-1.5 sm:px-2 cursor-grab active:cursor-grabbing text-muted-foreground/50 hover:text-muted-foreground hover:bg-accent transition-colors shrink-0 self-stretch"
       >
         <GripVertical size={16} />
@@ -169,6 +244,18 @@ export default function SectionCard({
           <Trash2 size={14} />
         </Button>
       </div>
+
+      {/* Drop indicator - bottom */}
+      <div
+        className={`
+          absolute left-0 right-0 bottom-0 h-0.5 z-10 rounded-full
+          transition-all duration-150 ease-out
+          ${closestEdge === 'bottom'
+            ? 'opacity-100 bg-gradient-to-r from-transparent via-blue-500 to-transparent shadow-[0_0_8px_rgba(59,130,246,0.6)]'
+            : 'opacity-0'
+          }
+        `}
+      />
     </div>
   );
 }

@@ -1,27 +1,22 @@
 'use client';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragEndEvent,
-} from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder';
 import { useTranslations } from 'next-intl';
 import { Plus, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Link } from '@/i18n/navigation';
 import SectionCard from './SectionCard';
+import DragOverlay from './DragOverlay';
+
+interface DragOverlayData {
+  sectionId: string;
+  sectionType: string;
+  sectionContent: any;
+  sectionOrder: number;
+}
 
 interface SectionListProps {
   sections: any[];
@@ -41,43 +36,51 @@ export default function SectionList({
   onReorder,
 }: SectionListProps) {
   const t = useTranslations('sectionList');
-  const isDragging = useRef(false);
   const [orderedSections, setOrderedSections] = useState(() =>
     [...sections].sort((a, b) => a.order - b.order)
   );
+  const [dragOverlay, setDragOverlay] = useState<DragOverlayData | null>(null);
 
-  // Sync with prop changes (e.g. after API refetch), but skip during drag
+  // Keep a ref to the latest orderedSections so the monitor callback
+  // always reads the current value without needing to re-register.
+  const orderedSectionsRef = useRef(orderedSections);
+  orderedSectionsRef.current = orderedSections;
+
+  // Sync with prop changes (e.g. after API refetch)
   useEffect(() => {
-    if (!isDragging.current) {
-      setOrderedSections([...sections].sort((a, b) => a.order - b.order));
-    }
+    setOrderedSections([...sections].sort((a, b) => a.order - b.order));
   }, [sections]);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: 5 },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
+  const handleDragOverlayChange = useCallback((data: DragOverlayData | null) => {
+    setDragOverlay(data);
+  }, []);
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    isDragging.current = false;
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
+  // Register global drag monitor once
+  useEffect(() => {
+    return monitorForElements({
+      canMonitor: ({ source }) =>
+        (source.data as Record<string, unknown>)?.type === 'section-card',
+      onDrop: ({ source, location }) => {
+        const dropTarget = location.current.dropTargets[0];
+        if (!dropTarget) return;
 
-    const oldIndex = orderedSections.findIndex((s) => s.id === active.id);
-    const newIndex = orderedSections.findIndex((s) => s.id === over.id);
+        const startIndex = (source.data as Record<string, unknown>)?.index as number;
+        const finishIndex = (dropTarget.data as Record<string, unknown>)?.index as number;
+        if (startIndex === undefined || finishIndex === undefined) return;
+        if (startIndex === finishIndex) return;
 
-    const newOrder = arrayMove(orderedSections, oldIndex, newIndex);
-    setOrderedSections(newOrder);
-    onReorder(newOrder.map((s) => s.id));
-  };
+        const current = orderedSectionsRef.current;
+        const newOrder = reorder({
+          list: current,
+          startIndex,
+          finishIndex,
+        });
 
-  const handleDragStart = () => {
-    isDragging.current = true;
-  };
+        setOrderedSections(newOrder);
+        onReorder(newOrder.map((s) => s.id));
+      },
+    });
+  }, [onReorder]);
 
   return (
     <Card>
@@ -111,32 +114,25 @@ export default function SectionList({
             </Link>
           </div>
         ) : (
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext
-              items={orderedSections.map((s) => s.id)}
-              strategy={verticalListSortingStrategy}
-            >
-              <div className="space-y-2">
-                {orderedSections.map((section) => (
-                  <SectionCard
-                    key={section.id}
-                    section={section}
-                    pageId={pageId}
-                    onPreview={() => onPreview(section)}
-                    onDuplicate={() => onDuplicate(section)}
-                    onDelete={() => onDelete(section)}
-                  />
-                ))}
-              </div>
-            </SortableContext>
-          </DndContext>
+          <div className="space-y-2">
+            {orderedSections.map((section, index) => (
+              <SectionCard
+                key={section.id}
+                section={section}
+                index={index}
+                pageId={pageId}
+                onPreview={() => onPreview(section)}
+                onDuplicate={() => onDuplicate(section)}
+                onDelete={() => onDelete(section)}
+                onDragOverlayChange={handleDragOverlayChange}
+              />
+            ))}
+          </div>
         )}
       </CardContent>
+
+      {/* Floating drag overlay */}
+      {dragOverlay && <DragOverlay data={dragOverlay} />}
     </Card>
   );
 }
