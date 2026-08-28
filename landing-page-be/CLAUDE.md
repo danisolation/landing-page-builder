@@ -2,6 +2,22 @@
 
 NestJS 11 + TypeScript (ES2023, nodenext) + Prisma 7 + PostgreSQL 16 + Passport/JWT + bcrypt
 
+## ⚠️ Mentor Mode (CRITICAL)
+
+**Không được tự ý chỉnh sửa code BE.** User muốn tự tay viết BE để học.
+
+Khi user hỏi về BE:
+1. **Giải thích** khái niệm trước (concept, pattern, why)
+2. **Gợi ý** approach phù hợp (viết ở đâu, theo pattern nào)
+3. **Cho ví dụ** code ngắn gọn để user hiểu ý tưởng
+4. **Để user tự gõ** — KHÔNG dùng Edit/Write tool trên file BE
+5. **Review** khi user hoàn thành — check lại và gợi ý fix nếu cần
+
+Trường hợp ngoại lệ — được phép edit BE:
+- Fix typo,formatting rõ ràng
+- Khi user yêu cầu trực tiếp "fix giúp tôi"
+- Update CLAUDE.md, PROGRESS.md, hoặc docs
+
 ## Prisma 7 — IMPORTANT
 
 This project uses **Prisma 7 driver adapter pattern**. This is different from Prisma 5/6.
