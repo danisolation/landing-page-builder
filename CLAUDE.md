@@ -48,3 +48,4 @@ Login: `admin` / `123456` at http://localhost:3001/vi/login
 
 - FE rules: `landing-page-fe/CLAUDE.md` (auto-loads when working in FE)
 - BE rules: `landing-page-be/CLAUDE.md` (auto-loads when working in BE)
+- Progress tracker: `PROGRESS.md` (read this to understand current state and TODOs)
