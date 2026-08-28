@@ -51,8 +51,64 @@ All routes are under `[locale]/` (vi or en). Root `/` redirects to `/vi`.
 | `/{locale}/login` | Login |
 | `/{locale}/dashboard` | Dashboard |
 | `/{locale}/pages/new` | Create page |
-| `/{locale}/pages/{id}/edit` | Edit page + sections |
+| `/{locale}/pages/{id}/edit` | Edit page + sections list |
+| `/{locale}/pages/{id}/sections/new` | Add new section |
+| `/{locale}/pages/{id}/sections/{sectionId}/edit` | Edit existing section |
 | `/{locale}/{slug}` | Public landing page |
+
+## Layout Rules
+
+### Background Colors
+- **ALL admin pages**: use `bg-background` CSS variable (NOT hardcoded `bg-white`, `bg-gray-*`, or `bg-[oklch(...)]`)
+- **Cards/Surfaces**: use `bg-card` semantic token
+- **Subtle surfaces** (header/footer panels): use `bg-muted` or `bg-accent`
+- **Borders**: use `border-border` (defined in globals.css base layer)
+
+### Text Colors
+- Primary text: `text-foreground` (NOT `text-gray-900`)
+- Secondary/muted text: `text-muted-foreground` (NOT `text-gray-500`, `text-gray-400`)
+- Hover states: `hover:text-foreground` with `hover:bg-accent`
+
+### Dark Mode
+- Every admin component MUST have dark mode support
+- Use Tailwind `dark:` variants OR semantic tokens (which auto-adapt)
+- Tint backgrounds: `bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400`
+- NEVER use `bg-white` without a `dark:` counterpart
+
+### Page Structure (Admin)
+Every admin page follows this pattern:
+```
+<div>
+  <Breadcrumbs />
+  <div className="flex justify-between items-center mb-6">
+    <h1 className="text-2xl font-bold text-foreground tracking-tight">Title</h1>
+    <div className="flex gap-2">Actions</div>
+  </div>
+  Content
+</div>
+```
+
+### Breadcrumbs
+- Shown on ALL admin pages EXCEPT `/dashboard` and `/login`
+- Pattern: `Dashboard > Section > Action`
+- Uses semantic token colors: `text-muted-foreground`, `hover:text-foreground`, `hover:bg-accent`
+- Path segments: `pages` is filtered out (not shown), UUIDs are filtered out
+- Available labels: `dashboard`, `sections`, `new` (createNew), `edit` (editPage)
+
+### Section Pages
+- Section create/edit are SEPARATE pages (not inline panels)
+- Section edit: `/pages/[id]/sections/[sectionId]/edit`
+- Section new: `/pages/[id]/sections/new`
+- Preview: opens as `SectionPreviewModal` (full-screen modal), NOT inline
+- Layout: single-column form (`max-w-3xl`), with preview as modal button in header
+- Save → redirect back to `/pages/[id]/edit`
+
+### Component Tokens (shadcn/ui)
+- Card: `bg-card`, `text-card-foreground`, `ring-foreground/10`
+- Button: uses CVA variants (`default`, `outline`, `ghost`, `destructive`)
+- Input/Select: inherit from CSS variables (`--input`, `--border`)
+- ConfirmDialog overlay: `bg-black/60`
+- Preview modals: `bg-background` panel, `bg-card` header
 
 ## Component Conventions
 

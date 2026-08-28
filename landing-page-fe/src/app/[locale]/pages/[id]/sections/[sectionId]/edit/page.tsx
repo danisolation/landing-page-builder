@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { usePage } from '@/hooks/usePages';
 import { useSections } from '@/hooks/useSections';
+import { Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -18,12 +19,12 @@ import {
 } from '@/components/ui/select';
 import { SkeletonForm } from '@/components/ui/loading';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
+import SectionPreviewModal from '@/components/sections/SectionPreviewModal';
 import HeroEditor from '@/components/sections/editors/HeroEditor';
 import FeaturesEditor from '@/components/sections/editors/FeaturesEditor';
 import CtaEditor from '@/components/sections/editors/CtaEditor';
 import StatsEditor from '@/components/sections/editors/StatsEditor';
 import TestimonialsEditor from '@/components/sections/editors/TestimonialsEditor';
-import SectionPreview from '@/components/sections/SectionPreview';
 
 const editors: Record<string, any> = {
   hero: HeroEditor,
@@ -49,6 +50,7 @@ export default function EditSectionPage() {
   const [type, setType] = useState('');
   const [content, setContent] = useState<any>({});
   const [order, setOrder] = useState(0);
+  const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
     if (section) {
@@ -107,84 +109,89 @@ export default function EditSectionPage() {
         <h1 className="text-2xl font-bold text-foreground tracking-tight">
           {t('editSection')}
         </h1>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => router.push(`/pages/${pageId}/edit`)}
-        >
-          {tCommon('back')}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowPreview(true)}
+          >
+            <Eye size={14} className="mr-1.5" />
+            {t('preview')}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push(`/pages/${pageId}/edit`)}
+          >
+            {tCommon('back')}
+          </Button>
+        </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* Editor — left side */}
-        <div className="flex-1 min-w-0 space-y-5">
-          {/* Type + Order */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                {t('sectionType')}
-              </Label>
-              <Select value={type} disabled>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="hero">Hero</SelectItem>
-                  <SelectItem value="features">Features</SelectItem>
-                  <SelectItem value="cta">CTA</SelectItem>
-                  <SelectItem value="stats">Stats</SelectItem>
-                  <SelectItem value="testimonials">Testimonials</SelectItem>
-                </SelectContent>
-              </Select>
-              <p className="text-xs text-muted-foreground">{t('typeLocked')}</p>
-            </div>
-
-            <div className="space-y-2">
-              <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                {t('order')}
-              </Label>
-              <Input
-                type="number"
-                value={order}
-                onChange={(e) => setOrder(Number(e.target.value))}
-                min={0}
-              />
-            </div>
-          </div>
-
-          {/* Type-specific editor */}
-          {EditorComponent && (
-            <div className="border-t border-border pt-5">
-              <EditorComponent content={content} onChange={setContent} />
-            </div>
-          )}
-
-          {/* Actions */}
-          <div className="flex gap-3 pt-2">
-            <Button onClick={handleSave} disabled={isUpdating} size="sm">
-              {isUpdating ? tCommon('saving') : tCommon('save')}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => router.push(`/pages/${pageId}/edit`)}
-            >
-              {tCommon('cancel')}
-            </Button>
-          </div>
-        </div>
-
-        {/* Preview — right side */}
-        <div className="lg:w-[45%] lg:min-w-[360px] shrink-0">
-          <div className="lg:sticky lg:top-6 space-y-2">
+      <div className="max-w-3xl space-y-5">
+        {/* Type + Order */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
             <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              {t('preview')}
+              {t('sectionType')}
             </Label>
-            <SectionPreview type={type} content={content} />
+            <Select value={type} disabled>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="hero">Hero</SelectItem>
+                <SelectItem value="features">Features</SelectItem>
+                <SelectItem value="cta">CTA</SelectItem>
+                <SelectItem value="stats">Stats</SelectItem>
+                <SelectItem value="testimonials">Testimonials</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">{t('typeLocked')}</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              {t('order')}
+            </Label>
+            <Input
+              type="number"
+              value={order}
+              onChange={(e) => setOrder(Number(e.target.value))}
+              min={0}
+            />
           </div>
         </div>
+
+        {/* Type-specific editor */}
+        {EditorComponent && (
+          <div className="border-t border-border pt-5">
+            <EditorComponent content={content} onChange={setContent} />
+          </div>
+        )}
+
+        {/* Actions */}
+        <div className="flex gap-3 pt-2">
+          <Button onClick={handleSave} disabled={isUpdating} size="sm">
+            {isUpdating ? tCommon('saving') : tCommon('save')}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push(`/pages/${pageId}/edit`)}
+          >
+            {tCommon('cancel')}
+          </Button>
+        </div>
       </div>
+
+      {/* Preview Modal */}
+      <SectionPreviewModal
+        type={type}
+        content={content}
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+      />
     </div>
   );
 }
