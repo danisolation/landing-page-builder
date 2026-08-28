@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
@@ -13,6 +13,7 @@ interface PageCardProps {
 export default function PageCard({ page, onDelete }: PageCardProps) {
   const t = useTranslations('pageCard');
   const tCommon = useTranslations('common');
+  const locale = useLocale();
   const sectionCount = page.sections?.length || 0;
   const sectionTypes = page.sections?.map((s: any) => s.type) || [];
   const uniqueTypes = [...new Set(sectionTypes)];
@@ -55,7 +56,7 @@ export default function PageCard({ page, onDelete }: PageCardProps) {
               )}
 
               <span className="inline-flex items-center gap-1">
-                📅 {new Date(page.createdAt).toLocaleDateString('vi-VN')}
+                📅 {new Date(page.createdAt).toLocaleDateString(locale === 'vi' ? 'vi-VN' : 'en-US')}
               </span>
             </div>
           </div>

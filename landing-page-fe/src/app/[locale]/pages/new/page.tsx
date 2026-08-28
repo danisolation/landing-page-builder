@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { usePages } from "@/hooks/usePages";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,26 +16,47 @@ import Breadcrumbs from "@/components/layout/Breadcrumbs";
 
 export default function NewPagePage() {
   const t = useTranslations("newPage");
+  const tValidation = useTranslations("validation");
   const router = useRouter();
   const { createPage, isCreating } = usePages();
-  const [title, setTitle] = useState("");
-  const [slug, setSlug] = useState("");
-  const [description, setDescription] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    createPage(
-      { title, slug, description },
-      {
-        onSuccess: () => {
-          toast.success(t("success"));
-          router.push("/dashboard");
-        },
-        onError: (error: any) => {
-          toast.error(error.message || t("failed"));
-        },
+  const newPageSchema = z.object({
+    title: z.string().min(1, tValidation("required", { field: t("titleLabel") })),
+    slug: z
+      .string()
+      .min(1, tValidation("required", { field: t("slugLabel") }))
+      .regex(/^[a-z0-9-]+$/, tValidation("slugFormat")),
+    description: z.string().optional(),
+  });
+
+  type NewPageFormData = z.infer<typeof newPageSchema>;
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<NewPageFormData>({
+    resolver: zodResolver(newPageSchema),
+    defaultValues: {
+      title: "",
+      slug: "",
+      description: "",
+    },
+  });
+
+  const slugValue = watch("slug");
+
+  const onSubmit = (data: NewPageFormData) => {
+    createPage(data, {
+      onSuccess: () => {
+        toast.success(t("success"));
+        router.push("/dashboard");
       },
-    );
+      onError: (error: any) => {
+        toast.error(error.message || t("failed"));
+      },
+    });
   };
 
   return (
@@ -48,35 +71,36 @@ export default function NewPagePage() {
             <CardTitle className="text-lg">{t("pageInfo")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="title" className="text-sm font-medium">{t("titleLabel")}</Label>
                 <Input
                   id="title"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  required
+                  {...register("title")}
                 />
+                {errors.title && (
+                  <p className="text-xs text-destructive">{errors.title.message}</p>
+                )}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="slug" className="text-sm font-medium">{t("slugLabel")}</Label>
                 <Input
                   id="slug"
-                  value={slug}
-                  onChange={(e) => setSlug(e.target.value)}
+                  {...register("slug")}
                   placeholder="san-pham-moi"
-                  required
                 />
-                <p className="text-xs text-gray-400 font-mono">URL: /{slug || "..."}</p>
+                {errors.slug && (
+                  <p className="text-xs text-destructive">{errors.slug.message}</p>
+                )}
+                <p className="text-xs text-muted-foreground font-mono">URL: /{slugValue || "..."}</p>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="description" className="text-sm font-medium">{t("descLabel")}</Label>
                 <Textarea
                   id="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  {...register("description")}
                   rows={3}
                 />
               </div>

@@ -28,18 +28,18 @@ const typeColors: Record<string, string> = {
   testimonials: 'bg-pink-50 dark:bg-pink-950/30 text-pink-700 dark:text-pink-400 ring-pink-600/20 dark:ring-pink-400/20',
 };
 
-function getSectionSummary(type: string, content: any): string {
+function getSectionSummary(type: string, content: any, tTypes: (key: string) => string): string {
   switch (type) {
     case 'hero':
       return content.heading || '—';
     case 'features':
-      return `${content.title || 'Features'} (${content.items?.length || 0} items)`;
+      return `${content.title || tTypes('features')} (${content.items?.length || 0})`;
     case 'cta':
       return content.heading || '—';
     case 'stats':
-      return `${content.title || 'Stats'} (${content.items?.length || 0} items)`;
+      return `${content.title || tTypes('stats')} (${content.items?.length || 0})`;
     case 'testimonials':
-      return `${content.title || 'Testimonials'} (${content.items?.length || 0} items)`;
+      return `${content.title || tTypes('testimonials')} (${content.items?.length || 0})`;
     default:
       return type;
   }
@@ -61,6 +61,7 @@ export default function SectionCard({
   onDelete,
 }: SectionCardProps) {
   const t = useTranslations('sectionCard');
+  const tTypes = useTranslations('sectionTypes');
   const {
     attributes,
     listeners,
@@ -123,7 +124,7 @@ export default function SectionCard({
           </span>
         </div>
         <p className="text-sm text-muted-foreground truncate">
-          {getSectionSummary(section.type, section.content)}
+          {getSectionSummary(section.type, section.content, tTypes)}
         </p>
       </div>
 
@@ -135,6 +136,7 @@ export default function SectionCard({
           onClick={onPreview}
           className="text-muted-foreground hover:text-foreground h-8 w-8 p-0"
           title={t('preview')}
+          aria-label={t('preview')}
         >
           <Eye size={14} />
         </Button>
@@ -142,6 +144,7 @@ export default function SectionCard({
           href={`/pages/${pageId}/sections/${section.id}/edit`}
           className="inline-flex items-center justify-center text-muted-foreground hover:text-blue-600 h-8 w-8 p-0 rounded-md hover:bg-accent transition-colors"
           title={t('edit')}
+          aria-label={t('edit')}
         >
           <Pencil size={14} />
         </Link>
@@ -151,6 +154,7 @@ export default function SectionCard({
           onClick={onDuplicate}
           className="hidden sm:inline-flex text-muted-foreground hover:text-green-600 h-8 w-8 p-0"
           title={t('duplicate')}
+          aria-label={t('duplicate')}
         >
           <Copy size={14} />
         </Button>
@@ -160,6 +164,7 @@ export default function SectionCard({
           onClick={onDelete}
           className="text-muted-foreground hover:text-red-600 h-8 w-8 p-0"
           title={t('delete')}
+          aria-label={t('delete')}
         >
           <Trash2 size={14} />
         </Button>

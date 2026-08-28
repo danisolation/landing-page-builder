@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import HeroSection from './HeroSection';
 import FeaturesSection from './FeaturesSection';
 import CtaSection from './CtaSection';
@@ -27,6 +28,7 @@ interface SectionPreviewModalProps {
 
 export default function SectionPreviewModal({ type, content, isOpen, onClose }: SectionPreviewModalProps) {
   const SectionComponent = sectionComponents[type];
+  const t = useTranslations('sectionPreviewModal');
 
   useEffect(() => {
     if (isOpen) {
@@ -61,9 +63,9 @@ export default function SectionPreviewModal({ type, content, isOpen, onClose }: 
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-card shrink-0 z-10">
               <h2 className="font-semibold text-foreground capitalize">
-                Preview: {type}
+                {t('previewTitle', { type })}
               </h2>
-              <Button variant="ghost" size="sm" onClick={onClose}>
+              <Button variant="ghost" size="sm" onClick={onClose} aria-label={t('closePreview')}>
                 <X size={18} />
               </Button>
             </div>
@@ -74,7 +76,7 @@ export default function SectionPreviewModal({ type, content, isOpen, onClose }: 
                 <SectionComponent content={content} />
               ) : (
                 <div className="flex items-center justify-center h-full text-muted-foreground">
-                  Unsupported section type
+                  {t('unsupported')}
                 </div>
               )}
             </div>

@@ -43,7 +43,7 @@ export default function StatsEditor({ content, onChange }: StatsEditorProps) {
         <Input
           value={content.title || ''}
           onChange={(e) => handleTitleChange(e.target.value)}
-          placeholder="Con số ấn tượng"
+          placeholder={t('titlePlaceholder')}
         />
       </div>
 
@@ -95,7 +95,7 @@ export default function StatsEditor({ content, onChange }: StatsEditorProps) {
                 <Input
                   value={item.label || ''}
                   onChange={(e) => handleItemChange(index, 'label', e.target.value)}
-                  placeholder="Khách hàng"
+                  placeholder={t('labelPlaceholder')}
                 />
               </div>
             </div>

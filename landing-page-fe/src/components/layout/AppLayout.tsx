@@ -44,6 +44,7 @@ const Icons = {
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const t = useTranslations();
+  const tAria = useTranslations('aria');
   const pathname = usePathname();
   const { logout } = useAuth();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -75,7 +76,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <button
               onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
               className="p-2 -ml-2 hover:bg-accent rounded-lg transition-colors lg:hidden"
-              aria-label="Toggle sidebar"
+              aria-label={tAria('toggleSidebar')}
             >
               {Icons.menu}
             </button>

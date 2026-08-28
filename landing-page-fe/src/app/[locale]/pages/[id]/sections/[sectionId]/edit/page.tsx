@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { usePage } from '@/hooks/usePages';
 import { useSections } from '@/hooks/useSections';
 import { Eye } from 'lucide-react';
@@ -20,11 +23,21 @@ import {
 import { SkeletonForm } from '@/components/ui/loading';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import SectionPreviewModal from '@/components/sections/SectionPreviewModal';
-import { sectionEditors, sectionTypes } from '@/components/sections/section-constants';
+import { sectionEditors } from '@/components/sections/section-constants';
 
 export default function EditSectionPage() {
   const t = useTranslations('sectionEditor');
   const tCommon = useTranslations('common');
+  const tSectionEdit = useTranslations('sectionEditPage');
+  const tValidation = useTranslations('validation');
+  const tTypes = useTranslations('sectionTypes');
+
+  const editSectionSchema = z.object({
+    type: z.string().min(1, tValidation('sectionTypeRequired')),
+    order: z.coerce.number().min(0, tValidation('minOrder')),
+  });
+
+  type EditSectionFormData = z.infer<typeof editSectionSchema>;
   const router = useRouter();
   const params = useParams();
   const pageId = params.id as string;
@@ -35,22 +48,38 @@ export default function EditSectionPage() {
 
   const section = page?.sections?.find((s: any) => s.id === sectionId);
 
-  const [type, setType] = useState('');
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm<EditSectionFormData>({
+    resolver: zodResolver(editSectionSchema),
+    defaultValues: {
+      type: '',
+      order: 0,
+    },
+  });
+
+  const typeValue = watch('type');
   const [content, setContent] = useState<any>({});
-  const [order, setOrder] = useState(0);
   const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
     if (section) {
-      setType(section.type);
+      reset({
+        type: section.type,
+        order: section.order,
+      });
       setContent(section.content);
-      setOrder(section.order);
     }
-  }, [section]);
+  }, [section, reset]);
 
-  const handleSave = () => {
+  const onSubmit = (data: EditSectionFormData) => {
     updateSection(
-      { sectionId, data: { type, content, order } },
+      { sectionId, data: { type: data.type, content, order: data.order } },
       {
         onSuccess: () => {
           toast.success(t('sectionUpdated'));
@@ -82,12 +111,12 @@ export default function EditSectionPage() {
         <h1 className="text-2xl font-bold text-foreground tracking-tight mb-6">
           {t('editSection')}
         </h1>
-        <p className="text-muted-foreground">Section not found.</p>
+        <p className="text-muted-foreground">{tSectionEdit('sectionNotFound')}</p>
       </div>
     );
   }
 
-  const EditorComponent = sectionEditors[type];
+  const EditorComponent = sectionEditors[typeValue];
 
   return (
     <div>
@@ -116,23 +145,23 @@ export default function EditSectionPage() {
         </div>
       </div>
 
-      <div className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {/* Type + Order */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
               {t('sectionType')}
             </Label>
-            <Select value={type} disabled>
+            <Select value={typeValue} disabled>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="hero">Hero</SelectItem>
-                <SelectItem value="features">Features</SelectItem>
-                <SelectItem value="cta">CTA</SelectItem>
-                <SelectItem value="stats">Stats</SelectItem>
-                <SelectItem value="testimonials">Testimonials</SelectItem>
+                <SelectItem value="hero">{tTypes('hero')}</SelectItem>
+                <SelectItem value="features">{tTypes('features')}</SelectItem>
+                <SelectItem value="cta">{tTypes('cta')}</SelectItem>
+                <SelectItem value="stats">{tTypes('stats')}</SelectItem>
+                <SelectItem value="testimonials">{tTypes('testimonials')}</SelectItem>
               </SelectContent>
             </Select>
             <p className="text-xs text-muted-foreground">{t('typeLocked')}</p>
@@ -144,10 +173,12 @@ export default function EditSectionPage() {
             </Label>
             <Input
               type="number"
-              value={order}
-              onChange={(e) => setOrder(Number(e.target.value))}
+              {...register('order')}
               min={0}
             />
+            {errors.order && (
+              <p className="text-xs text-destructive">{errors.order.message}</p>
+            )}
           </div>
         </div>
 
@@ -160,10 +191,11 @@ export default function EditSectionPage() {
 
         {/* Actions */}
         <div className="flex gap-3 pt-2">
-          <Button onClick={handleSave} disabled={isUpdating} size="sm">
+          <Button type="submit" disabled={isUpdating} size="sm">
             {isUpdating ? tCommon('saving') : tCommon('save')}
           </Button>
           <Button
+            type="button"
             variant="outline"
             size="sm"
             onClick={() => router.push(`/pages/${pageId}/edit`)}
@@ -171,11 +203,11 @@ export default function EditSectionPage() {
             {tCommon('cancel')}
           </Button>
         </div>
-      </div>
+      </form>
 
       {/* Preview Modal */}
       <SectionPreviewModal
-        type={type}
+        type={typeValue}
         content={content}
         isOpen={showPreview}
         onClose={() => setShowPreview(false)}

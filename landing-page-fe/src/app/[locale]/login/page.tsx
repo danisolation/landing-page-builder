@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,20 +13,34 @@ import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
   const t = useTranslations("login");
-  const { login, isLoggingIn, loginError } = useAuth();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const tValidation = useTranslations("validation");
+  const { login, isLoggingIn } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    login(
-      { username, password },
-      {
-        onError: (error: any) => {
-          toast.error(error.message || t("loginFailed"));
-        },
-      }
-    );
+  const loginSchema = z.object({
+    username: z.string().min(1, tValidation("required", { field: t("username") })),
+    password: z.string().min(1, tValidation("required", { field: t("password") })),
+  });
+
+  type LoginFormData = z.infer<typeof loginSchema>;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = (data: LoginFormData) => {
+    login(data, {
+      onError: (error: any) => {
+        toast.error(error.message || t("loginFailed"));
+      },
+    });
   };
 
   return (
@@ -34,15 +50,16 @@ export default function LoginPage() {
           <CardTitle className="text-2xl text-center">{t("title")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="username">{t("username")}</Label>
               <Input
                 id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
+                {...register("username")}
               />
+              {errors.username && (
+                <p className="text-xs text-destructive">{errors.username.message}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -50,10 +67,11 @@ export default function LoginPage() {
               <Input
                 id="password"
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
+                {...register("password")}
               />
+              {errors.password && (
+                <p className="text-xs text-destructive">{errors.password.message}</p>
+              )}
             </div>
 
             <Button type="submit" className="w-full" disabled={isLoggingIn}>

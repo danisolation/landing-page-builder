@@ -137,7 +137,10 @@
     "buttonText": "Button Text",
     "buttonLink": "Button Link",
     "secondaryButtonText": "Secondary Button Text",
-    "secondaryButtonLink": "Secondary Button Link"
+    "secondaryButtonLink": "Secondary Button Link",
+    "headingPlaceholder": "Chào mừng đến với ABC",
+    "subheadingPlaceholder": "Giải pháp tốt nhất cho bạn",
+    "buttonPlaceholder": "Đăng ký ngay"
   },
   "featuresEditor": {
     "sectionTitle": "Section Title",
@@ -148,7 +151,10 @@
     "item": "Item {n}",
     "icon": "Icon",
     "name": "Name",
-    "noFeatures": "Chưa có feature nào. Nhấn \"+ Thêm item\" để bắt đầu."
+    "noFeatures": "Chưa có feature nào. Nhấn \"+ Thêm item\" để bắt đầu.",
+    "titlePlaceholder": "Tính năng nổi bật",
+    "namePlaceholder": "Nhanh chóng",
+    "descriptionPlaceholder": "Tốc độ xử lý nhanh"
   },
   "ctaEditor": {
     "heading": "Heading",
@@ -156,7 +162,11 @@
     "buttonText": "Button Text",
     "buttonLink": "Button Link",
     "secondaryButtonText": "Secondary Button Text",
-    "secondaryButtonLink": "Secondary Button Link"
+    "secondaryButtonLink": "Secondary Button Link",
+    "headingPlaceholder": "Sẵn sàng bắt đầu?",
+    "descriptionPlaceholder": "Tham gia cùng hàng nghìn khách hàng tin tưởng chúng tôi",
+    "buttonPlaceholder": "Liên hệ ngay",
+    "secondaryButtonPlaceholder": "Tìm hiểu thêm"
   },
   "statsEditor": {
     "sectionTitle": "Section Title",
@@ -166,7 +176,9 @@
     "value": "Value",
     "suffix": "Suffix",
     "label": "Label",
-    "noItems": "Chưa có số liệu nào. Nhấn \"+ Thêm item\" để bắt đầu."
+    "noItems": "Chưa có số liệu nào. Nhấn \"+ Thêm item\" để bắt đầu.",
+    "titlePlaceholder": "Con số ấn tượng",
+    "labelPlaceholder": "Khách hàng"
   },
   "testimonialsEditor": {
     "subtitle": "Subtitle",
@@ -179,10 +191,102 @@
     "name": "Name",
     "role": "Role",
     "avatar": "Avatar URL",
-    "noItems": "Chưa có đánh giá nào. Nhấn \"+ Thêm item\" để bắt đầu."
+    "noItems": "Chưa có đánh giá nào. Nhấn \"+ Thêm item\" để bắt đầu.",
+    "subtitlePlaceholder": "Đánh giá",
+    "titlePlaceholder": "Khách hàng nói gì về chúng tôi",
+    "descriptionPlaceholder": "Từ những người đã tin tưởng sử dụng",
+    "quotePlaceholder": "Sản phẩm tuyệt vời, giúp tôi tiết kiệm rất nhiều thời gian...",
+    "namePlaceholder": "Nguyễn Văn A"
   },
   "publicPage": {
     "notFound": "Không tìm thấy trang",
     "unsupportedSection": "Section type \"{type}\" chưa được hỗ trợ"
+  },
+  "error": {
+    "title": "Đã xảy ra lỗi",
+    "message": "Không thể tải dữ liệu. Vui lòng thử lại.",
+    "loginMessage": "Không thể đăng nhập. Vui lòng thử lại.",
+    "retry": "Thử lại"
+  },
+  "fullPagePreview": {
+    "openInNewTab": "Mở trong tab mới",
+    "closePreview": "Đóng preview",
+    "noSections": "Chưa có section nào",
+    "unsupportedSection": "Section type \"{type}\" chưa được hỗ trợ"
+  },
+  "sectionPreviewModal": {
+    "closePreview": "Đóng preview",
+    "unsupported": "Section type này chưa được hỗ trợ",
+    "previewTitle": "Xem trước: {type}"
+  },
+  "sectionEditPage": {
+    "sectionNotFound": "Không tìm thấy section."
+  },
+  "validation": {
+    "required": "{field} là bắt buộc",
+    "slugFormat": "Slug chỉ được chứa chữ thường, số và dấu gạch ngang",
+    "minOrder": "Thứ tự phải lớn hơn hoặc bằng 0",
+    "sectionTypeRequired": "Loại section là bắt buộc"
+  },
+  "sectionTypes": {
+    "hero": "Hero",
+    "features": "Features",
+    "cta": "CTA",
+    "stats": "Stats",
+    "testimonials": "Testimonials"
+  },
+  "aria": {
+    "toggleSidebar": "Toggle sidebar",
+    "breadcrumb": "Breadcrumb",
+    "closePreview": "Đóng preview",
+    "toggleDarkMode": "Toggle dark mode"
+  },
+  "heroEditor": {
+    "heading": "Heading",
+    "subheading": "Subheading",
+    "buttonText": "Button Text",
+    "buttonLink": "Button Link",
+    "secondaryButtonText": "Secondary Button Text",
+    "secondaryButtonLink": "Secondary Button Link",
+    "headingPlaceholder": "Chào mừng đến với ABC",
+    "subheadingPlaceholder": "Giải pháp tốt nhất cho bạn",
+    "buttonPlaceholder": "Đăng ký ngay",
+    "secondaryButtonPlaceholder": "Xem demo",
+    "buttonLinkPlaceholder": "/dang-ky",
+    "secondaryButtonLinkPlaceholder": "/demo"
+  },
+  "ctaEditor": {
+    "heading": "Heading",
+    "description": "Description",
+    "buttonText": "Button Text",
+    "buttonLink": "Button Link",
+    "secondaryButtonText": "Secondary Button Text",
+    "secondaryButtonLink": "Secondary Button Link",
+    "headingPlaceholder": "Sẵn sàng bắt đầu?",
+    "descriptionPlaceholder": "Tham gia cùng hàng nghìn khách hàng tin tưởng chúng tôi",
+    "buttonPlaceholder": "Liên hệ ngay",
+    "secondaryButtonPlaceholder": "Tìm hiểu thêm",
+    "buttonLinkPlaceholder": "/lien-he",
+    "secondaryButtonLinkPlaceholder": "/about"
+  },
+  "testimonialsEditor": {
+    "subtitle": "Subtitle",
+    "sectionTitle": "Section Title",
+    "description": "Description",
+    "testimonialItems": "Testimonial Items",
+    "addItem": "+ Thêm item",
+    "item": "Item {n}",
+    "quote": "Quote",
+    "name": "Name",
+    "role": "Role",
+    "avatar": "Avatar URL",
+    "noItems": "Chưa có đánh giá nào. Nhấn \"+ Thêm item\" để bắt đầu.",
+    "subtitlePlaceholder": "Đánh giá",
+    "titlePlaceholder": "Khách hàng nói gì về chúng tôi",
+    "descriptionPlaceholder": "Từ những người đã tin tưởng sử dụng",
+    "quotePlaceholder": "Sản phẩm tuyệt vời, giúp tôi tiết kiệm rất nhiều thời gian...",
+    "namePlaceholder": "Nguyễn Văn A",
+    "rolePlaceholder": "CEO, Company X",
+    "avatarPlaceholder": "https://example.com/avatar.jpg"
   }
 }

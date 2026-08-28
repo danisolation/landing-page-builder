@@ -1,9 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { usePage, usePages } from '@/hooks/usePages';
 import { useSections } from '@/hooks/useSections';
 import { Button } from '@/components/ui/button';
@@ -22,6 +25,18 @@ import { Eye } from 'lucide-react';
 export default function EditPagePage() {
   const t = useTranslations('editPage');
   const tCommon = useTranslations('common');
+  const tValidation = useTranslations('validation');
+
+  const editPageSchema = z.object({
+    title: z.string().min(1, tValidation('required', { field: t('titleLabel') })),
+    slug: z
+      .string()
+      .min(1, tValidation('required', { field: t('slugLabel') }))
+      .regex(/^[a-z0-9-]+$/, tValidation('slugFormat')),
+    description: z.string().optional(),
+  });
+
+  type EditPageFormData = z.infer<typeof editPageSchema>;
   const router = useRouter();
   const params = useParams();
   const pageId = params.id as string;
@@ -30,26 +45,37 @@ export default function EditPagePage() {
   const { updatePage, isUpdating } = usePages();
   const { createSection, updateSection, deleteSection } = useSections(pageId);
 
-  const [title, setTitle] = useState('');
-  const [slug, setSlug] = useState('');
-  const [description, setDescription] = useState('');
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<EditPageFormData>({
+    resolver: zodResolver(editPageSchema),
+    defaultValues: {
+      title: '',
+      slug: '',
+      description: '',
+    },
+  });
+
+  useEffect(() => {
+    if (page) {
+      reset({
+        title: page.title,
+        slug: page.slug,
+        description: page.description || '',
+      });
+    }
+  }, [page, reset]);
 
   // Preview state
   const [previewSection, setPreviewSection] = useState<any>(null);
   const [showFullPreview, setShowFullPreview] = useState(false);
 
-  useEffect(() => {
-    if (page) {
-      setTitle(page.title);
-      setSlug(page.slug);
-      setDescription(page.description || '');
-    }
-  }, [page]);
-
-  const handleSavePage = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = (data: EditPageFormData) => {
     updatePage(
-      { id: pageId, data: { title, slug, description } },
+      { id: pageId, data },
       {
         onSuccess: () => toast.success(t('saveSuccess')),
         onError: (error: any) => toast.error(error.message || t('saveFailed')),
@@ -107,7 +133,7 @@ export default function EditPagePage() {
             {tCommon('back')}
           </Button>
         </div>
-        <div className="max-w-7xl space-y-8">
+        <div className="space-y-8">
           <SkeletonForm />
         </div>
       </div>
@@ -148,25 +174,29 @@ export default function EditPagePage() {
           <CardTitle className="text-lg">{t('pageInfo')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSavePage} className="space-y-5">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label className="text-sm font-medium">
                   {t('titleLabel')}
                 </Label>
                 <Input
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  {...register('title')}
                 />
+                {errors.title && (
+                  <p className="text-xs text-destructive">{errors.title.message}</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label className="text-sm font-medium">
                   {t('slugLabel')}
                 </Label>
                 <Input
-                  value={slug}
-                  onChange={(e) => setSlug(e.target.value)}
+                  {...register('slug')}
                 />
+                {errors.slug && (
+                  <p className="text-xs text-destructive">{errors.slug.message}</p>
+                )}
               </div>
             </div>
 
@@ -175,8 +205,7 @@ export default function EditPagePage() {
                 {t('descLabel')}
               </Label>
               <Textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                {...register('description')}
                 rows={2}
               />
             </div>

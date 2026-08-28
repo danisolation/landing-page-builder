@@ -26,7 +26,7 @@ export default function CtaEditor({ content, onChange }: CtaEditorProps) {
         <Input
           value={content.heading || ''}
           onChange={(e) => handleChange('heading', e.target.value)}
-          placeholder="Sẵn sàng bắt đầu?"
+          placeholder={t('headingPlaceholder')}
         />
       </div>
 
@@ -35,7 +35,7 @@ export default function CtaEditor({ content, onChange }: CtaEditorProps) {
         <Input
           value={content.description || ''}
           onChange={(e) => handleChange('description', e.target.value)}
-          placeholder="Tham gia cùng hàng nghìn khách hàng tin tưởng chúng tôi"
+          placeholder={t('descriptionPlaceholder')}
         />
       </div>
 
@@ -45,7 +45,7 @@ export default function CtaEditor({ content, onChange }: CtaEditorProps) {
           <Input
             value={content.buttonText || ''}
             onChange={(e) => handleChange('buttonText', e.target.value)}
-            placeholder="Liên hệ ngay"
+            placeholder={t('buttonPlaceholder')}
           />
         </div>
 
@@ -54,7 +54,7 @@ export default function CtaEditor({ content, onChange }: CtaEditorProps) {
           <Input
             value={content.buttonLink || ''}
             onChange={(e) => handleChange('buttonLink', e.target.value)}
-            placeholder="/lien-he"
+            placeholder={t('buttonLinkPlaceholder')}
           />
         </div>
       </div>
@@ -65,7 +65,7 @@ export default function CtaEditor({ content, onChange }: CtaEditorProps) {
           <Input
             value={content.secondaryButtonText || ''}
             onChange={(e) => handleChange('secondaryButtonText', e.target.value)}
-            placeholder="Tìm hiểu thêm"
+            placeholder={t('secondaryButtonPlaceholder')}
           />
         </div>
 
@@ -74,7 +74,7 @@ export default function CtaEditor({ content, onChange }: CtaEditorProps) {
           <Input
             value={content.secondaryButtonLink || ''}
             onChange={(e) => handleChange('secondaryButtonLink', e.target.value)}
-            placeholder="/about"
+            placeholder={t('secondaryButtonLinkPlaceholder')}
           />
         </div>
       </div>

@@ -59,7 +59,7 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
         <Input
           value={content.title || ''}
           onChange={(e) => handleTitleChange(e.target.value)}
-          placeholder="Tính năng nổi bật"
+          placeholder={t('titlePlaceholder')}
         />
       </div>
 
@@ -101,7 +101,7 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
                 <Input
                   value={item.name || ''}
                   onChange={(e) => handleItemChange(index, 'name', e.target.value)}
-                  placeholder="Nhanh chóng"
+                  placeholder={t('namePlaceholder')}
                 />
               </div>
 
@@ -110,7 +110,7 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
                 <Input
                   value={item.description || ''}
                   onChange={(e) => handleItemChange(index, 'description', e.target.value)}
-                  placeholder="Tốc độ xử lý nhanh"
+                  placeholder={t('descriptionPlaceholder')}
                 />
               </div>
             </div>

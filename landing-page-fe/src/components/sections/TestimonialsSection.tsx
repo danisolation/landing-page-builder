@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { Quote } from 'lucide-react';
 
 interface TestimonialItem {
@@ -35,7 +36,7 @@ const itemVariants = {
 
 export default function TestimonialsSection({ content }: TestimonialsSectionProps) {
   return (
-    <section className="py-16 sm:py-20 md:py-24 bg-gray-50 dark:bg-gray-900">
+    <section className="py-16 sm:py-20 md:py-24 bg-muted">
       <div className="max-w-6xl mx-auto px-4">
         {/* Section Header */}
         <motion.div
@@ -50,11 +51,11 @@ export default function TestimonialsSection({ content }: TestimonialsSectionProp
               {content.subtitle}
             </p>
           )}
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4">
             {content.title || 'Testimonials'}
           </h2>
           {content.description && (
-            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-lg">
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
               {content.description}
             </p>
           )}
@@ -72,7 +73,7 @@ export default function TestimonialsSection({ content }: TestimonialsSectionProp
             <motion.div
               key={index}
               variants={itemVariants}
-              className="relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm hover:shadow-lg transition-shadow duration-300 border border-gray-100 dark:border-gray-700/50"
+              className="relative bg-card rounded-2xl p-8 shadow-sm hover:shadow-lg transition-shadow duration-300 border border-border"
             >
               {/* Quote icon */}
               <div className="absolute top-6 right-6 text-blue-100 dark:text-blue-900/50">
@@ -80,16 +81,19 @@ export default function TestimonialsSection({ content }: TestimonialsSectionProp
               </div>
 
               {/* Quote text */}
-              <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed relative z-10">
+              <p className="text-muted-foreground mb-6 leading-relaxed relative z-10">
                 &ldquo;{item.quote}&rdquo;
               </p>
 
               {/* Author */}
-              <div className="flex items-center gap-3 pt-4 border-t border-gray-100 dark:border-gray-700/50">
+              <div className="flex items-center gap-3 pt-4 border-t border-border">
                 {item.avatar ? (
-                  <img
+                  <Image
                     src={item.avatar}
                     alt={item.name || ''}
+                    width={40}
+                    height={40}
+                    unoptimized
                     className="w-10 h-10 rounded-full object-cover"
                   />
                 ) : (
@@ -98,10 +102,10 @@ export default function TestimonialsSection({ content }: TestimonialsSectionProp
                   </div>
                 )}
                 <div>
-                  <p className="font-semibold text-gray-900 dark:text-white text-sm">
+                  <p className="font-semibold text-foreground text-sm">
                     {item.name}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-xs text-muted-foreground">
                     {item.role}
                   </p>
                 </div>

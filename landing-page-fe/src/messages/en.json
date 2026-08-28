@@ -137,7 +137,10 @@
     "buttonText": "Button Text",
     "buttonLink": "Button Link",
     "secondaryButtonText": "Secondary Button Text",
-    "secondaryButtonLink": "Secondary Button Link"
+    "secondaryButtonLink": "Secondary Button Link",
+    "headingPlaceholder": "Welcome to ABC",
+    "subheadingPlaceholder": "The best solution for you",
+    "buttonPlaceholder": "Sign up now"
   },
   "featuresEditor": {
     "sectionTitle": "Section Title",
@@ -148,7 +151,10 @@
     "item": "Item {n}",
     "icon": "Icon",
     "name": "Name",
-    "noFeatures": "No features yet. Click \"+ Add Item\" to get started."
+    "noFeatures": "No features yet. Click \"+ Add Item\" to get started.",
+    "titlePlaceholder": "Key Features",
+    "namePlaceholder": "Fast",
+    "descriptionPlaceholder": "Lightning-fast processing speed"
   },
   "ctaEditor": {
     "heading": "Heading",
@@ -156,7 +162,11 @@
     "buttonText": "Button Text",
     "buttonLink": "Button Link",
     "secondaryButtonText": "Secondary Button Text",
-    "secondaryButtonLink": "Secondary Button Link"
+    "secondaryButtonLink": "Secondary Button Link",
+    "headingPlaceholder": "Ready to get started?",
+    "descriptionPlaceholder": "Join thousands of satisfied customers",
+    "buttonPlaceholder": "Contact us now",
+    "secondaryButtonPlaceholder": "Learn more"
   },
   "statsEditor": {
     "sectionTitle": "Section Title",
@@ -166,7 +176,9 @@
     "value": "Value",
     "suffix": "Suffix",
     "label": "Label",
-    "noItems": "No stats yet. Click \"+ Add Item\" to get started."
+    "noItems": "No stats yet. Click \"+ Add Item\" to get started.",
+    "titlePlaceholder": "Impressive Numbers",
+    "labelPlaceholder": "Customers"
   },
   "testimonialsEditor": {
     "subtitle": "Subtitle",
@@ -179,10 +191,102 @@
     "name": "Name",
     "role": "Role",
     "avatar": "Avatar URL",
-    "noItems": "No testimonials yet. Click \"+ Add Item\" to get started."
+    "noItems": "No testimonials yet. Click \"+ Add Item\" to get started.",
+    "subtitlePlaceholder": "Testimonials",
+    "titlePlaceholder": "What our customers say",
+    "descriptionPlaceholder": "From those who trust and use our product",
+    "quotePlaceholder": "This product is amazing, it saves me so much time...",
+    "namePlaceholder": "John Doe"
   },
   "publicPage": {
     "notFound": "Page not found",
     "unsupportedSection": "Section type \"{type}\" is not supported"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "message": "Could not load data. Please try again.",
+    "loginMessage": "Could not login. Please try again.",
+    "retry": "Try again"
+  },
+  "fullPagePreview": {
+    "openInNewTab": "Open in new tab",
+    "closePreview": "Close preview",
+    "noSections": "No sections yet",
+    "unsupportedSection": "Section type \"{type}\" is not supported"
+  },
+  "sectionPreviewModal": {
+    "closePreview": "Close preview",
+    "unsupported": "This section type is not supported",
+    "previewTitle": "Preview: {type}"
+  },
+  "sectionEditPage": {
+    "sectionNotFound": "Section not found."
+  },
+  "validation": {
+    "required": "{field} is required",
+    "slugFormat": "Slug must contain only lowercase letters, numbers, and hyphens",
+    "minOrder": "Order must be at least 0",
+    "sectionTypeRequired": "Section type is required"
+  },
+  "sectionTypes": {
+    "hero": "Hero",
+    "features": "Features",
+    "cta": "CTA",
+    "stats": "Stats",
+    "testimonials": "Testimonials"
+  },
+  "aria": {
+    "toggleSidebar": "Toggle sidebar",
+    "breadcrumb": "Breadcrumb",
+    "closePreview": "Close preview",
+    "toggleDarkMode": "Toggle dark mode"
+  },
+  "heroEditor": {
+    "heading": "Heading",
+    "subheading": "Subheading",
+    "buttonText": "Button Text",
+    "buttonLink": "Button Link",
+    "secondaryButtonText": "Secondary Button Text",
+    "secondaryButtonLink": "Secondary Button Link",
+    "headingPlaceholder": "Welcome to ABC",
+    "subheadingPlaceholder": "The best solution for you",
+    "buttonPlaceholder": "Sign up now",
+    "secondaryButtonPlaceholder": "View demo",
+    "buttonLinkPlaceholder": "/sign-up",
+    "secondaryButtonLinkPlaceholder": "/demo"
+  },
+  "ctaEditor": {
+    "heading": "Heading",
+    "description": "Description",
+    "buttonText": "Button Text",
+    "buttonLink": "Button Link",
+    "secondaryButtonText": "Secondary Button Text",
+    "secondaryButtonLink": "Secondary Button Link",
+    "headingPlaceholder": "Ready to get started?",
+    "descriptionPlaceholder": "Join thousands of satisfied customers",
+    "buttonPlaceholder": "Contact us now",
+    "secondaryButtonPlaceholder": "Learn more",
+    "buttonLinkPlaceholder": "/contact",
+    "secondaryButtonLinkPlaceholder": "/about"
+  },
+  "testimonialsEditor": {
+    "subtitle": "Subtitle",
+    "sectionTitle": "Section Title",
+    "description": "Description",
+    "testimonialItems": "Testimonial Items",
+    "addItem": "+ Add Item",
+    "item": "Item {n}",
+    "quote": "Quote",
+    "name": "Name",
+    "role": "Role",
+    "avatar": "Avatar URL",
+    "noItems": "No testimonials yet. Click \"+ Add Item\" to get started.",
+    "subtitlePlaceholder": "Testimonials",
+    "titlePlaceholder": "What our customers say",
+    "descriptionPlaceholder": "From those who trust and use our product",
+    "quotePlaceholder": "This product is amazing, it saves me so much time...",
+    "namePlaceholder": "John Doe",
+    "rolePlaceholder": "CEO, Company X",
+    "avatarPlaceholder": "https://example.com/avatar.jpg"
   }
 }

@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { X, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import HeroSection from './HeroSection';
 import FeaturesSection from './FeaturesSection';
 import CtaSection from './CtaSection';
@@ -34,6 +35,7 @@ interface FullPagePreviewProps {
 export default function FullPagePreview({ page, isOpen, onClose }: FullPagePreviewProps) {
   const params = useParams();
   const locale = params.locale as string;
+  const t = useTranslations('fullPagePreview');
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -84,12 +86,13 @@ export default function FullPagePreview({ page, isOpen, onClose }: FullPagePrevi
                   className="inline-flex items-center justify-center gap-1.5 text-sm font-medium border border-border bg-card text-foreground hover:bg-accent px-3 py-1.5 rounded-md transition-colors"
                 >
                   <ExternalLink size={14} />
-                  Open in new tab
+                  {t('openInNewTab')}
                 </a>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={onClose}
+                  aria-label={t('closePreview')}
                 >
                   <X size={18} />
                 </Button>
@@ -100,7 +103,7 @@ export default function FullPagePreview({ page, isOpen, onClose }: FullPagePrevi
             <div className="flex-1 overflow-auto bg-background">
               {page.sections?.length === 0 ? (
                 <div className="flex items-center justify-center h-full text-muted-foreground">
-                  <p>No sections yet</p>
+                  <p>{t('noSections')}</p>
                 </div>
               ) : (
                 <div>
@@ -111,7 +114,7 @@ export default function FullPagePreview({ page, isOpen, onClose }: FullPagePrevi
                       return (
                         <div key={section.id} className="p-8 bg-yellow-50 dark:bg-yellow-900/20 text-center">
                           <p className="text-yellow-700 dark:text-yellow-400 text-sm">
-                            Section type &quot;{section.type}&quot; not supported
+                            {t('unsupportedSection', { type: section.type })}
                           </p>
                         </div>
                       );

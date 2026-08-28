@@ -44,7 +44,7 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
         <Input
           value={content.subtitle || ''}
           onChange={(e) => handleFieldChange('subtitle', e.target.value)}
-          placeholder="Đánh giá"
+          placeholder={t('subtitlePlaceholder')}
         />
       </div>
 
@@ -53,7 +53,7 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
         <Input
           value={content.title || ''}
           onChange={(e) => handleFieldChange('title', e.target.value)}
-          placeholder="Khách hàng nói gì về chúng tôi"
+          placeholder={t('titlePlaceholder')}
         />
       </div>
 
@@ -62,7 +62,7 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
         <Input
           value={content.description || ''}
           onChange={(e) => handleFieldChange('description', e.target.value)}
-          placeholder="Từ những người đã tin tưởng sử dụng"
+          placeholder={t('descriptionPlaceholder')}
         />
       </div>
 
@@ -94,7 +94,7 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
               <Textarea
                 value={item.quote || ''}
                 onChange={(e) => handleItemChange(index, 'quote', e.target.value)}
-                placeholder="Sản phẩm tuyệt vời, giúp tôi tiết kiệm rất nhiều thời gian..."
+                placeholder={t('quotePlaceholder')}
                 rows={3}
               />
             </div>
@@ -105,7 +105,7 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
                 <Input
                   value={item.name || ''}
                   onChange={(e) => handleItemChange(index, 'name', e.target.value)}
-                  placeholder="Nguyễn Văn A"
+                  placeholder={t('namePlaceholder')}
                 />
               </div>
 
@@ -114,7 +114,7 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
                 <Input
                   value={item.role || ''}
                   onChange={(e) => handleItemChange(index, 'role', e.target.value)}
-                  placeholder="CEO, Company X"
+                  placeholder={t('rolePlaceholder')}
                 />
               </div>
             </div>
@@ -124,7 +124,7 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
               <Input
                 value={item.avatar || ''}
                 onChange={(e) => handleItemChange(index, 'avatar', e.target.value)}
-                placeholder="https://example.com/avatar.jpg"
+                placeholder={t('avatarPlaceholder')}
               />
             </div>
           </div>

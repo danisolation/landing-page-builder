@@ -6,6 +6,7 @@ import { Link } from '@/i18n/navigation';
 
 export default function Breadcrumbs() {
   const t = useTranslations('nav');
+  const tAria = useTranslations('aria');
   const pathname = usePathname();
 
   // Extract locale from pathname
@@ -39,7 +40,7 @@ export default function Breadcrumbs() {
   }
 
   return (
-    <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6" aria-label="Breadcrumb">
+    <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6" aria-label={tAria('breadcrumb')}>
       <Link
         href="/dashboard"
         className="px-1.5 py-0.5 rounded hover:text-foreground hover:bg-accent transition-colors"

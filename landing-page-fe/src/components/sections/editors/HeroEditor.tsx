@@ -27,7 +27,7 @@ export default function HeroEditor({ content, onChange }: HeroEditorProps) {
         <Input
           value={content.heading || ''}
           onChange={(e) => handleChange('heading', e.target.value)}
-          placeholder="Chào mừng đến với ABC"
+          placeholder={t('headingPlaceholder')}
         />
       </div>
 
@@ -36,7 +36,7 @@ export default function HeroEditor({ content, onChange }: HeroEditorProps) {
         <Textarea
           value={content.subheading || ''}
           onChange={(e) => handleChange('subheading', e.target.value)}
-          placeholder="Giải pháp tốt nhất cho bạn"
+          placeholder={t('subheadingPlaceholder')}
           rows={2}
         />
       </div>
@@ -47,7 +47,7 @@ export default function HeroEditor({ content, onChange }: HeroEditorProps) {
           <Input
             value={content.buttonText || ''}
             onChange={(e) => handleChange('buttonText', e.target.value)}
-            placeholder="Đăng ký ngay"
+            placeholder={t('buttonPlaceholder')}
           />
         </div>
 
@@ -56,7 +56,7 @@ export default function HeroEditor({ content, onChange }: HeroEditorProps) {
           <Input
             value={content.buttonLink || ''}
             onChange={(e) => handleChange('buttonLink', e.target.value)}
-            placeholder="/dang-ky"
+            placeholder={t('buttonLinkPlaceholder')}
           />
         </div>
       </div>
@@ -67,7 +67,7 @@ export default function HeroEditor({ content, onChange }: HeroEditorProps) {
           <Input
             value={content.secondaryButtonText || ''}
             onChange={(e) => handleChange('secondaryButtonText', e.target.value)}
-            placeholder="Xem demo"
+            placeholder={t('secondaryButtonPlaceholder')}
           />
         </div>
 
@@ -76,7 +76,7 @@ export default function HeroEditor({ content, onChange }: HeroEditorProps) {
           <Input
             value={content.secondaryButtonLink || ''}
             onChange={(e) => handleChange('secondaryButtonLink', e.target.value)}
-            placeholder="/demo"
+            placeholder={t('secondaryButtonLinkPlaceholder')}
           />
         </div>
       </div>

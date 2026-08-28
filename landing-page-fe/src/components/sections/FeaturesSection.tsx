@@ -33,7 +33,7 @@ const itemVariants = {
 
 export default function FeaturesSection({ content }: FeaturesSectionProps) {
   return (
-    <section className="py-16 sm:py-20 md:py-24 bg-gray-50 dark:bg-gray-900">
+    <section className="py-16 sm:py-20 md:py-24 bg-muted">
       <div className="max-w-6xl mx-auto px-4">
         {/* Section Header */}
         <motion.div
@@ -48,11 +48,11 @@ export default function FeaturesSection({ content }: FeaturesSectionProps) {
               {content.subtitle}
             </p>
           )}
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4">
             {content.title || 'Features'}
           </h2>
           {content.description && (
-            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-lg">
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
               {content.description}
             </p>
           )}
@@ -70,7 +70,7 @@ export default function FeaturesSection({ content }: FeaturesSectionProps) {
             <motion.div
               key={index}
               variants={itemVariants}
-              className="group relative bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200/60 dark:border-gray-700/40 rounded-2xl p-8 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/5 dark:hover:shadow-blue-500/10 hover:border-blue-200/60 dark:hover:border-blue-700/40 transition-all duration-300"
+              className="group relative bg-card/80 backdrop-blur-sm border border-border rounded-2xl p-8 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/5 dark:hover:shadow-blue-500/10 hover:border-blue-200/60 dark:hover:border-blue-700/40 transition-all duration-300"
             >
               {/* Icon */}
               <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-2xl mb-5 shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform duration-300">
@@ -78,10 +78,10 @@ export default function FeaturesSection({ content }: FeaturesSectionProps) {
               </div>
 
               {/* Text */}
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              <h3 className="text-lg font-semibold text-foreground mb-2">
                 {item.name}
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed">
                 {item.description}
               </p>
             </motion.div>

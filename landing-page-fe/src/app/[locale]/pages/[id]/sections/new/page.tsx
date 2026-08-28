@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { useSections } from '@/hooks/useSections';
 import { Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -18,30 +21,52 @@ import {
 } from '@/components/ui/select';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import SectionPreviewModal from '@/components/sections/SectionPreviewModal';
-import { defaultContent, sectionEditors, sectionTypes } from '@/components/sections/section-constants';
+import { defaultContent, sectionEditors } from '@/components/sections/section-constants';
 
 export default function NewSectionPage() {
   const t = useTranslations('sectionEditor');
   const tCommon = useTranslations('common');
+  const tValidation = useTranslations('validation');
+  const tTypes = useTranslations('sectionTypes');
+
+  const newSectionSchema = z.object({
+    type: z.string().min(1, tValidation('sectionTypeRequired')),
+    order: z.coerce.number().min(0, tValidation('minOrder')),
+  });
+
+  type NewSectionFormData = z.infer<typeof newSectionSchema>;
   const router = useRouter();
   const params = useParams();
   const pageId = params.id as string;
 
   const { createSection, isCreating } = useSections(pageId);
 
-  const [type, setType] = useState('hero');
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<NewSectionFormData>({
+    resolver: zodResolver(newSectionSchema),
+    defaultValues: {
+      type: 'hero',
+      order: 0,
+    },
+  });
+
+  const typeValue = watch('type');
   const [content, setContent] = useState(defaultContent['hero']);
-  const [order, setOrder] = useState(0);
   const [showPreview, setShowPreview] = useState(false);
 
   const handleTypeChange = (newType: string) => {
-    setType(newType);
+    setValue('type', newType);
     setContent(defaultContent[newType] || {});
   };
 
-  const handleSave = () => {
+  const onSubmit = (data: NewSectionFormData) => {
     createSection(
-      { type, content, order },
+      { type: data.type, content, order: data.order },
       {
         onSuccess: () => {
           toast.success(t('sectionAdded'));
@@ -54,7 +79,7 @@ export default function NewSectionPage() {
     );
   };
 
-  const EditorComponent = sectionEditors[type];
+  const EditorComponent = sectionEditors[typeValue];
 
   return (
     <div>
@@ -83,25 +108,28 @@ export default function NewSectionPage() {
         </div>
       </div>
 
-      <div className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         {/* Type + Order */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
               {t('sectionType')}
             </Label>
-            <Select value={type} onValueChange={handleTypeChange}>
+            <Select value={typeValue} onValueChange={handleTypeChange}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="hero">Hero</SelectItem>
-                <SelectItem value="features">Features</SelectItem>
-                <SelectItem value="cta">CTA</SelectItem>
-                <SelectItem value="stats">Stats</SelectItem>
-                <SelectItem value="testimonials">Testimonials</SelectItem>
+                <SelectItem value="hero">{tTypes('hero')}</SelectItem>
+                <SelectItem value="features">{tTypes('features')}</SelectItem>
+                <SelectItem value="cta">{tTypes('cta')}</SelectItem>
+                <SelectItem value="stats">{tTypes('stats')}</SelectItem>
+                <SelectItem value="testimonials">{tTypes('testimonials')}</SelectItem>
               </SelectContent>
             </Select>
+            {errors.type && (
+              <p className="text-xs text-destructive">{errors.type.message}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -110,10 +138,12 @@ export default function NewSectionPage() {
             </Label>
             <Input
               type="number"
-              value={order}
-              onChange={(e) => setOrder(Number(e.target.value))}
+              {...register('order')}
               min={0}
             />
+            {errors.order && (
+              <p className="text-xs text-destructive">{errors.order.message}</p>
+            )}
           </div>
         </div>
 
@@ -126,10 +156,11 @@ export default function NewSectionPage() {
 
         {/* Actions */}
         <div className="flex gap-3 pt-2">
-          <Button onClick={handleSave} disabled={isCreating} size="sm">
+          <Button type="submit" disabled={isCreating} size="sm">
             {isCreating ? tCommon('saving') : tCommon('save')}
           </Button>
           <Button
+            type="button"
             variant="outline"
             size="sm"
             onClick={() => router.push(`/pages/${pageId}/edit`)}
@@ -137,11 +168,11 @@ export default function NewSectionPage() {
             {tCommon('cancel')}
           </Button>
         </div>
-      </div>
+      </form>
 
       {/* Preview Modal */}
       <SectionPreviewModal
-        type={type}
+        type={typeValue}
         content={content}
         isOpen={showPreview}
         onClose={() => setShowPreview(false)}
