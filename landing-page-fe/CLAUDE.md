@@ -272,7 +272,7 @@ export function useCreatePage() {
 - **cn()** utility for merging Tailwind classes
 - **Sonner** for toast notifications (NOT the base-ui toast in ui/toast.tsx)
 - **Framer Motion** for scroll-triggered animations (`whileInView`, staggered children)
-- **@dnd-kit** for drag-and-drop section reordering (`@dnd-kit/core`, `@dnd-kit/sortable`)
+- **@atlaskit/pragmatic-drag-and-drop** for drag-and-drop section reordering (`@atlaskit/pragmatic-drag-and-drop/element/adapter`, `@atlaskit/pragmatic-drag-and-drop/reorder`)
 
 ## Public Page Components
 

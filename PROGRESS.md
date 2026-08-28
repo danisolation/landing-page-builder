@@ -46,6 +46,9 @@ Last updated: 2026-08-28
 
 - [ ] `: any` usage — 51 occurrences across 22 files. CLAUDE.md says "avoid any where practical". Priority: medium. Not blocking feature work.
 - [ ] Props typing — many component interfaces use `any` for props. Same as above.
+- [ ] Dark mode — `bg-white` without `dark:` counterpart in HeroSection.tsx (line 65) and CtaSection.tsx (line 60). Medium priority.
+- [ ] Missing `error.tsx` on 4 routes: `/pages/new`, `/pages/[id]/edit`, `/pages/[id]/sections/new`, `/pages/[id]/sections/[sectionId]/edit`. Medium priority.
+- [ ] Missing loading check for `usePage()` in `/pages/[id]/sections/new/page.tsx`. Medium priority.
 - [ ] Performance — React.lazy for heavy modals (FullPagePreview, SectionPreviewModal). Low priority.
 - [ ] Focus trapping in modals (SectionPreviewModal, FullPagePreview, ConfirmDialog). Low priority.
 - [ ] `useCallback` for passed callbacks in SectionList (handleDragEnd, handleDragStart). Low priority.
