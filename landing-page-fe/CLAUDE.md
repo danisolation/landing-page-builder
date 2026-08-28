@@ -217,6 +217,21 @@ import Image from 'next/image';
 <Image src="/hero.jpg" alt="Hero" width={800} height={400} priority />
 ```
 
+## Clean Code & Anti-Overengineering
+
+- **Split by responsibility**: each file does ONE thing — page handles routing/layout, hooks handle data, components handle UI
+- **Extract reusable logic**: if the same pattern appears 3+ times, extract to a hook or utility — but NOT before
+- **Naming over comments**: good naming eliminates most comments; only comment WHY, not WHAT
+- **Flat over deep**: prefer flat component trees over deep nesting; 3-4 levels max
+- **Delete dead code**: if it's unused, remove it — don't keep "just in case"
+- **No premature abstraction**: duplicate 2x is fine; abstract on the 3rd occurrence
+- **No unnecessary wrappers**: don't create a component/hook for a single-use one-liner
+- **Keep co-located**: if a utility is only used by one component, keep it in the same file
+- **Prefer composition**: small composable components > one large component with many props
+- **Simple state**: `useState` for local state, TanStack Query for server state — don't add state management libraries unless truly needed
+- **No magic numbers/strings**: extract to named constants (e.g. `const PAGE_SIZE = 10`)
+- **Consistent patterns**: if the codebase uses a pattern, follow it — don't introduce a new one for a single case
+
 ## Security
 
 - **XSS prevention**: never use `dangerouslySetInnerHTML` with user input
