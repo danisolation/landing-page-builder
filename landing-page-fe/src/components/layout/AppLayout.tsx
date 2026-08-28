@@ -67,27 +67,27 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <div className="min-h-screen bg-[oklch(0.97_0_0)]">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-white border-b border-gray-200 shadow-[0_1px_3px_0_rgba(0,0,0,0.04)]">
+      <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-background border-b border-border shadow-[0_1px_3px_0_rgba(0,0,0,0.04)]">
         <div className="flex items-center justify-between h-full px-4 lg:px-6">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
-              className="p-2 -ml-2 hover:bg-gray-100 rounded-lg transition-colors lg:hidden"
+              className="p-2 -ml-2 hover:bg-accent rounded-lg transition-colors lg:hidden"
               aria-label="Toggle sidebar"
             >
               {Icons.menu}
             </button>
             <Link href="/dashboard" className="flex items-center gap-2">
-              <span className="text-lg lg:text-xl font-bold text-gray-900 tracking-tight">
+              <span className="text-lg lg:text-xl font-bold text-foreground tracking-tight">
                 {t('common.appName')}
               </span>
             </Link>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-500 hidden sm:inline">{t('common.admin')}</span>
+            <span className="text-sm text-muted-foreground hidden sm:inline">{t('common.admin')}</span>
             <Button variant="outline" size="sm" onClick={logout} className="gap-2 min-w-[100px]">
               {Icons.logout}
               <span className="hidden sm:inline">{t('common.logout')}</span>
@@ -108,7 +108,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
         {/* Sidebar */}
         <aside
-          className={`fixed top-16 bottom-0 left-0 z-40 bg-white border-r border-gray-200 overflow-hidden transition-all duration-300 ease-in-out
+          className={`fixed top-16 bottom-0 left-0 z-40 bg-card border-r border-border overflow-hidden transition-all duration-300 ease-in-out
             w-0 lg:w-64
             ${mobileSidebarOpen ? '!w-64 z-50' : ''}
           `}
@@ -125,11 +125,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                   onClick={() => setMobileSidebarOpen(false)}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                     isActive
-                      ? 'bg-blue-50 text-blue-700'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ? 'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400'
+                      : 'text-muted-foreground hover:bg-accent hover:text-foreground'
                   }`}
                 >
-                  <span className={`flex-shrink-0 ${isActive ? 'text-blue-600' : 'text-gray-400'}`}>
+                  <span className={`flex-shrink-0 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-muted-foreground'}`}>
                     {item.icon}
                   </span>
                   <span>{item.label}</span>

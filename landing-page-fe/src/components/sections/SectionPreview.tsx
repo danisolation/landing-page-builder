@@ -26,8 +26,8 @@ export default function SectionPreview({ type, content }: SectionPreviewProps) {
 
   if (!SectionComponent) {
     return (
-      <div className="p-6 bg-amber-50 rounded-lg text-center border border-amber-200">
-        <p className="text-sm text-amber-700">
+      <div className="p-6 bg-amber-50 dark:bg-amber-950/30 rounded-lg text-center border border-amber-200 dark:border-amber-800">
+        <p className="text-sm text-amber-700 dark:text-amber-400">
           {t('unsupported', { type })}
         </p>
       </div>
@@ -35,14 +35,14 @@ export default function SectionPreview({ type, content }: SectionPreviewProps) {
   }
 
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
-      <div className="bg-gray-50 border-b border-gray-200 px-3 py-2 flex items-center gap-2">
+    <div className="border border-border rounded-lg overflow-hidden bg-card">
+      <div className="bg-muted border-b border-border px-3 py-2 flex items-center gap-2">
         <div className="flex gap-1">
-          <div className="w-2.5 h-2.5 rounded-full bg-gray-300" />
-          <div className="w-2.5 h-2.5 rounded-full bg-gray-300" />
-          <div className="w-2.5 h-2.5 rounded-full bg-gray-300" />
+          <div className="w-2.5 h-2.5 rounded-full bg-muted-foreground/30" />
+          <div className="w-2.5 h-2.5 rounded-full bg-muted-foreground/30" />
+          <div className="w-2.5 h-2.5 rounded-full bg-muted-foreground/30" />
         </div>
-        <span className="text-xs font-medium text-gray-500 uppercase tracking-wide ml-1">
+        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide ml-1">
           {type}
         </span>
       </div>

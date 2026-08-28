@@ -118,7 +118,7 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
         ))}
 
         {items.length === 0 && (
-          <p className="text-sm text-gray-500 text-center py-4">
+          <p className="text-sm text-muted-foreground text-center py-4">
             {t('noFeatures')}
           </p>
         )}

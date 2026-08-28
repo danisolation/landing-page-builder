@@ -63,16 +63,16 @@ export default function FullPagePreview({ page, isOpen, onClose }: FullPagePrevi
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="absolute inset-4 md:inset-6 lg:inset-10 bg-white dark:bg-gray-950 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+            className="absolute inset-4 md:inset-6 lg:inset-10 bg-background rounded-2xl shadow-2xl overflow-hidden flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shrink-0">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-card shrink-0">
               <div className="flex items-center gap-3">
-                <h2 className="font-semibold text-gray-900 dark:text-white">
+                <h2 className="font-semibold text-foreground">
                   {page.title}
                 </h2>
-                <span className="text-xs text-gray-400 font-mono bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">
+                <span className="text-xs text-muted-foreground font-mono bg-muted px-2 py-0.5 rounded">
                   /{page.slug}
                 </span>
               </div>
@@ -81,7 +81,7 @@ export default function FullPagePreview({ page, isOpen, onClose }: FullPagePrevi
                   href={`/${locale}/${page.slug}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-1.5 text-sm font-medium border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 px-3 py-1.5 rounded-md transition-colors"
+                  className="inline-flex items-center justify-center gap-1.5 text-sm font-medium border border-border bg-card text-foreground hover:bg-accent px-3 py-1.5 rounded-md transition-colors"
                 >
                   <ExternalLink size={14} />
                   Open in new tab
@@ -97,9 +97,9 @@ export default function FullPagePreview({ page, isOpen, onClose }: FullPagePrevi
             </div>
 
             {/* Content — scrollable */}
-            <div className="flex-1 overflow-auto bg-white dark:bg-gray-950">
+            <div className="flex-1 overflow-auto bg-background">
               {page.sections?.length === 0 ? (
-                <div className="flex items-center justify-center h-full text-gray-400">
+                <div className="flex items-center justify-center h-full text-muted-foreground">
                   <p>No sections yet</p>
                 </div>
               ) : (

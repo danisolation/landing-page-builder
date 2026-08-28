@@ -19,8 +19,8 @@ export default function EmptyState({ icon, title, description, action }: EmptySt
         <div className="text-5xl mb-5 opacity-80">{icon}</div>
       )}
 
-      <h3 className="text-lg font-semibold text-gray-900 mb-1.5">{title}</h3>
-      <p className="text-sm text-gray-500 text-center max-w-sm leading-relaxed mb-6">
+      <h3 className="text-lg font-semibold text-foreground mb-1.5">{title}</h3>
+      <p className="text-sm text-muted-foreground text-center max-w-sm leading-relaxed mb-6">
         {description}
       </p>
 

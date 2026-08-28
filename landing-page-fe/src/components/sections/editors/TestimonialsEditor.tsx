@@ -131,7 +131,7 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
         ))}
 
         {items.length === 0 && (
-          <p className="text-sm text-gray-500 text-center py-4">
+          <p className="text-sm text-muted-foreground text-center py-4">
             {t('noItems')}
           </p>
         )}

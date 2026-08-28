@@ -80,7 +80,7 @@ export default function DashboardPage() {
     return (
       <div>
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">{t("title")}</h1>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">{t("title")}</h1>
           <Button disabled size="sm">{t("createPage")}</Button>
         </div>
         <SkeletonStats />
@@ -92,7 +92,7 @@ export default function DashboardPage() {
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">{t("title")}</h1>
+        <h1 className="text-2xl font-bold text-foreground tracking-tight">{t("title")}</h1>
         <Link href="/pages/new">
           <Button size="sm">{t("createPage")}</Button>
         </Link>

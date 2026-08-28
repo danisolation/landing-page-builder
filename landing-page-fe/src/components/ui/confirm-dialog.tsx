@@ -60,14 +60,14 @@ export default function ConfirmDialog() {
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Overlay */}
       <div
-        className="absolute inset-0 bg-black/50"
+        className="absolute inset-0 bg-black/60"
         onClick={handleCancel}
       />
 
       {/* Dialog */}
-      <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
+      <div className="relative bg-card rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
         <h2 className="text-lg font-semibold mb-2">{dialog.title}</h2>
-        <p className="text-gray-600 mb-6">{dialog.message}</p>
+        <p className="text-muted-foreground mb-6">{dialog.message}</p>
 
         <div className="flex justify-end gap-3">
           <Button variant="outline" onClick={handleCancel}>

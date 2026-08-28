@@ -55,12 +55,12 @@ export default function SectionPreviewModal({ type, content, isOpen, onClose }: 
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="absolute inset-4 md:inset-6 lg:inset-10 bg-white dark:bg-gray-950 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+            className="absolute inset-4 md:inset-6 lg:inset-10 bg-background rounded-2xl shadow-2xl overflow-hidden flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shrink-0 z-10">
-              <h2 className="font-semibold text-gray-900 dark:text-white capitalize">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-card shrink-0 z-10">
+              <h2 className="font-semibold text-foreground capitalize">
                 Preview: {type}
               </h2>
               <Button variant="ghost" size="sm" onClick={onClose}>
@@ -69,11 +69,11 @@ export default function SectionPreviewModal({ type, content, isOpen, onClose }: 
             </div>
 
             {/* Content — scrollable, full width */}
-            <div className="flex-1 overflow-auto bg-white dark:bg-gray-950">
+            <div className="flex-1 overflow-auto bg-background">
               {SectionComponent ? (
                 <SectionComponent content={content} />
               ) : (
-                <div className="flex items-center justify-center h-full text-gray-400">
+                <div className="flex items-center justify-center h-full text-muted-foreground">
                   Unsupported section type
                 </div>
               )}

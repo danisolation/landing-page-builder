@@ -40,9 +40,9 @@ export default function NewPagePage() {
     <div>
       <Breadcrumbs />
 
-      <h1 className="text-2xl font-bold text-gray-900 tracking-tight mb-6">{t("title")}</h1>
+      <h1 className="text-2xl font-bold text-foreground tracking-tight mb-6">{t("title")}</h1>
 
-      <div className="max-w-2xl">
+      <div>
         <Card>
           <CardHeader className="pb-4">
             <CardTitle className="text-lg">{t("pageInfo")}</CardTitle>
