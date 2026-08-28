@@ -17,55 +17,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
-import HeroEditor from '@/components/sections/editors/HeroEditor';
-import FeaturesEditor from '@/components/sections/editors/FeaturesEditor';
-import CtaEditor from '@/components/sections/editors/CtaEditor';
-import StatsEditor from '@/components/sections/editors/StatsEditor';
-import TestimonialsEditor from '@/components/sections/editors/TestimonialsEditor';
 import SectionPreviewModal from '@/components/sections/SectionPreviewModal';
-
-const defaultContent: Record<string, any> = {
-  hero: {
-    heading: '',
-    subheading: '',
-    buttonText: '',
-    buttonLink: '',
-    secondaryButtonText: '',
-    secondaryButtonLink: '',
-  },
-  features: {
-    subtitle: '',
-    title: '',
-    description: '',
-    items: [],
-  },
-  cta: {
-    heading: '',
-    description: '',
-    buttonText: '',
-    buttonLink: '',
-    secondaryButtonText: '',
-    secondaryButtonLink: '',
-  },
-  stats: {
-    title: '',
-    items: [],
-  },
-  testimonials: {
-    subtitle: '',
-    title: '',
-    description: '',
-    items: [],
-  },
-};
-
-const editors: Record<string, any> = {
-  hero: HeroEditor,
-  features: FeaturesEditor,
-  cta: CtaEditor,
-  stats: StatsEditor,
-  testimonials: TestimonialsEditor,
-};
+import { defaultContent, sectionEditors, sectionTypes } from '@/components/sections/section-constants';
 
 export default function NewSectionPage() {
   const t = useTranslations('sectionEditor');
@@ -101,7 +54,7 @@ export default function NewSectionPage() {
     );
   };
 
-  const EditorComponent = editors[type];
+  const EditorComponent = sectionEditors[type];
 
   return (
     <div>

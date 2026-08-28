@@ -92,10 +92,7 @@ export default function EditPagePage() {
 
   const handleReorder = (sectionIds: string[]) => {
     sectionIds.forEach((id, index) => {
-      const section = page?.sections?.find((s: any) => s.id === id);
-      if (section && section.order !== index) {
-        updateSection({ sectionId: id, data: { order: index } });
-      }
+      updateSection({ sectionId: id, data: { order: index } });
     });
   };
 

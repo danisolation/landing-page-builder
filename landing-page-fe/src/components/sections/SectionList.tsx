@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -41,13 +41,16 @@ export default function SectionList({
   onReorder,
 }: SectionListProps) {
   const t = useTranslations('sectionList');
+  const isDragging = useRef(false);
   const [orderedSections, setOrderedSections] = useState(() =>
     [...sections].sort((a, b) => a.order - b.order)
   );
 
-  // Sync with prop changes (e.g. after API refetch)
+  // Sync with prop changes (e.g. after API refetch), but skip during drag
   useEffect(() => {
-    setOrderedSections([...sections].sort((a, b) => a.order - b.order));
+    if (!isDragging.current) {
+      setOrderedSections([...sections].sort((a, b) => a.order - b.order));
+    }
   }, [sections]);
 
   const sensors = useSensors(
@@ -60,6 +63,7 @@ export default function SectionList({
   );
 
   const handleDragEnd = (event: DragEndEvent) => {
+    isDragging.current = false;
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
@@ -69,6 +73,10 @@ export default function SectionList({
     const newOrder = arrayMove(orderedSections, oldIndex, newIndex);
     setOrderedSections(newOrder);
     onReorder(newOrder.map((s) => s.id));
+  };
+
+  const handleDragStart = () => {
+    isDragging.current = true;
   };
 
   return (
@@ -106,6 +114,7 @@ export default function SectionList({
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
           >
             <SortableContext

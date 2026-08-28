@@ -24,13 +24,18 @@ src/
 │       ├── dashboard/          # Dashboard — page list
 │       ├── pages/
 │       │   ├── new/            # Create page
-│       │   └── [id]/edit/      # Edit page + sections
+│       │   └── [id]/
+│       │       ├── edit/       # Edit page info + sections list
+│       │       └── sections/
+│       │           ├── new/    # Add new section (editor + preview modal)
+│       │           └── [sectionId]/edit/  # Edit section (editor + preview modal)
 │       └── [slug]/             # Public landing page render
 ├── components/
 │   ├── layout/                 # AppLayout, Breadcrumbs, LanguageSwitcher
 │   ├── dashboard/              # StatsCards, SearchFilter, PageCard
-│   ├── sections/               # Section renderers + editors
-│   │   └── editors/            # Section editor forms
+│   ├── sections/               # Section renderers, constants, preview
+│   │   ├── editors/            # Section editor forms (HeroEditor, etc.)
+│   │   └── section-constants.ts  # Shared editors map, defaultContent, sectionTypes
 │   ├── public/                 # Public page components (Nav, Footer, AnimatedSection)
 │   └── ui/                     # shadcn/ui primitives
 ├── hooks/                      # Custom hooks (useAuth, usePages, useSections)
@@ -149,7 +154,7 @@ export function useCreatePage() {
 
 1. Create renderer: `components/sections/XxxSection.tsx`
 2. Create editor: `components/sections/editors/XxxEditor.tsx`
-3. Add to `SectionEditor.tsx`: import, add to `editors` map, add to `defaultContent`, add `<SelectItem>`
+3. Add to `components/sections/section-constants.ts`: import editor, add to `sectionEditors` map, add to `defaultContent`, add to `sectionTypes` array
 4. Add to `SectionPreview.tsx`: import, add to `sectionComponents` map
 5. Add to public page `[slug]/page.tsx`: import, add to `sectionComponents` map
 6. Add i18n keys to `messages/vi.json` and `messages/en.json`
