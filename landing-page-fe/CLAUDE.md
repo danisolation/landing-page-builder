@@ -1,55 +1,10 @@
-# Frontend Rules — Landing Page Builder
+# Frontend Rules
 
-## Tech Stack
-
-- Next.js 16.3.2 App Router + React 19
-- TypeScript, Tailwind CSS v4
-- shadcn/ui base-nova style (`@base-ui/react` primitives, NOT Radix — except Select)
-- TanStack React Query for data fetching
-- next-intl for i18n (vi/en, default: vi)
-- Framer Motion for animations
-- Sonner for toast notifications
-- Lucide React for icons
-
-## Project Structure
-
-```
-src/
-├── app/
-│   ├── layout.tsx              # Root layout (font, QueryProvider)
-│   ├── page.tsx                # Redirect / → /vi
-│   └── [locale]/
-│       ├── layout.tsx          # Locale layout (NextIntlClientProvider, AppLayout, Toaster)
-│       ├── login/              # Login page
-│       ├── dashboard/          # Dashboard — page list
-│       ├── pages/
-│       │   ├── new/            # Create page
-│       │   └── [id]/
-│       │       ├── edit/       # Edit page info + sections list
-│       │       └── sections/
-│       │           ├── new/    # Add new section (editor + preview modal)
-│       │           └── [sectionId]/edit/  # Edit section (editor + preview modal)
-│       └── [slug]/             # Public landing page render
-├── components/
-│   ├── layout/                 # AppLayout, Breadcrumbs, LanguageSwitcher
-│   ├── dashboard/              # StatsCards, SearchFilter, PageCard
-│   ├── sections/               # Section renderers, constants, preview
-│   │   ├── editors/            # Section editor forms (HeroEditor, etc.)
-│   │   └── section-constants.ts  # Shared editors map, defaultContent, sectionTypes
-│   ├── public/                 # Public page components (Nav, Footer, AnimatedSection)
-│   └── ui/                     # shadcn/ui primitives
-├── hooks/                      # Custom hooks (useAuth, usePages, useSections)
-├── i18n/                       # next-intl config
-├── lib/
-│   ├── api.ts                  # Centralized fetch wrapper + API functions
-│   └── utils.ts                # cn() helper
-├── messages/                   # i18n translations (vi.json, en.json)
-└── providers/                  # QueryProvider
-```
+Next.js 16 App Router + React 19 + TypeScript + Tailwind v4 + shadcn/ui base-nova + TanStack Query + next-intl + Framer Motion + Sonner
 
 ## Routing
 
-All routes are under `[locale]/` (vi or en). Root `/` redirects to `/vi`.
+All routes under `[locale]/` (vi/en). Root `/` redirects to `/vi`.
 
 | Route | Purpose |
 |---|---|
@@ -57,8 +12,8 @@ All routes are under `[locale]/` (vi or en). Root `/` redirects to `/vi`.
 | `/{locale}/dashboard` | Dashboard |
 | `/{locale}/pages/new` | Create page |
 | `/{locale}/pages/{id}/edit` | Edit page + sections list |
-| `/{locale}/pages/{id}/sections/new` | Add new section |
-| `/{locale}/pages/{id}/sections/{sectionId}/edit` | Edit existing section |
+| `/{locale}/pages/{id}/sections/new` | Add section |
+| `/{locale}/pages/{id}/sections/{sectionId}/edit` | Edit section |
 | `/{locale}/{slug}` | Public landing page |
 
 ## Layout Rules
@@ -80,19 +35,6 @@ All routes are under `[locale]/` (vi or en). Root `/` redirects to `/vi`.
 - Tint backgrounds: `bg-blue-50 dark:bg-blue-950/30 text-blue-600 dark:text-blue-400`
 - NEVER use `bg-white` without a `dark:` counterpart
 
-### Page Structure (Admin)
-Every admin page follows this pattern:
-```
-<div>
-  <Breadcrumbs />
-  <div className="flex justify-between items-center mb-6">
-    <h1 className="text-2xl font-bold text-foreground tracking-tight">Title</h1>
-    <div className="flex gap-2">Actions</div>
-  </div>
-  Content
-</div>
-```
-
 ### Content Width (CRITICAL)
 - ALL admin pages inherit `max-w-7xl mx-auto` from AppLayout `<main>`
 - NEVER add additional `max-w-*` constraints inside page content — this breaks layout consistency
@@ -100,22 +42,13 @@ Every admin page follows this pattern:
 - Dashboard, pages/new, pages/edit, sections/new, sections/[sectionId]/edit — ALL must have the same outer width
 - Rule: if you're about to add `max-w-*` to a page `<div>`, STOP — it's wrong
 
-### Mandatory Verification (CRITICAL)
-When ANY admin UI change is made, you MUST:
-1. Run `npm run build` — no type errors
-2. Run Playwright tests — `npx playwright test`
-3. Visually verify layout matches dashboard (same width, same spacing)
-4. Check breadcrumbs are correct for the route
-5. Check dark mode works (toggle if possible)
-6. Check responsive: mobile and desktop both look correct
-7. If you changed a page's layout, add/update Playwright test for that page
-
 ### Breadcrumbs
 - Shown on ALL admin pages EXCEPT `/dashboard` and `/login`
-- Pattern: `Dashboard > Section > Action`
+- Auto-generated from URL path — NOT a fixed pattern
+- Always starts with "Dashboard" link
+- Filters out: `pages` segment, UUID segments
+- Maps segments to labels: `sections` → "Sections", `new` → "Tạo mới", `edit` → "Chỉnh sửa"
 - Uses semantic token colors: `text-muted-foreground`, `hover:text-foreground`, `hover:bg-accent`
-- Path segments: `pages` is filtered out (not shown), UUIDs are filtered out
-- Available labels: `dashboard`, `sections`, `new` (createNew), `edit` (editPage)
 
 ### Section Pages
 - Section create/edit are SEPARATE pages (not inline panels)
@@ -132,12 +65,165 @@ When ANY admin UI change is made, you MUST:
 - ConfirmDialog overlay: `bg-black/60`
 - Preview modals: `bg-background` panel, `bg-card` header
 
-## Component Conventions
+## Conventions
 
 - **Client components by default** — pages and interactive components use `"use client"`
 - **Server components** — only for layouts and root redirect
 - **Path alias** — `@/*` maps to `./src/*`
+- **Custom hooks** — `usePages()`, `useSections(pageId)`, `useAuth()` wrap TanStack Query
+- **Mutations** invalidate corresponding query key on success
 - **Props typing** — always define interfaces for component props, avoid `any` where practical
+- **Vietnamese-first** — default locale `vi`, date format `vi-VN`
+- **Forms** — use React Hook Form + Zod for validation (`react-hook-form`, `@hookform/resolvers`, `zod`)
+
+## File Naming
+
+- **Components**: `PascalCase.tsx` (e.g. `PageCard.tsx`, `SectionPreview.tsx`)
+- **Hooks**: `usePascalCase.ts` (e.g. `usePages.ts`, `useAuth.ts`)
+- **Utils**: `kebab-case.ts` (e.g. `api.ts`, `utils.ts`)
+- **Constants**: `kebab-case.ts` (e.g. `section-constants.ts`)
+- **Pages**: Next.js convention — `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`
+
+## Import Order
+
+Organize imports in this order (separated by blank lines):
+```typescript
+// 1. React & Next.js
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+// 2. Third-party libs
+import { useQuery } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { motion } from 'framer-motion';
+
+// 3. Components (shadcn/ui first, then custom)
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import PageCard from '@/components/dashboard/PageCard';
+
+// 4. Hooks
+import { usePages } from '@/hooks/usePages';
+
+// 5. Lib & Utils
+import { getPages } from '@/lib/api';
+import { cn } from '@/lib/utils';
+
+// 6. Types
+import type { Page } from '@/types';
+```
+
+## Error Handling
+
+### Error Boundaries
+- Use Next.js `error.tsx` file for route-level error boundaries
+- Use React `ErrorBoundary` component for component-level errors
+- Always show user-friendly error messages, not raw errors
+
+### Error States in Data Fetching
+```typescript
+// ✅ Handle loading, error, and success states
+const { data, isLoading, error } = useQuery({...});
+
+if (isLoading) return <Skeleton />;
+if (error) return <ErrorMessage message={error.message} />;
+if (!data) return <EmptyState />;
+```
+
+### Mutation Error Handling
+```typescript
+// ✅ Always handle mutation errors
+useMutation({
+  mutationFn: createPage,
+  onSuccess: () => toast.success('Created!'),
+  onError: (error) => toast.error(error.message || 'Failed'),
+});
+```
+
+## Loading States
+
+- **Lists**: use `Skeleton` components (match final layout shape)
+- **Forms**: disable submit button + show loading text
+- **Pages**: use `loading.tsx` file for route-level loading
+- **Actions**: use `isPending` from mutations to disable buttons
+- **Optimistic updates**: use for instant UI feedback on mutations
+
+```typescript
+// ✅ Skeleton for lists
+if (isLoading) return <SkeletonList count={3} />;
+
+// ✅ Pending state for buttons
+<Button disabled={isPending}>
+  {isPending ? 'Đang lưu...' : 'Lưu'}
+</Button>
+```
+
+## Responsive Design
+
+- **Mobile-first**: write base styles for mobile, add `sm:`, `md:`, `lg:` for larger screens
+- **Breakpoints**: `sm:640px md:768px lg:1024px xl:1280px`
+- **Layout**: use flexbox/grid with responsive utilities
+- **Touch targets**: minimum 44px for interactive elements on mobile
+
+```typescript
+// ✅ Mobile-first responsive
+<div className="flex flex-col sm:flex-row gap-4">
+  <div className="w-full sm:w-1/2">...</div>
+  <div className="w-full sm:w-1/2">...</div>
+</div>
+```
+
+## Accessibility (a11y)
+
+- **Semantic HTML**: use `<nav>`, `<main>`, `<section>`, `<article>`, `<button>` (not `<div onClick>`)
+- **ARIA labels**: add `aria-label` to icon-only buttons
+- **Keyboard navigation**: all interactive elements must be focusable and operable with keyboard
+- **Focus management**: trap focus in modals, restore focus on close
+- **Color contrast**: ensure text meets WCAG AA contrast ratio (4.5:1 for normal text)
+- **Screen readers**: use `sr-only` class for visually hidden but accessible text
+
+```typescript
+// ✅ Accessible button with icon
+<Button aria-label="Delete page">
+  <TrashIcon className="w-4 h-4" />
+</Button>
+
+// ✅ Accessible modal
+<Dialog aria-labelledby="dialog-title" aria-describedby="dialog-description">
+  <h2 id="dialog-title">Confirm</h2>
+  <p id="dialog-description">Are you sure?</p>
+</Dialog>
+```
+
+## Performance
+
+- **Lazy loading**: use `React.lazy()` for heavy components not needed on initial render
+- **Image optimization**: use `next/image` for all images (auto WebP, lazy loading, responsive)
+- **Code splitting**: Next.js auto-splits by route; avoid large bundle imports
+- **Memoization**: use `useMemo` for expensive computations, `useCallback` for passed callbacks
+- **Avoid re-renders**: don't create objects/arrays in render; extract to constants or useMemo
+
+```typescript
+// ✅ Lazy load heavy component
+const SectionPreviewModal = React.lazy(() => import('./SectionPreviewModal'));
+
+// ✅ Memoize expensive computation
+const filteredPages = useMemo(() => {
+  return pages.filter(p => p.title.includes(search));
+}, [pages, search]);
+
+// ✅ next/image for images
+import Image from 'next/image';
+<Image src="/hero.jpg" alt="Hero" width={800} height={400} priority />
+```
+
+## Security
+
+- **XSS prevention**: never use `dangerouslySetInnerHTML` with user input
+- **Input sanitization**: sanitize user-generated content before rendering
+- **API validation**: validate all API responses on the client (don't trust server data blindly)
+- **Sensitive data**: never store secrets in client-side code or localStorage
+- **HTTPS**: always use HTTPS in production
 
 ## Data Fetching Pattern
 
@@ -166,6 +252,22 @@ export function useCreatePage() {
 - **CVA** (class-variance-authority) for component variants
 - **cn()** utility for merging Tailwind classes
 - **Sonner** for toast notifications (NOT the base-ui toast in ui/toast.tsx)
+- **Framer Motion** for scroll-triggered animations (`whileInView`, staggered children)
+- **@dnd-kit** for drag-and-drop section reordering (`@dnd-kit/core`, `@dnd-kit/sortable`)
+
+## Public Page Components
+
+- `PublicNav` — navigation bar with dark mode toggle
+- `PublicFooter` — footer component
+- `AnimatedSection` — wrapper for scroll-triggered fade-in-up animations
+- `CounterAnimation` — animated number counters
+- Public page does NOT use i18n — hardcoded Vietnamese
+
+## Section Types
+
+Currently supported: `hero`, `features`, `cta`, `stats`, `testimonials`
+
+Each type has: renderer (`XxxSection.tsx`), editor (`editors/XxxEditor.tsx`), entry in `section-constants.ts`
 
 ## Adding a New Section Type
 
@@ -177,28 +279,6 @@ export function useCreatePage() {
 6. Add i18n keys to `messages/vi.json` and `messages/en.json`
 7. **No BE changes needed** — content is JSON, FE defines the shape
 
-## i18n
-
-- Library: `next-intl` v4
-- Locales: `vi` (default), `en`
-- Usage: `const t = useTranslations('namespace')` then `t('key')`
-- Messages in `src/messages/vi.json` and `src/messages/en.json`
-- **Public page does NOT use i18n** — hardcoded Vietnamese
-
-## Dark Mode
-
-- CSS class `dark` on `<html>` element
-- Toggle in PublicNav, preference in localStorage
-- Every section component has `dark:` variants
-- CSS variables defined in `globals.css` for light/dark
-
-## Animations
-
-- **Framer Motion** for scroll-triggered animations (`whileInView`)
-- **Staggered children** via `variants` + `staggerChildren`
-- **CSS keyframes** in `globals.css` for floating decorative elements
-- **AnimatedSection** wrapper for consistent fade-in-up on scroll
-
 ## Auth Flow
 
 1. Login → POST `/auth/login` → `access_token`
@@ -206,12 +286,25 @@ export function useCreatePage() {
 3. Middleware guards protected routes (redirect to login if no token)
 4. `fetchAPI()` attaches `Authorization: Bearer <token>` to all requests
 5. Logout → clear localStorage + cookie → redirect
+6. **No refresh token** — expired = login again
 
-## API Layer
+## i18n
 
-- All API functions in `src/lib/api.ts`
-- Base URL: `http://localhost:3000` (hardcoded)
-- `fetchAPI()` wrapper handles auth headers and error throwing
+- Library: `next-intl` v4. Locales: `vi` (default), `en`
+- Usage: `const t = useTranslations('namespace')` then `t('key')`
+- Messages in `src/messages/vi.json` and `src/messages/en.json`
+- **Public page does NOT use i18n** — hardcoded Vietnamese
+
+## Mandatory Verification (CRITICAL)
+
+When ANY admin UI change is made, you MUST:
+1. `npm run build` — no type errors
+2. `npx playwright test` — all pass
+3. Visually verify layout matches dashboard (same width, same spacing)
+4. Check breadcrumbs are correct for the route
+5. Check dark mode works (toggle if possible)
+6. Check responsive: mobile and desktop both look correct
+7. If you changed a page's layout, add/update Playwright test for that page
 
 ## Common Commands
 
@@ -219,4 +312,5 @@ export function useCreatePage() {
 npm run dev         # Dev server on port 3001
 npm run build       # Production build (type-checks)
 npm run lint        # ESLint
+npx playwright test # E2E tests
 ```

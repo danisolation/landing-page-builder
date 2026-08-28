@@ -1,37 +1,50 @@
-# Landing Page Builder — Project Rules
+# Landing Page Builder
 
-## Project Overview
+Monorepo: **FE** (Next.js 16, port 3001) → **BE** (NestJS, port 3000) → PostgreSQL (Docker, port 5432)
 
-Landing page builder with two apps:
-- **Frontend** (`landing-page-fe/`): Next.js 16 App Router — admin UI + public page rendering
-- **Backend** (`landing-page-be/`): NestJS + Prisma 7 — REST API + JWT auth
+## Quick Start
 
-## Architecture
+```bash
+# Backend
+cd landing-page-be
+cp .env.example .env          # DATABASE_URL, JWT_SECRET
+npm install
+docker compose up -d
+npx prisma migrate dev
+npx prisma db seed            # admin / 123456
+npm run start:dev
 
+# Frontend
+cd landing-page-fe
+npm install
+npm run dev
 ```
-FE (Next.js, port 3001) → HTTP → BE (NestJS, port 3000) → Prisma 7 → PostgreSQL (Docker, port 5432)
-```
+
+Login: `admin` / `123456` at http://localhost:3001/vi/login
+
+## Commands
+
+| Task | Command |
+|------|---------|
+| FE dev | `cd landing-page-fe && npm run dev` |
+| FE build (type-check) | `cd landing-page-fe && npm run build` |
+| FE lint | `cd landing-page-fe && npm run lint` |
+| FE tests | `cd landing-page-fe && npx playwright test` |
+| BE dev | `cd landing-page-be && npm run start:dev` |
+| BE migrations | `cd landing-page-be && npx prisma migrate dev` |
+| BE seed | `cd landing-page-be && npx prisma db seed` |
+| BE studio | `cd landing-page-be && npx prisma studio` |
 
 ## Key Decisions
 
-- **Prisma 7** with driver adapter pattern (`@prisma/adapter-pg`) — NOT the traditional query engine
-- **Section content is JSON** — FE defines the shape, BE stores it as-is. No schema changes needed for new section types
-- **Vietnamese-first** — default locale is `vi`, code comments in BE are Vietnamese
+- **Prisma 7** with driver adapter (`@prisma/adapter-pg`) — NOT the traditional query engine
+- **Section content is JSON** — FE defines shape, BE stores as-is. No schema changes for new section types
+- **5 section types**: `hero`, `features`, `cta`, `stats`, `testimonials`
+- **Vietnamese-first** — default locale `vi`, BE code comments in Vietnamese
 - **No shared types** between FE and BE — each side defines its own
+- **shadcn/ui base-nova style** — `@base-ui/react` primitives, NOT Radix (except Select)
 
-## When Working on This Project
+## Detailed Rules
 
-1. Read `PROJECT.md` in root for full context
-2. FE rules: see `landing-page-fe/CLAUDE.md`
-3. BE rules: see `landing-page-be/CLAUDE.md`
-4. Always check both sides when adding a feature that touches API
-
-## Running the Project
-
-```bash
-# BE
-cd landing-page-be && docker compose up -d && npx prisma migrate dev && npm run start:dev
-
-# FE
-cd landing-page-fe && npm run dev
-```
+- FE rules: `landing-page-fe/CLAUDE.md` (auto-loads when working in FE)
+- BE rules: `landing-page-be/CLAUDE.md` (auto-loads when working in BE)

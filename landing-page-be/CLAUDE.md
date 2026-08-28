@@ -1,24 +1,6 @@
-# Backend Rules — Landing Page Builder
+# Backend Rules
 
-## Tech Stack
-
-- NestJS 11 + TypeScript (ES2023, nodenext modules)
-- Prisma 7.x with `@prisma/adapter-pg` driver adapter
-- PostgreSQL 16 (Docker)
-- Passport + JWT auth, bcrypt password hashing
-- class-validator + class-transformer for DTO validation
-
-## Project Structure
-
-```
-src/
-├── main.ts                 # Bootstrap: CORS, ValidationPipe, port 3000
-├── app.module.ts           # Root module
-├── prisma/                 # Global PrismaModule + PrismaService
-├── auth/                   # Auth module (register, login, JWT)
-├── pages/                  # Pages CRUD module
-└── sections/               # Sections CRUD module (nested under pages)
-```
+NestJS 11 + TypeScript (ES2023, nodenext) + Prisma 7 + PostgreSQL 16 + Passport/JWT + bcrypt
 
 ## Prisma 7 — IMPORTANT
 
@@ -67,12 +49,15 @@ module-name/
 - `Page 1---* Section` with cascade delete
 - `Admin` is standalone (auth only)
 - `Section.content` is `Json` type — flexible, FE defines the shape
+- `Section.type`: `hero`, `features`, `cta`, `stats`, `testimonials` (FE defines supported types)
 
 ## Auth
 
 - JWT via Passport, token expires in 1 day
 - `JwtAuthGuard` currently only on `GET /auth/profile`
 - Page/Section endpoints are **unguarded** (known security gap, needs fixing)
+- `POST /auth/register` — no DTO, uses inline body type `{ username: string; password: string }`
+- Register returns full admin record including password hash (known issue)
 
 ## Adding a New Feature
 
@@ -82,6 +67,13 @@ module-name/
 4. Controller: define routes, apply guards if needed
 5. Register module in `app.module.ts`
 6. Run `npx prisma migrate dev` if schema changed
+
+## Seed Data
+
+`npx prisma db seed` creates:
+- Admin: `admin` / `123456`
+- Sample page: "Sản phẩm mới" with 3 sections (hero, features, cta)
+- Note: code supports 5 section types but seed only creates 3
 
 ## Common Commands
 
