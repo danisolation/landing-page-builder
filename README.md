@@ -334,7 +334,8 @@ docker compose logs -f     # View logs
 | [`BE-FUNDAMENTALS.md`](./BE-FUNDAMENTALS.md) | Backend fundamentals for FE developers |
 | [`ARCHITECTURE.md`](./ARCHITECTURE.md) | Architecture deep-dive |
 | [`OPEN-SOURCE-GUIDE.md`](./OPEN-SOURCE-GUIDE.md) | Open source contribution guide |
-| [`reports/all-features.md`](./reports/all-features.md) | All features summary report |
+| [`reports/fe-features.md`](./reports/fe-features.md) | Frontend features report |
+| [`reports/be-features.md`](./reports/be-features.md) | Backend features report |
 | [`reports/auth-guard-implementation.md`](./reports/auth-guard-implementation.md) | Auth guard implementation report |
 
 ---
