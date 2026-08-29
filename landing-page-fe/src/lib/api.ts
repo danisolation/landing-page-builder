@@ -11,6 +11,12 @@ import type {
 
 const API_URL = "http://localhost:3000";
 
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  timestamp: string;
+}
+
 async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -34,7 +40,8 @@ async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise
     throw new Error(error.message || "API Error");
   }
 
-  return res.json();
+  const json: ApiResponse<T> = await res.json();
+  return json.data;
 }
 
 // Auth
