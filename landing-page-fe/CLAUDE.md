@@ -80,6 +80,12 @@ All routes under `[locale]/` (vi/en). Root `/` redirects to `/vi`.
 - **Vietnamese-first** — default locale `vi`, date format `vi-VN`
 - **Forms** — use React Hook Form + Zod for validation (`react-hook-form`, `@hookform/resolvers`, `zod`)
 
+## Component Size Rules
+
+- Component tối đa **150 lines** — nếu dài hơn thì tách sub-components
+- Component có **> 5-6 props** → nhóm thành config objects hoặc dùng composition
+- Extract logic phức tạp (> 50 lines) vào custom hooks
+
 ## File Naming
 
 - **Components**: `PascalCase.tsx` (e.g. `PageCard.tsx`, `SectionPreview.tsx`)
@@ -87,6 +93,29 @@ All routes under `[locale]/` (vi/en). Root `/` redirects to `/vi`.
 - **Utils**: `kebab-case.ts` (e.g. `api.ts`, `utils.ts`)
 - **Constants**: `kebab-case.ts` (e.g. `section-constants.ts`)
 - **Pages**: Next.js convention — `page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`
+
+## Props Interface Rules
+
+- Dùng `interface` (không dùng `type` cho object shapes)
+- KHÔNG prefix `I` (VD: `IButtonProps` → sai, `ButtonProps` → đúng)
+- Props interface PHẢI export để reuse
+- Default values dùng destructuring trong function signature
+- Dùng `import type` cho type-only imports
+
+```tsx
+// ✅ Good
+interface ButtonProps {
+  variant?: 'default' | 'outline' | 'ghost' | 'destructive'
+  size?: 'sm' | 'default' | 'lg'
+  children: React.ReactNode
+}
+
+export function Button({ variant = 'default', size = 'default', children }: ButtonProps) { ... }
+
+// ❌ Bad - prefix I, using type
+interface IButtonProps { ... }
+type ButtonProps = { ... }
+```
 
 ## Import Order
 
@@ -143,6 +172,44 @@ useMutation({
   onError: (error) => toast.error(error.message || 'Failed'),
 });
 ```
+
+### Mutation Rules (BẮT BUỘC)
+useMutation PHẢI có:
+- `onSuccess`: toast.success + invalidateQueries + redirect (nếu cần)
+- `onError`: toast.error với message từ backend
+- `onMutate` (optional): optimistic update cho instant UI feedback
+- `onSettled` (optional): invalidateQueries (dùng khi muốn always refresh)
+
+```typescript
+// ✅ Complete mutation pattern
+useMutation({
+  mutationFn: createPage,
+  onMutate: async (newPage) => {
+    // Cancel outgoing refetches
+    await queryClient.cancelQueries({ queryKey: ['pages'] })
+    // Snapshot previous value
+    const previousPages = queryClient.getQueryData(['pages'])
+    // Optimistic update
+    queryClient.setQueryData(['pages'], (old) => [...old, newPage])
+    return { previousPages }
+  },
+  onError: (err, newPage, context) => {
+    // Rollback on error
+    queryClient.setQueryData(['pages'], context.previousPages)
+    toast.error(err.message || 'Đã xảy ra lỗi')
+  },
+  onSettled: () => {
+    // Always refetch after error or success
+    queryClient.invalidateQueries({ queryKey: ['pages'] })
+  },
+  onSuccess: () => {
+    toast.success('Tạo trang thành công')
+    router.push(`/${locale}/pages/${data.id}/edit`)
+  },
+})
+```
+
+// ❌ KHÔNG được bỏ trống onError
 
 ## Loading States
 
@@ -207,15 +274,44 @@ if (isLoading) return <SkeletonList count={3} />;
 - **Memoization**: use `useMemo` for expensive computations, `useCallback` for passed callbacks
 - **Avoid re-renders**: don't create objects/arrays in render; extract to constants or useMemo
 
+### Memoization Rules (Khi nào dùng)
+- Dùng `React.memo` KHI: (1) re-render often, (2) same props, (3) expensive render
+- Profile với React DevTools TRƯỚC KHI thêm memo
+- Không thêm memo nếu không có measurable lag
+- `memo` dùng shallow comparison — object/function mới mỗi render sẽ break nó
+- Pair với `useCallback` cho functions, `useMemo` cho objects
+
 ```typescript
-// ✅ Lazy load heavy component
-const SectionPreviewModal = React.lazy(() => import('./SectionPreviewModal'));
+// ✅ Good - stable reference
+const person = useMemo(() => ({ name, age }), [name, age])
+const handleClick = useCallback(() => doSomething(id), [id])
 
-// ✅ Memoize expensive computation
-const filteredPages = useMemo(() => {
-  return pages.filter(p => p.title.includes(search));
-}, [pages, search]);
+// ❌ Bad - breaks memo
+<Profile person={{ name, age }} onClick={() => doSomething(id)} />
+```
 
+### Code Splitting Rules
+- `React.lazy()` PHẢI khai báo ở module top level — KHÔNG trong component
+- Luôn wrap lazy component trong `<Suspense>` + Error Boundary
+- Dynamic imports cho heavy components (charts, editors, modals)
+
+```typescript
+// ✅ Good - lazy at module level
+const SectionPreviewModal = React.lazy(() => import('./SectionPreviewModal'))
+
+// In component:
+<Suspense fallback={<Skeleton />}>
+  <SectionPreviewModal />
+</Suspense>
+
+// ❌ Bad - lazy inside component (causes state reset)
+function MyComponent() {
+  const Modal = React.lazy(() => import('./Modal')) // WRONG
+}
+```
+
+### Image Optimization
+```typescript
 // ✅ next/image for images
 import Image from 'next/image';
 <Image src="/hero.jpg" alt="Hero" width={800} height={400} priority />
@@ -262,6 +358,24 @@ export function useCreatePage() {
 }
 
 // ❌ Don't call api.ts functions directly in components (except public page)
+```
+
+## Query Key Standards
+
+- Dùng factory functions cho consistency
+- Tất cả params ảnh hưởng kết quả PHẢI nằm trong key
+
+```typescript
+// ✅ Good - factory function
+const pageKeys = {
+  all: ['pages'] as const,
+  detail: (id: string) => ['pages', { id }] as const,
+  filtered: (filters: PageFilters) => ['pages', filters] as const,
+}
+
+// Usage
+useQuery({ queryKey: pageKeys.all, queryFn: getPages })
+useQuery({ queryKey: pageKeys.detail(id), queryFn: () => getPage(id) })
 ```
 
 ## UI Components
@@ -314,6 +428,37 @@ Each type has: renderer (`XxxSection.tsx`), editor (`editors/XxxEditor.tsx`), en
 - Messages in `src/messages/vi.json` and `src/messages/en.json`
 - **Public page does NOT use i18n** — hardcoded Vietnamese
 
+## Testing Standards
+
+### Query Priority (dùng theo thứ tự)
+1. `getByRole` — accessible nhất, mirrors how users/AT find elements
+2. `getByLabelText` — cho form elements
+3. `getByText`
+4. `getByTestId` — LAST RESORT only
+
+### What to Test
+- User-visible behavior: text content, element presence, attribute values
+- Component output với specific props/inputs
+- User interactions: click, type, submit → resulting UI changes
+- Error states và loading states
+
+### What NOT to Test
+- Internal component state
+- Implementation details (specific event sequences, internal methods)
+- Third-party library behavior (React, TanStack Query internals)
+- CSS styles (use visual regression testing tools instead)
+- Snapshot tests cho large components (breaks on every change, rarely catches bugs)
+
+```typescript
+// ✅ Good - using screen and getByRole
+screen.getByRole('button', { name: 'Submit' })
+screen.queryByText('No results found') // for non-existence
+await screen.findByText('Loaded') // for async
+
+// ❌ Bad - container.querySelector
+container.querySelector('button.submit')
+```
+
 ## Mandatory Verification (CRITICAL)
 
 When ANY admin UI change is made, you MUST:
@@ -336,6 +481,59 @@ When modifying a page, ALWAYS check and update related pages:
 - **Components**: if a shared component changed behavior, verify all pages using it still work
 - **Rule of thumb**: before finishing a task, list all files that reference the changed file/feature and check each one
 
+## Git Rules
+
+### Branch Naming
+- `feature/<short-description>` — new features
+- `fix/<short-description>` — bug fixes
+- `chore/<short-description>` — maintenance, dependencies
+- Use kebab-case: `feature/user-auth`, `fix/login-error`
+
+### Commit Message (Conventional Commits)
+```
+<type>[optional scope]: <description>
+
+feat(auth): add JWT refresh token flow
+fix(api): prevent race condition in data fetching
+docs: update README with quick start guide
+```
+- Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`
+- Description: imperative mood, lowercase, no period, max 72 chars
+
+### PR Standards
+- Title follows Conventional Commits format
+- PR description: what changed, why, how to test
+- PR size: aim for <400 lines changed
+- Squash merge vào main
+
+## PR Checklist (tự check trước khi submit)
+
+### Design
+- [ ] Right approach chosen?
+- [ ] Architecture sound?
+
+### Functionality
+- [ ] Code does what it claims?
+- [ ] Error states handled?
+- [ ] Redirect sau mutation thành công?
+
+### Code Quality
+- [ ] No `any` types
+- [ ] Component < 150 lines
+- [ ] Props interface defined + exported
+- [ ] No unused imports/variables
+
+### Testing
+- [ ] Tests cover edge cases?
+- [ ] `npm run build` pass
+- [ ] `npm run lint` pass
+
+### UI/UX
+- [ ] Dark mode hoạt động
+- [ ] Responsive mobile + desktop
+- [ ] Loading states có skeleton
+- [ ] Toast cho success/error
+
 ## Common Commands
 
 ```bash
@@ -344,3 +542,21 @@ npm run build       # Production build (type-checks)
 npm run lint        # ESLint
 npx playwright test # E2E tests
 ```
+
+## Anti-Patterns to Avoid
+
+| Anti-Pattern | Correct Approach |
+|---|---|
+| `<div onClick>` for buttons | Use `<button>` |
+| Index as list key | Use stable, unique ID |
+| Storing server data in useState | Use TanStack Query `useQuery` |
+| `memo` without measuring perf | Profile first with React DevTools |
+| `any` type | Use `unknown` and narrow |
+| `useEffect` for derived state | Compute during render or `useMemo` |
+| `console.log` in production | Use structured logging |
+| Snapshot tests for large components | Test behavior, not structure |
+| Inline `style={{}}` for static styles | Use Tailwind classes |
+| `require()` in TypeScript | Use ES6 `import` syntax |
+| `== null` (unintentional) | `=== null \|\| === undefined` (intentional) |
+| `new Array()` / `new Object()` | Use literal syntax `[]` / `{}` |
+| Mutation in reducer | Always return new objects with spread |
