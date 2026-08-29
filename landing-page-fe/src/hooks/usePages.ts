@@ -9,6 +9,7 @@ import {
   updatePage,
   deletePage,
 } from "@/lib/api";
+import { pageKeys } from "@/lib/query-keys";
 import type { CreatePageInput, UpdatePageInput } from "@/types";
 
 export function usePages() {
@@ -20,7 +21,7 @@ export function usePages() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["pages"],
+    queryKey: pageKeys.all,
     queryFn: getPages,
   });
 
@@ -28,7 +29,7 @@ export function usePages() {
   const createMutation = useMutation({
     mutationFn: createPage,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["pages"] });
+      queryClient.invalidateQueries({ queryKey: pageKeys.all });
       toast.success("Tạo trang thành công");
     },
     onError: (error: Error) => {
@@ -41,7 +42,7 @@ export function usePages() {
     mutationFn: ({ id, data }: { id: string; data: UpdatePageInput }) =>
       updatePage(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["pages"] });
+      queryClient.invalidateQueries({ queryKey: pageKeys.all });
       toast.success("Cập nhật trang thành công");
     },
     onError: (error: Error) => {
@@ -53,7 +54,7 @@ export function usePages() {
   const deleteMutation = useMutation({
     mutationFn: deletePage,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["pages"] });
+      queryClient.invalidateQueries({ queryKey: pageKeys.all });
       toast.success("Xóa trang thành công");
     },
     onError: (error: Error) => {
@@ -77,7 +78,7 @@ export function usePages() {
 // Hook cho 1 page cụ thể
 export function usePage(id: string) {
   return useQuery({
-    queryKey: ["pages", id],
+    queryKey: pageKeys.detail(id),
     queryFn: () => getPage(id),
     enabled: !!id,
   });

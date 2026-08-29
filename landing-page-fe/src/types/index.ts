@@ -24,6 +24,13 @@ export interface UpdatePageInput {
   isPublished?: boolean;
 }
 
+export interface PageFilters {
+  search?: string;
+  isPublished?: boolean;
+  sortBy?: "title" | "createdAt" | "updatedAt";
+  sortOrder?: "asc" | "desc";
+}
+
 // Section types
 export type SectionType = "hero" | "features" | "cta" | "stats" | "testimonials";
 
