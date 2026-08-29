@@ -7,8 +7,10 @@ import FeaturesSection from './FeaturesSection';
 import CtaSection from './CtaSection';
 import StatsSection from './StatsSection';
 import TestimonialsSection from './TestimonialsSection';
+import type { SectionType, SectionContent } from '@/types';
 
-const sectionComponents: Record<string, any> = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const sectionComponents: Record<SectionType, React.ComponentType<{ content: any }>> = {
   hero: HeroSection,
   features: FeaturesSection,
   cta: CtaSection,
@@ -24,7 +26,8 @@ const typeColors: Record<string, string> = {
   testimonials: 'bg-pink-50 dark:bg-pink-950/30 text-pink-700 dark:text-pink-400',
 };
 
-function getSectionSummary(type: string, content: any): string {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function getSectionSummary(type: SectionType, content: any): string {
   switch (type) {
     case 'hero':
       return content.heading || '—';
@@ -44,8 +47,8 @@ function getSectionSummary(type: string, content: any): string {
 export interface DragOverlayProps {
   data: {
     sectionId: string;
-    sectionType: string;
-    sectionContent: any;
+    sectionType: SectionType;
+    sectionContent: SectionContent;
     sectionOrder: number;
   };
 }

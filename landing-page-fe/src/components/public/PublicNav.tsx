@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Moon, Sun, Menu, X } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Moon, Sun } from 'lucide-react';
 
 export interface PublicNavProps {
   pageTitle: string;
@@ -10,8 +10,8 @@ export interface PublicNavProps {
 export default function PublicNav({ pageTitle }: PublicNavProps) {
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const [isDark, setIsDark] = useState(false);
+  const lastScrollYRef = useRef(0);
 
   useEffect(() => {
     // Check saved preference
@@ -26,12 +26,12 @@ export default function PublicNav({ pageTitle }: PublicNavProps) {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       setScrolled(currentScrollY > 50);
-      setHidden(currentScrollY > lastScrollY && currentScrollY > 200);
-      setLastScrollY(currentScrollY);
+      setHidden(currentScrollY > lastScrollYRef.current && currentScrollY > 200);
+      lastScrollYRef.current = currentScrollY;
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, []);
 
   const toggleDark = () => {
     const next = !isDark;

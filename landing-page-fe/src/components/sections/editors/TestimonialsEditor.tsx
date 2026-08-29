@@ -6,10 +6,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import FieldHint from '@/components/ui/field-hint';
+import type { TestimonialsContent } from '@/types';
 
 export interface TestimonialsEditorProps {
-  content: any;
-  onChange: (content: any) => void;
+  content: TestimonialsContent;
+  onChange: (content: TestimonialsContent) => void;
 }
 
 export default function TestimonialsEditor({ content, onChange }: TestimonialsEditorProps) {
@@ -35,7 +36,7 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
   };
 
   const removeItem = (index: number) => {
-    onChange({ ...content, items: items.filter((_: any, i: number) => i !== index) });
+    onChange({ ...content, items: items.filter((_, i) => i !== index) });
   };
 
   return (
@@ -84,7 +85,7 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
           </Button>
         </div>
 
-        {items.map((item: any, index: number) => (
+        {items.map((item, index) => (
           <div key={index} className="border rounded-lg p-4 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">{t('item', { n: index + 1 })}</span>

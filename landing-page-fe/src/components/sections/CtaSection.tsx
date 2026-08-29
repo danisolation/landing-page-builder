@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useInView } from '@/hooks/useInView';
 
 export interface CtaSectionProps {
   content: {
@@ -14,6 +14,9 @@ export interface CtaSectionProps {
 }
 
 export default function CtaSection({ content }: CtaSectionProps) {
+  const { ref: textRef, isInView: textVisible } = useInView();
+  const { ref: btnRef, isInView: btnVisible } = useInView();
+
   return (
     <section className="relative py-16 sm:py-20 md:py-24 overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-900 dark:via-indigo-900 dark:to-purple-900">
       {/* Decorative orbs */}
@@ -31,11 +34,13 @@ export default function CtaSection({ content }: CtaSectionProps) {
       />
 
       <div className="relative z-10 max-w-3xl mx-auto px-4 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.6 }}
+        <div
+          ref={textRef}
+          style={{
+            opacity: textVisible ? 1 : 0,
+            transform: textVisible ? 'translateY(0)' : 'translateY(20px)',
+            transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+          }}
         >
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">
             {content.heading || 'Ready to get started?'}
@@ -45,19 +50,21 @@ export default function CtaSection({ content }: CtaSectionProps) {
               {content.description}
             </p>
           )}
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.6, delay: 0.15 }}
+        <div
+          ref={btnRef}
+          style={{
+            opacity: btnVisible ? 1 : 0,
+            transform: btnVisible ? 'translateY(0)' : 'translateY(20px)',
+            transition: 'opacity 0.6s ease-out 0.15s, transform 0.6s ease-out 0.15s',
+          }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
           {content.buttonText && (
             <a
               href={content.buttonLink || '#'}
-              className="inline-flex items-center justify-center bg-white text-indigo-600 px-8 py-4 rounded-full font-semibold text-lg hover:scale-105 hover:shadow-2xl transition-all duration-300 shadow-lg"
+              className="inline-flex items-center justify-center bg-white dark:bg-gray-900 text-indigo-600 dark:text-indigo-400 px-8 py-4 rounded-full font-semibold text-lg hover:scale-105 hover:shadow-2xl transition-all duration-300 shadow-lg"
             >
               {content.buttonText}
             </a>
@@ -70,7 +77,7 @@ export default function CtaSection({ content }: CtaSectionProps) {
               {content.secondaryButtonText}
             </a>
           )}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

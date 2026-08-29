@@ -5,10 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import FieldHint from '@/components/ui/field-hint';
+import type { HeroContent } from '@/types';
 
 export interface HeroEditorProps {
-  content: any;
-  onChange: (content: any) => void;
+  content: HeroContent;
+  onChange: (content: HeroContent) => void;
 }
 
 export default function HeroEditor({ content, onChange }: HeroEditorProps) {

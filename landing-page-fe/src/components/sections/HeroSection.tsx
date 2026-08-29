@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useInView } from '@/hooks/useInView';
 
 export interface HeroSectionProps {
   content: {
@@ -14,6 +14,10 @@ export interface HeroSectionProps {
 }
 
 export default function HeroSection({ content }: HeroSectionProps) {
+  const { ref: titleRef, isInView: titleVisible } = useInView();
+  const { ref: subRef, isInView: subVisible } = useInView();
+  const { ref: btnRef, isInView: btnVisible } = useInView();
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500 dark:from-blue-900 dark:via-purple-900 dark:to-pink-900">
       {/* Animated gradient orbs */}
@@ -33,36 +37,45 @@ export default function HeroSection({ content }: HeroSectionProps) {
 
       {/* Content */}
       <div className="relative z-10 text-center px-4 max-w-5xl mx-auto pt-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
+        <div
+          ref={titleRef}
+          style={{
+            opacity: titleVisible ? 1 : 0,
+            transform: titleVisible ? 'translateY(0)' : 'translateY(20px)',
+            transition: 'opacity 0.8s ease-out, transform 0.8s ease-out',
+          }}
         >
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-[1.1] tracking-tight">
             {content.heading || 'Welcome'}
           </h1>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut', delay: 0.15 }}
+        <div
+          ref={subRef}
+          style={{
+            opacity: subVisible ? 1 : 0,
+            transform: subVisible ? 'translateY(0)' : 'translateY(20px)',
+            transition: 'opacity 0.8s ease-out 0.15s, transform 0.8s ease-out 0.15s',
+          }}
         >
           <p className="text-lg md:text-xl text-blue-100/90 mb-10 max-w-2xl mx-auto leading-relaxed">
             {content.subheading}
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut', delay: 0.3 }}
+        <div
+          ref={btnRef}
+          style={{
+            opacity: btnVisible ? 1 : 0,
+            transform: btnVisible ? 'translateY(0)' : 'translateY(20px)',
+            transition: 'opacity 0.8s ease-out 0.3s, transform 0.8s ease-out 0.3s',
+          }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
           {content.buttonText && (
             <a
               href={content.buttonLink || '#'}
-              className="inline-flex items-center justify-center bg-white text-blue-600 px-8 py-4 rounded-full font-semibold text-lg hover:scale-105 hover:shadow-2xl transition-all duration-300 shadow-lg"
+              className="inline-flex items-center justify-center bg-white dark:bg-gray-900 text-blue-600 dark:text-blue-400 px-8 py-4 rounded-full font-semibold text-lg hover:scale-105 hover:shadow-2xl transition-all duration-300 shadow-lg"
             >
               {content.buttonText}
             </a>
@@ -75,7 +88,7 @@ export default function HeroSection({ content }: HeroSectionProps) {
               {content.secondaryButtonText}
             </a>
           )}
-        </motion.div>
+        </div>
       </div>
 
       {/* Bottom fade */}

@@ -1,18 +1,20 @@
 'use client';
 
+import { memo } from 'react';
 import { useTranslations } from 'next-intl';
 import { GripVertical, Eye, Pencil, Copy, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
 import { useDragAndDrop } from '@/hooks/useDragAndDrop';
 import { getSectionSummary, sectionTypeColors } from '@/lib/section-utils';
-import type { Section, SectionType } from '@/types';
+import type { Section, SectionType, SectionContent } from '@/types';
 import HeroSection from './HeroSection';
 import FeaturesSection from './FeaturesSection';
 import CtaSection from './CtaSection';
 import StatsSection from './StatsSection';
 import TestimonialsSection from './TestimonialsSection';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const sectionComponents: Record<SectionType, React.ComponentType<{ content: any }>> = {
   hero: HeroSection,
   features: FeaturesSection,
@@ -23,8 +25,8 @@ const sectionComponents: Record<SectionType, React.ComponentType<{ content: any 
 
 interface DragOverlayData {
   sectionId: string;
-  sectionType: string;
-  sectionContent: any;
+  sectionType: SectionType;
+  sectionContent: SectionContent;
   sectionOrder: number;
 }
 
@@ -38,7 +40,7 @@ export interface SectionCardProps {
   onDragOverlayChange?: (data: DragOverlayData | null) => void;
 }
 
-export default function SectionCard({
+export default memo(function SectionCard({
   section,
   index,
   pageId,
@@ -180,4 +182,4 @@ export default function SectionCard({
       />
     </div>
   );
-}
+});

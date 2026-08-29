@@ -3,9 +3,10 @@
 import { useTranslations, useLocale } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
+import type { Page } from '@/types';
 
 export interface PageTableProps {
-  pages: any[];
+  pages: Page[];
   onDelete: (id: string, title: string) => void;
 }
 

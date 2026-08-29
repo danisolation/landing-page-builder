@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
@@ -18,10 +18,12 @@ import { SkeletonForm } from '@/components/ui/loading';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import FieldHint from '@/components/ui/field-hint';
 import SectionList from '@/components/sections/SectionList';
-import SectionPreviewModal from '@/components/sections/SectionPreviewModal';
-import FullPagePreview from '@/components/sections/FullPagePreview';
 import { showConfirm } from '@/components/ui/confirm-dialog';
+
+const SectionPreviewModal = lazy(() => import('@/components/sections/SectionPreviewModal'));
+const FullPagePreview = lazy(() => import('@/components/sections/FullPagePreview'));
 import { Eye } from 'lucide-react';
+import type { Section } from '@/types';
 
 export default function EditPagePage() {
   const t = useTranslations('editPage');
@@ -71,7 +73,7 @@ export default function EditPagePage() {
   }, [page, reset]);
 
   // Preview state
-  const [previewSection, setPreviewSection] = useState<any>(null);
+  const [previewSection, setPreviewSection] = useState<Section | null>(null);
   const [showFullPreview, setShowFullPreview] = useState(false);
 
   const onSubmit = (data: EditPageFormData) => {
@@ -79,15 +81,15 @@ export default function EditPagePage() {
       { id: pageId, data },
       {
         onSuccess: () => toast.success(t('saveSuccess')),
-        onError: (error: any) => toast.error(error.message || t('saveFailed')),
+        onError: (error: Error) => toast.error(error.message || t('saveFailed')),
       }
     );
   };
 
-  const handleDuplicateSection = (section: any) => {
+  const handleDuplicateSection = (section: Section) => {
     const maxOrder = Math.max(
       0,
-      ...(page?.sections?.map((s: any) => s.order) || [0])
+      ...(page?.sections?.map((s) => s.order) || [0])
     );
     createSection(
       {
@@ -97,13 +99,13 @@ export default function EditPagePage() {
       },
       {
         onSuccess: () => toast.success(t('sectionDuplicated')),
-        onError: (error: any) =>
+        onError: (error: Error) =>
           toast.error(error.message || t('sectionDuplicateFailed')),
       }
     );
   };
 
-  const handleDeleteSection = async (section: any) => {
+  const handleDeleteSection = async (section: Section) => {
     const confirmed = await showConfirm(
       t('deleteConfirmTitle'),
       t('deleteConfirmMessage')
@@ -112,7 +114,7 @@ export default function EditPagePage() {
 
     deleteSection(section.id, {
       onSuccess: () => toast.success(t('sectionDeleted')),
-      onError: (error: any) =>
+      onError: (error: Error) =>
         toast.error(error.message || t('sectionDeleteFailed')),
     });
   };
@@ -226,21 +228,25 @@ export default function EditPagePage() {
 
       {/* Section Preview Modal */}
       {previewSection && (
-        <SectionPreviewModal
-          type={previewSection.type}
-          content={previewSection.content}
-          isOpen={!!previewSection}
-          onClose={() => setPreviewSection(null)}
-        />
+        <Suspense fallback={<SkeletonForm />}>
+          <SectionPreviewModal
+            type={previewSection.type}
+            content={previewSection.content}
+            isOpen={!!previewSection}
+            onClose={() => setPreviewSection(null)}
+          />
+        </Suspense>
       )}
 
       {/* Full Page Preview */}
       {page && (
-        <FullPagePreview
-          page={page}
-          isOpen={showFullPreview}
-          onClose={() => setShowFullPreview(false)}
-        />
+        <Suspense fallback={<SkeletonForm />}>
+          <FullPagePreview
+            page={page}
+            isOpen={showFullPreview}
+            onClose={() => setShowFullPreview(false)}
+          />
+        </Suspense>
       )}
     </div>
   );

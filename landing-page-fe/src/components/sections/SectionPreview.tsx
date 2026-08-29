@@ -6,13 +6,15 @@ import FeaturesSection from './FeaturesSection';
 import CtaSection from './CtaSection';
 import StatsSection from './StatsSection';
 import TestimonialsSection from './TestimonialsSection';
+import type { SectionType, SectionContent } from '@/types';
 
 export interface SectionPreviewProps {
-  type: string;
-  content: any;
+  type: SectionType;
+  content: SectionContent;
 }
 
-const sectionComponents: Record<string, any> = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const sectionComponents: Record<SectionType, React.ComponentType<{ content: any }>> = {
   hero: HeroSection,
   features: FeaturesSection,
   cta: CtaSection,

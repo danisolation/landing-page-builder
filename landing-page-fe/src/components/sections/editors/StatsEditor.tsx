@@ -5,10 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import FieldHint from '@/components/ui/field-hint';
+import type { StatsContent } from '@/types';
 
 export interface StatsEditorProps {
-  content: any;
-  onChange: (content: any) => void;
+  content: StatsContent;
+  onChange: (content: StatsContent) => void;
 }
 
 export default function StatsEditor({ content, onChange }: StatsEditorProps) {
@@ -34,7 +35,7 @@ export default function StatsEditor({ content, onChange }: StatsEditorProps) {
   };
 
   const removeItem = (index: number) => {
-    onChange({ ...content, items: items.filter((_: any, i: number) => i !== index) });
+    onChange({ ...content, items: items.filter((_, i) => i !== index) });
   };
 
   return (
@@ -59,7 +60,7 @@ export default function StatsEditor({ content, onChange }: StatsEditorProps) {
           </Button>
         </div>
 
-        {items.map((item: any, index: number) => (
+        {items.map((item, index) => (
           <div key={index} className="border rounded-lg p-4 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">{t('item', { n: index + 1 })}</span>

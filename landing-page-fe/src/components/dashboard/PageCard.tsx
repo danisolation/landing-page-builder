@@ -4,9 +4,10 @@ import { useTranslations, useLocale } from 'next-intl';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
+import type { Page } from '@/types';
 
 export interface PageCardProps {
-  page: any;
+  page: Page;
   onDelete: (id: string, title: string) => void;
 }
 
@@ -15,7 +16,7 @@ export default function PageCard({ page, onDelete }: PageCardProps) {
   const tCommon = useTranslations('common');
   const locale = useLocale();
   const sectionCount = page.sections?.length || 0;
-  const sectionTypes = page.sections?.map((s: any) => s.type) || [];
+  const sectionTypes = page.sections?.map((s) => s.type) || [];
   const uniqueTypes = [...new Set(sectionTypes)];
 
   return (

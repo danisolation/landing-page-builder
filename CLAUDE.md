@@ -44,6 +44,15 @@ Login: `admin` / `123456` at http://localhost:3001/vi/login
 - **No shared types** between FE and BE — each side defines its own
 - **shadcn/ui base-nova style** — `@base-ui/react` primitives, NOT Radix (except Select)
 
+## Performance Rules
+
+- **Public pages MUST be Server Components** — fetch data on server, pass to client sub-components. Never use `'use client'` on `[slug]/page.tsx`
+- **No framer-motion on public pages** — use CSS transitions + `IntersectionObserver` (`useInView` hook). framer-motion is only for admin modals (lazy-loaded)
+- **No double animation** — don't wrap section components in `AnimatedSection` if they already have their own scroll animations
+- **TanStack Query: toast at call-site only** — never put `toast.success/error` in mutation hooks (`usePages`, `useSections`), only in call-site callbacks. TanStack merges both levels → duplicate toasts
+- **`useRef` for scroll tracking** — never use `useState` for `lastScrollY` in scroll listeners. Use `useRef` to avoid re-registering the event listener on every scroll
+- **ISR for public data** — use `next: { revalidate: 60 }` in server-side fetch for public pages
+
 ## Detailed Rules
 
 - FE rules: `landing-page-fe/CLAUDE.md` (auto-loads when working in FE)

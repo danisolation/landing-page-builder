@@ -10,6 +10,7 @@ export const sectionTypeColors: Record<SectionType, string> = {
     "bg-pink-50 dark:bg-pink-950/30 text-pink-700 dark:text-pink-400 ring-pink-600/20 dark:ring-pink-400/20",
 };
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export function getSectionSummary(
   type: SectionType,
   content: any,

@@ -2,9 +2,10 @@
 
 import { useTranslations } from 'next-intl';
 import { Card, CardContent } from '@/components/ui/card';
+import type { Page } from '@/types';
 
 export interface StatsCardsProps {
-  pages: any[];
+  pages: Page[];
 }
 
 export default function StatsCards({ pages }: StatsCardsProps) {

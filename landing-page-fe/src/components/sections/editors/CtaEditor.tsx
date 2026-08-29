@@ -4,10 +4,11 @@ import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import FieldHint from '@/components/ui/field-hint';
+import type { CtaContent } from '@/types';
 
 export interface CtaEditorProps {
-  content: any;
-  onChange: (content: any) => void;
+  content: CtaContent;
+  onChange: (content: CtaContent) => void;
 }
 
 export default function CtaEditor({ content, onChange }: CtaEditorProps) {

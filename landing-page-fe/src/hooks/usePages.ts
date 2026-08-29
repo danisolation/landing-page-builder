@@ -1,7 +1,6 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import {
   getPages,
   getPage,
@@ -10,7 +9,7 @@ import {
   deletePage,
 } from "@/lib/api";
 import { pageKeys } from "@/lib/query-keys";
-import type { CreatePageInput, UpdatePageInput } from "@/types";
+import type { UpdatePageInput } from "@/types";
 
 export function usePages() {
   const queryClient = useQueryClient();
@@ -25,40 +24,28 @@ export function usePages() {
     queryFn: getPages,
   });
 
-  // Tạo page
+  // Tạo page — toast handled at call-site
   const createMutation = useMutation({
     mutationFn: createPage,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: pageKeys.all });
-      toast.success("Tạo trang thành công");
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || "Đã xảy ra lỗi khi tạo trang");
     },
   });
 
-  // Cập nhật page
+  // Cập nhật page — toast handled at call-site
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdatePageInput }) =>
       updatePage(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: pageKeys.all });
-      toast.success("Cập nhật trang thành công");
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || "Đã xảy ra lỗi khi cập nhật trang");
     },
   });
 
-  // Xóa page
+  // Xóa page — toast handled at call-site
   const deleteMutation = useMutation({
     mutationFn: deletePage,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: pageKeys.all });
-      toast.success("Xóa trang thành công");
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || "Đã xảy ra lỗi khi xóa trang");
     },
   });
 

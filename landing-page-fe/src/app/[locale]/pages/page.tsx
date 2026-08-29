@@ -85,7 +85,7 @@ export default function PagesListPage() {
         onSuccess: () => {
           toast.success(t('deleteSuccess'));
         },
-        onError: (error: any) => {
+        onError: (error: Error) => {
           toast.error(error.message || t('deleteFailed'));
         },
       });
@@ -180,7 +180,7 @@ export default function PagesListPage() {
         />
       ) : viewMode === 'card' ? (
         <div className="grid gap-3">
-          {filteredPages.map((page: any) => (
+          {filteredPages.map((page) => (
             <PageCard key={page.id} page={page} onDelete={handleDelete} />
           ))}
         </div>

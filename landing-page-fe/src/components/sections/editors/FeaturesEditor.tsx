@@ -5,10 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import FieldHint from '@/components/ui/field-hint';
+import type { FeaturesContent } from '@/types';
 
 export interface FeaturesEditorProps {
-  content: any;
-  onChange: (content: any) => void;
+  content: FeaturesContent;
+  onChange: (content: FeaturesContent) => void;
 }
 
 export default function FeaturesEditor({ content, onChange }: FeaturesEditorProps) {
@@ -46,7 +47,7 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
   };
 
   const removeItem = (index: number) => {
-    const newItems = items.filter((_: any, i: number) => i !== index);
+    const newItems = items.filter((_, i) => i !== index);
     onChange({
       ...content,
       items: newItems,
@@ -75,7 +76,7 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
           </Button>
         </div>
 
-        {items.map((item: any, index: number) => (
+        {items.map((item, index) => (
           <div key={index} className="border rounded-lg p-4 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">{t('item', { n: index + 1 })}</span>

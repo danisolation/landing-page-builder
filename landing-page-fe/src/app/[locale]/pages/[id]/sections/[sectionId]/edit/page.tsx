@@ -24,6 +24,7 @@ import { SkeletonForm } from '@/components/ui/loading';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import SectionPreviewModal from '@/components/sections/SectionPreviewModal';
 import { sectionEditors } from '@/components/sections/section-constants';
+import type { SectionType, SectionContent } from '@/types';
 
 export default function EditSectionPage() {
   const t = useTranslations('sectionEditor');
@@ -46,7 +47,7 @@ export default function EditSectionPage() {
   const { data: page, isLoading } = usePage(pageId);
   const { updateSection, isUpdating } = useSections(pageId);
 
-  const section = page?.sections?.find((s: any) => s.id === sectionId);
+  const section = page?.sections?.find((s) => s.id === sectionId);
 
   const {
     register,
@@ -63,8 +64,8 @@ export default function EditSectionPage() {
     },
   });
 
-  const typeValue = watch('type');
-  const [content, setContent] = useState<any>({});
+  const typeValue = watch('type') as SectionType;
+  const [content, setContent] = useState<SectionContent>({} as SectionContent);
   const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
@@ -79,13 +80,13 @@ export default function EditSectionPage() {
 
   const onSubmit = (data: EditSectionFormData) => {
     updateSection(
-      { sectionId, data: { type: data.type, content, order: data.order } },
+      { sectionId, data: { type: data.type as SectionType, content, order: data.order } },
       {
         onSuccess: () => {
           toast.success(t('sectionUpdated'));
           router.push(`/pages/${pageId}/edit`);
         },
-        onError: (error: any) => {
+        onError: (error: Error) => {
           toast.error(error.message || t('sectionUpdateFailed'));
         },
       }
@@ -95,7 +96,7 @@ export default function EditSectionPage() {
   if (isLoading) {
     return (
       <div>
-        <Breadcrumbs pageTitle={(page as any)?.title} />
+        <Breadcrumbs />
         <h1 className="text-2xl font-bold text-foreground tracking-tight mb-6">
           {t('editSection')}
         </h1>
@@ -107,7 +108,7 @@ export default function EditSectionPage() {
   if (!section) {
     return (
       <div>
-        <Breadcrumbs pageTitle={(page as any)?.title} />
+        <Breadcrumbs pageTitle={page?.title} />
         <h1 className="text-2xl font-bold text-foreground tracking-tight mb-6">
           {t('editSection')}
         </h1>
@@ -120,7 +121,7 @@ export default function EditSectionPage() {
 
   return (
     <div>
-      <Breadcrumbs pageTitle={(page as any)?.title} />
+      <Breadcrumbs pageTitle={page?.title} />
 
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <h1 className="text-2xl font-bold text-foreground tracking-tight">

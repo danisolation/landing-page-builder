@@ -10,20 +10,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Link } from '@/i18n/navigation';
 import SectionCard from './SectionCard';
 import DragOverlay from './DragOverlay';
+import type { Section, SectionType, SectionContent } from '@/types';
 
 interface DragOverlayData {
   sectionId: string;
-  sectionType: string;
-  sectionContent: any;
+  sectionType: SectionType;
+  sectionContent: SectionContent;
   sectionOrder: number;
 }
 
 export interface SectionListProps {
-  sections: any[];
+  sections: Section[];
   pageId: string;
-  onPreview: (section: any) => void;
-  onDuplicate: (section: any) => void;
-  onDelete: (section: any) => void;
+  onPreview: (section: Section) => void;
+  onDuplicate: (section: Section) => void;
+  onDelete: (section: Section) => void;
   onReorder: (sectionIds: string[]) => void;
 }
 

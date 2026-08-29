@@ -54,7 +54,7 @@ export default function NewPagePage() {
         toast.success(t("success"));
         router.push("/pages");
       },
-      onError: (error: any) => {
+      onError: (error: Error) => {
         toast.error(error.message || t("failed"));
       },
     });

@@ -37,7 +37,7 @@ export default function LoginPage() {
 
   const onSubmit = (data: LoginFormData) => {
     login(data, {
-      onError: (error: any) => {
+      onError: (error: Error) => {
         toast.error(error.message || t("loginFailed"));
       },
     });

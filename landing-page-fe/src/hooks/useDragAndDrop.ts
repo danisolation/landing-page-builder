@@ -1,23 +1,32 @@
 "use client";
 
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState } from "react";
 import {
   draggable,
   dropTargetForElements,
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 
+import type { SectionType, SectionContent } from '@/types';
+
+interface DragAndDropData {
+  sectionId: string;
+  sectionType: SectionType;
+  sectionContent: SectionContent;
+  sectionOrder: number;
+}
+
 interface DragAndDropOptions {
   index: number;
   sectionId: string;
-  sectionType: string;
-  sectionContent: any;
+  sectionType: SectionType;
+  sectionContent: SectionContent;
   sectionOrder: number;
-  onDragOverlayChange?: (data: any | null) => void;
+  onDragOverlayChange?: (data: DragAndDropData | null) => void;
 }
 
 interface DragAndDropReturn {
-  cardRef: React.RefObject<HTMLDivElement>;
-  handleRef: React.RefObject<HTMLDivElement>;
+  cardRef: React.RefObject<HTMLDivElement | null>;
+  handleRef: React.RefObject<HTMLDivElement | null>;
   isDragging: boolean;
   closestEdge: "top" | "bottom" | null;
 }

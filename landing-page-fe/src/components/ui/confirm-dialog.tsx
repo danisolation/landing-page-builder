@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 
@@ -23,6 +23,7 @@ export function showConfirm(title: string, message: string): Promise<boolean> {
 
 export default function ConfirmDialog() {
   const t = useTranslations('common');
+  const dialogRef = useRef<HTMLDivElement>(null);
   const [dialog, setDialog] = useState<ConfirmDialogState>({
     isOpen: false,
     title: '',
@@ -50,9 +51,20 @@ export default function ConfirmDialog() {
     };
   }, []);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     setDialog((prev) => ({ ...prev, isOpen: false }));
-  };
+  }, []);
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') handleCancel();
+  }, [handleCancel]);
+
+  // Focus trap: focus the dialog on open
+  useEffect(() => {
+    if (dialog.isOpen && dialogRef.current) {
+      dialogRef.current.focus();
+    }
+  }, [dialog.isOpen]);
 
   if (!dialog.isOpen) return null;
 
@@ -65,7 +77,14 @@ export default function ConfirmDialog() {
       />
 
       {/* Dialog */}
-      <div className="relative bg-card rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
+      <div
+        ref={dialogRef}
+        role="alertdialog"
+        aria-modal="true"
+        tabIndex={-1}
+        onKeyDown={handleKeyDown}
+        className="relative bg-card rounded-lg shadow-xl max-w-md w-full mx-4 p-6 outline-none"
+      >
         <h2 className="text-lg font-semibold mb-2">{dialog.title}</h2>
         <p className="text-muted-foreground mb-6">{dialog.message}</p>
 

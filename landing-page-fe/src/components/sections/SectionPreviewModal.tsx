@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
@@ -10,8 +10,10 @@ import CtaSection from './CtaSection';
 import StatsSection from './StatsSection';
 import TestimonialsSection from './TestimonialsSection';
 import { Button } from '@/components/ui/button';
+import type { SectionType, SectionContent } from '@/types';
 
-const sectionComponents: Record<string, any> = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const sectionComponents: Record<SectionType, React.ComponentType<{ content: any }>> = {
   hero: HeroSection,
   features: FeaturesSection,
   cta: CtaSection,
@@ -20,8 +22,8 @@ const sectionComponents: Record<string, any> = {
 };
 
 export interface SectionPreviewModalProps {
-  type: string;
-  content: any;
+  type: SectionType;
+  content: SectionContent;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -29,6 +31,18 @@ export interface SectionPreviewModalProps {
 export default function SectionPreviewModal({ type, content, isOpen, onClose }: SectionPreviewModalProps) {
   const SectionComponent = sectionComponents[type];
   const t = useTranslations('sectionPreviewModal');
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') onClose();
+  }, [onClose]);
+
+  // Focus trap: focus the dialog on open
+  useEffect(() => {
+    if (isOpen && dialogRef.current) {
+      dialogRef.current.focus();
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -53,11 +67,16 @@ export default function SectionPreviewModal({ type, content, isOpen, onClose }: 
           onClick={onClose}
         >
           <motion.div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            tabIndex={-1}
+            onKeyDown={handleKeyDown}
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="absolute inset-4 md:inset-6 lg:inset-10 bg-background rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+            className="absolute inset-4 md:inset-6 lg:inset-10 bg-background rounded-2xl shadow-2xl overflow-hidden flex flex-col outline-none"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}

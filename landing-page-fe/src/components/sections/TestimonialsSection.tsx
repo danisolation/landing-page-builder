@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useInView } from '@/hooks/useInView';
 import Image from 'next/image';
 import { Quote } from 'lucide-react';
 
@@ -20,31 +20,22 @@ export interface TestimonialsSectionProps {
   };
 }
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.12,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' as const } },
-};
-
 export default function TestimonialsSection({ content }: TestimonialsSectionProps) {
+  const { ref: headerRef, isInView: headerVisible } = useInView();
+  const { ref: gridRef, isInView: gridVisible } = useInView();
+
   return (
     <section className="py-16 sm:py-20 md:py-24 bg-muted">
       <div className="max-w-6xl mx-auto px-4">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+        <div
+          ref={headerRef}
           className="text-center mb-16"
+          style={{
+            opacity: headerVisible ? 1 : 0,
+            transform: headerVisible ? 'translateY(0)' : 'translateY(20px)',
+            transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+          }}
         >
           {content.subtitle && (
             <p className="text-sm font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-3">
@@ -59,21 +50,26 @@ export default function TestimonialsSection({ content }: TestimonialsSectionProp
               {content.description}
             </p>
           )}
-        </motion.div>
+        </div>
 
         {/* Testimonial Cards */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-60px' }}
+        <div
+          ref={gridRef}
           className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          style={{
+            opacity: gridVisible ? 1 : 0,
+            transition: 'opacity 0.6s ease-out',
+          }}
         >
           {content.items?.map((item, index) => (
-            <motion.div
+            <div
               key={index}
-              variants={itemVariants}
               className="relative bg-card rounded-2xl p-8 shadow-sm hover:shadow-lg transition-shadow duration-300 border border-border"
+              style={{
+                opacity: gridVisible ? 1 : 0,
+                transform: gridVisible ? 'translateY(0)' : 'translateY(24px)',
+                transition: `opacity 0.5s ease-out ${index * 0.12}s, transform 0.5s ease-out ${index * 0.12}s`,
+              }}
             >
               {/* Quote icon */}
               <div className="absolute top-6 right-6 text-blue-100 dark:text-blue-900/50">
@@ -110,9 +106,9 @@ export default function TestimonialsSection({ content }: TestimonialsSectionProp
                   </p>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

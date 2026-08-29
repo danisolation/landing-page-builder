@@ -13,6 +13,7 @@ import { Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { SkeletonForm } from '@/components/ui/loading';
 import {
   Select,
   SelectContent,
@@ -23,6 +24,7 @@ import {
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import SectionPreviewModal from '@/components/sections/SectionPreviewModal';
 import { defaultContent, sectionEditors } from '@/components/sections/section-constants';
+import type { SectionType, SectionContent } from '@/types';
 
 export default function NewSectionPage() {
   const t = useTranslations('sectionEditor');
@@ -40,7 +42,7 @@ export default function NewSectionPage() {
   const params = useParams();
   const pageId = params.id as string;
 
-  const { data: page } = usePage(pageId);
+  const { data: page, isLoading } = usePage(pageId);
   const { createSection, isCreating } = useSections(pageId);
 
   const {
@@ -57,24 +59,24 @@ export default function NewSectionPage() {
     },
   });
 
-  const typeValue = watch('type');
-  const [content, setContent] = useState(defaultContent['hero']);
+  const typeValue = watch('type') as SectionType;
+  const [content, setContent] = useState<SectionContent>(defaultContent['hero']);
   const [showPreview, setShowPreview] = useState(false);
 
   const handleTypeChange = (newType: string) => {
     setValue('type', newType);
-    setContent(defaultContent[newType] || {});
+    setContent(defaultContent[newType as SectionType] || {} as SectionContent);
   };
 
   const onSubmit = (data: NewSectionFormData) => {
     createSection(
-      { type: data.type, content, order: data.order },
+      { type: data.type as SectionType, content, order: data.order },
       {
         onSuccess: () => {
           toast.success(t('sectionAdded'));
           router.push(`/pages/${pageId}/edit`);
         },
-        onError: (error: any) => {
+        onError: (error: Error) => {
           toast.error(error.message || t('sectionAddFailed'));
         },
       }
@@ -82,6 +84,18 @@ export default function NewSectionPage() {
   };
 
   const EditorComponent = sectionEditors[typeValue];
+
+  if (isLoading) {
+    return (
+      <div>
+        <Breadcrumbs />
+        <h1 className="text-2xl font-bold text-foreground tracking-tight mb-6">
+          {t('addSection')}
+        </h1>
+        <SkeletonForm />
+      </div>
+    );
+  }
 
   return (
     <div>

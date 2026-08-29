@@ -58,53 +58,58 @@ export interface UpdateSectionInput {
 
 // Section content types
 export interface HeroContent {
-  title: string;
-  subtitle?: string;
+  heading?: string;
+  subheading?: string;
   buttonText?: string;
   buttonLink?: string;
-  backgroundImage?: string;
+  secondaryButtonText?: string;
+  secondaryButtonLink?: string;
 }
 
 export interface FeatureItem {
-  title: string;
-  description: string;
   icon?: string;
+  name: string;
+  description: string;
 }
 
 export interface FeaturesContent {
-  title?: string;
   subtitle?: string;
+  title?: string;
+  description?: string;
   items: FeatureItem[];
 }
 
 export interface CtaContent {
-  title: string;
-  subtitle?: string;
+  heading?: string;
+  description?: string;
   buttonText?: string;
   buttonLink?: string;
+  secondaryButtonText?: string;
+  secondaryButtonLink?: string;
 }
 
 export interface StatItem {
-  value: string;
+  value: number;
+  suffix?: string;
   label: string;
 }
 
 export interface StatsContent {
   title?: string;
-  subtitle?: string;
   items: StatItem[];
 }
 
 export interface TestimonialItem {
+  quote?: string;
   name: string;
   role?: string;
-  content: string;
   avatar?: string;
 }
 
 export interface TestimonialsContent {
-  title?: string;
   subtitle?: string;
+  title?: string;
+  description?: string;
   items: TestimonialItem[];
 }
 

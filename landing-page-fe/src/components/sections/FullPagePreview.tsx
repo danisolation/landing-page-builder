@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef, useCallback } from 'react';
 import { X, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParams } from 'next/navigation';
@@ -13,8 +13,10 @@ import TestimonialsSection from './TestimonialsSection';
 import PublicFooter from '@/components/public/PublicFooter';
 import AnimatedSection from '@/components/public/AnimatedSection';
 import { Button } from '@/components/ui/button';
+import type { Section, SectionType } from '@/types';
 
-const sectionComponents: Record<string, any> = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const sectionComponents: Record<SectionType, React.ComponentType<{ content: any }>> = {
   hero: HeroSection,
   features: FeaturesSection,
   cta: CtaSection,
@@ -26,7 +28,7 @@ export interface FullPagePreviewProps {
   page: {
     title: string;
     slug: string;
-    sections?: any[];
+    sections?: Section[];
   };
   isOpen: boolean;
   onClose: () => void;
@@ -36,6 +38,18 @@ export default function FullPagePreview({ page, isOpen, onClose }: FullPagePrevi
   const params = useParams();
   const locale = params.locale as string;
   const t = useTranslations('fullPagePreview');
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') onClose();
+  }, [onClose]);
+
+  // Focus trap: focus the dialog on open
+  useEffect(() => {
+    if (isOpen && dialogRef.current) {
+      dialogRef.current.focus();
+    }
+  }, [isOpen]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -67,11 +81,16 @@ export default function FullPagePreview({ page, isOpen, onClose }: FullPagePrevi
           onClick={onClose}
         >
           <motion.div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            tabIndex={-1}
+            onKeyDown={handleKeyDown}
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="absolute inset-4 md:inset-6 lg:inset-10 bg-white dark:bg-gray-950 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+            className="absolute inset-4 md:inset-6 lg:inset-10 bg-white dark:bg-gray-950 rounded-2xl shadow-2xl overflow-hidden flex flex-col outline-none"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Admin toolbar */}
@@ -113,7 +132,7 @@ export default function FullPagePreview({ page, isOpen, onClose }: FullPagePrevi
                 </div>
               ) : (
                 <>
-                  {sortedSections.map((section: any) => {
+                  {sortedSections.map((section) => {
                     const SectionComponent = sectionComponents[section.type];
 
                     if (!SectionComponent) {

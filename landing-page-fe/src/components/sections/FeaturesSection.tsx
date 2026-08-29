@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useInView } from '@/hooks/useInView';
 
 interface FeatureItem {
   icon?: string;
@@ -17,31 +17,22 @@ export interface FeaturesSectionProps {
   };
 }
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' as const } },
-};
-
 export default function FeaturesSection({ content }: FeaturesSectionProps) {
+  const { ref: headerRef, isInView: headerVisible } = useInView();
+  const { ref: gridRef, isInView: gridVisible } = useInView();
+
   return (
     <section className="py-16 sm:py-20 md:py-24 bg-muted">
       <div className="max-w-6xl mx-auto px-4">
         {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.6 }}
+        <div
+          ref={headerRef}
           className="text-center mb-16"
+          style={{
+            opacity: headerVisible ? 1 : 0,
+            transform: headerVisible ? 'translateY(0)' : 'translateY(20px)',
+            transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+          }}
         >
           {content.subtitle && (
             <p className="text-sm font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-3">
@@ -56,21 +47,26 @@ export default function FeaturesSection({ content }: FeaturesSectionProps) {
               {content.description}
             </p>
           )}
-        </motion.div>
+        </div>
 
         {/* Feature Cards Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-60px' }}
+        <div
+          ref={gridRef}
           className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          style={{
+            opacity: gridVisible ? 1 : 0,
+            transition: 'opacity 0.6s ease-out',
+          }}
         >
           {content.items?.map((item, index) => (
-            <motion.div
+            <div
               key={index}
-              variants={itemVariants}
               className="group relative bg-card/80 backdrop-blur-sm border border-border rounded-2xl p-8 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/5 dark:hover:shadow-blue-500/10 hover:border-blue-200/60 dark:hover:border-blue-700/40 transition-all duration-300"
+              style={{
+                opacity: gridVisible ? 1 : 0,
+                transform: gridVisible ? 'translateY(0)' : 'translateY(24px)',
+                transition: `opacity 0.5s ease-out ${index * 0.1}s, transform 0.5s ease-out ${index * 0.1}s`,
+              }}
             >
               {/* Icon */}
               <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-2xl mb-5 shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform duration-300">
@@ -84,9 +80,9 @@ export default function FeaturesSection({ content }: FeaturesSectionProps) {
               <p className="text-muted-foreground leading-relaxed">
                 {item.description}
               </p>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -25,6 +25,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     !pathWithoutLocale.startsWith('/pages') &&
     pathWithoutLocale !== '/';
 
+  // Early return — skip heavy admin UI on public/login pages
   if (isLoginPage || isPublicPage) {
     return <>{children}</>;
   }
