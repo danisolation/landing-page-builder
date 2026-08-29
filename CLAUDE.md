@@ -50,4 +50,4 @@ Login: `admin` / `123456` at http://localhost:3001/vi/login
 - BE rules: `landing-page-be/CLAUDE.md` (auto-loads when working in BE)
 - Progress tracker: `PROGRESS.md` (read this to understand current state and TODOs)
 - **NO Co-Authored-By in commit messages** — do NOT add `Co-Authored-By: Claude` or any similar line
-- **Ask before git push** — ALWAYS confirm with user before running `git push`. Commit is OK without asking, but push requires explicit user approval.
+- **Ask before git commit & push** — ALWAYS confirm with user before running `git commit` AND `git push`. Never auto-commit or auto-push.
