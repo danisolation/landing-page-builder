@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import {
   getPages,
   getPage,
@@ -27,6 +28,10 @@ export function usePages() {
     mutationFn: createPage,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pages"] });
+      toast.success("Tạo trang thành công");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Đã xảy ra lỗi khi tạo trang");
     },
   });
 
@@ -36,6 +41,10 @@ export function usePages() {
       updatePage(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pages"] });
+      toast.success("Cập nhật trang thành công");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Đã xảy ra lỗi khi cập nhật trang");
     },
   });
 
@@ -44,6 +53,10 @@ export function usePages() {
     mutationFn: deletePage,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pages"] });
+      toast.success("Xóa trang thành công");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Đã xảy ra lỗi khi xóa trang");
     },
   });
 

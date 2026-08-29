@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { createSection, updateSection, deleteSection } from "@/lib/api";
 
 export function useSections(pageId: string) {
@@ -11,6 +12,10 @@ export function useSections(pageId: string) {
     mutationFn: (data: any) => createSection(pageId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pages", pageId] });
+      toast.success("Tạo section thành công");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Đã xảy ra lỗi khi tạo section");
     },
   });
 
@@ -20,6 +25,10 @@ export function useSections(pageId: string) {
       updateSection(pageId, sectionId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pages", pageId] });
+      toast.success("Cập nhật section thành công");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Đã xảy ra lỗi khi cập nhật section");
     },
   });
 
@@ -28,6 +37,10 @@ export function useSections(pageId: string) {
     mutationFn: (sectionId: string) => deleteSection(pageId, sectionId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pages", pageId] });
+      toast.success("Xóa section thành công");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Đã xảy ra lỗi khi xóa section");
     },
   });
 
