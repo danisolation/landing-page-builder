@@ -1,6 +1,17 @@
+import type {
+  Page,
+  CreatePageInput,
+  UpdatePageInput,
+  Section,
+  CreateSectionInput,
+  UpdateSectionInput,
+  AuthResponse,
+  Profile,
+} from "@/types";
+
 const API_URL = "http://localhost:3000";
 
-async function fetchAPI(endpoint: string, options: RequestInit = {}) {
+async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
@@ -28,34 +39,34 @@ async function fetchAPI(endpoint: string, options: RequestInit = {}) {
 
 // Auth
 export const login = (username: string, password: string) =>
-  fetchAPI("/auth/login", {
+  fetchAPI<AuthResponse>("/auth/login", {
     method: "POST",
     body: JSON.stringify({ username, password }),
   });
 
-export const getProfile = () => fetchAPI("/auth/profile");
+export const getProfile = () => fetchAPI<Profile>("/auth/profile");
 
 // Pages
-export const getPages = () => fetchAPI("/pages");
-export const getPage = (id: string) => fetchAPI(`/pages/${id}`);
-export const getPageBySlug = (slug: string) => fetchAPI(`/pages/slug/${slug}`);
-export const createPage = (data: any) =>
-  fetchAPI("/pages", { method: "POST", body: JSON.stringify(data) });
-export const updatePage = (id: string, data: any) =>
-  fetchAPI(`/pages/${id}`, { method: "PATCH", body: JSON.stringify(data) });
+export const getPages = () => fetchAPI<Page[]>("/pages");
+export const getPage = (id: string) => fetchAPI<Page>(`/pages/${id}`);
+export const getPageBySlug = (slug: string) => fetchAPI<Page>(`/pages/slug/${slug}`);
+export const createPage = (data: CreatePageInput) =>
+  fetchAPI<Page>("/pages", { method: "POST", body: JSON.stringify(data) });
+export const updatePage = (id: string, data: UpdatePageInput) =>
+  fetchAPI<Page>(`/pages/${id}`, { method: "PATCH", body: JSON.stringify(data) });
 export const deletePage = (id: string) =>
-  fetchAPI(`/pages/${id}`, { method: "DELETE" });
+  fetchAPI<void>(`/pages/${id}`, { method: "DELETE" });
 
 // Sections
-export const createSection = (pageId: string, data: any) =>
-  fetchAPI(`/pages/${pageId}/sections`, {
+export const createSection = (pageId: string, data: CreateSectionInput) =>
+  fetchAPI<Section>(`/pages/${pageId}/sections`, {
     method: "POST",
     body: JSON.stringify(data),
   });
-export const updateSection = (pageId: string, sectionId: string, data: any) =>
-  fetchAPI(`/pages/${pageId}/sections/${sectionId}`, {
+export const updateSection = (pageId: string, sectionId: string, data: UpdateSectionInput) =>
+  fetchAPI<Section>(`/pages/${pageId}/sections/${sectionId}`, {
     method: "PATCH",
     body: JSON.stringify(data),
   });
 export const deleteSection = (pageId: string, sectionId: string) =>
-  fetchAPI(`/pages/${pageId}/sections/${sectionId}`, { method: "DELETE" });
+  fetchAPI<void>(`/pages/${pageId}/sections/${sectionId}`, { method: "DELETE" });

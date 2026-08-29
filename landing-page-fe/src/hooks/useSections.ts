@@ -3,13 +3,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { createSection, updateSection, deleteSection } from "@/lib/api";
+import type { CreateSectionInput, UpdateSectionInput } from "@/types";
 
 export function useSections(pageId: string) {
   const queryClient = useQueryClient();
 
   // Tạo section
   const createMutation = useMutation({
-    mutationFn: (data: any) => createSection(pageId, data),
+    mutationFn: (data: CreateSectionInput) => createSection(pageId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pages", pageId] });
       toast.success("Tạo section thành công");
@@ -21,7 +22,7 @@ export function useSections(pageId: string) {
 
   // Cập nhật section
   const updateMutation = useMutation({
-    mutationFn: ({ sectionId, data }: { sectionId: string; data: any }) =>
+    mutationFn: ({ sectionId, data }: { sectionId: string; data: UpdateSectionInput }) =>
       updateSection(pageId, sectionId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pages", pageId] });

@@ -9,6 +9,7 @@ import {
   updatePage,
   deletePage,
 } from "@/lib/api";
+import type { CreatePageInput, UpdatePageInput } from "@/types";
 
 export function usePages() {
   const queryClient = useQueryClient();
@@ -37,7 +38,7 @@ export function usePages() {
 
   // Cập nhật page
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: any }) =>
+    mutationFn: ({ id, data }: { id: string; data: UpdatePageInput }) =>
       updatePage(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pages"] });
