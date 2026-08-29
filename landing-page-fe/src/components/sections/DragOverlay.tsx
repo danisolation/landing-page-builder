@@ -41,7 +41,7 @@ function getSectionSummary(type: string, content: any): string {
   }
 }
 
-interface DragOverlayProps {
+export interface DragOverlayProps {
   data: {
     sectionId: string;
     sectionType: string;

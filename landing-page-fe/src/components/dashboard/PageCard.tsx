@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
 
-interface PageCardProps {
+export interface PageCardProps {
   page: any;
   onDelete: (id: string, title: string) => void;
 }

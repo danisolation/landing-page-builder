@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import FieldHint from '@/components/ui/field-hint';
 
-interface HeroEditorProps {
+export interface HeroEditorProps {
   content: any;
   onChange: (content: any) => void;
 }

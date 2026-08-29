@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import FieldHint from '@/components/ui/field-hint';
 
-interface FeaturesEditorProps {
+export interface FeaturesEditorProps {
   content: any;
   onChange: (content: any) => void;
 }

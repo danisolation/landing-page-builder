@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-interface SearchFilterProps {
+export interface SearchFilterProps {
   search: string;
   onSearchChange: (value: string) => void;
   status: string;

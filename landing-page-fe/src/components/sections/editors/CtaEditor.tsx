@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import FieldHint from '@/components/ui/field-hint';
 
-interface CtaEditorProps {
+export interface CtaEditorProps {
   content: any;
   onChange: (content: any) => void;
 }

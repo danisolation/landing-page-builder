@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { ReactNode } from 'react';
 
-interface AnimatedSectionProps {
+export interface AnimatedSectionProps {
   children: ReactNode;
   className?: string;
   delay?: number;

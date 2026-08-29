@@ -7,7 +7,7 @@ import CtaSection from './CtaSection';
 import StatsSection from './StatsSection';
 import TestimonialsSection from './TestimonialsSection';
 
-interface SectionPreviewProps {
+export interface SectionPreviewProps {
   type: string;
   content: any;
 }

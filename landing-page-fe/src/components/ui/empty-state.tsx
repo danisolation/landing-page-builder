@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 
-interface EmptyStateProps {
+export interface EmptyStateProps {
   icon?: React.ReactNode;
   title: string;
   description: string;

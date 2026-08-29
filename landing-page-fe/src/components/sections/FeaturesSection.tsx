@@ -8,7 +8,7 @@ interface FeatureItem {
   description?: string;
 }
 
-interface FeaturesSectionProps {
+export interface FeaturesSectionProps {
   content: {
     subtitle?: string;
     title?: string;

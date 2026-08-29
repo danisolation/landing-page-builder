@@ -22,7 +22,7 @@ const sectionComponents: Record<string, any> = {
   testimonials: TestimonialsSection,
 };
 
-interface FullPagePreviewProps {
+export interface FullPagePreviewProps {
   page: {
     title: string;
     slug: string;

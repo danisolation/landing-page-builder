@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 
-interface FieldHintProps {
+export interface FieldHintProps {
   text: string;
 }
 

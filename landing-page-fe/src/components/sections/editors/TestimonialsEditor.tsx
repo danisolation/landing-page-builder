@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import FieldHint from '@/components/ui/field-hint';
 
-interface TestimonialsEditorProps {
+export interface TestimonialsEditorProps {
   content: any;
   onChange: (content: any) => void;
 }

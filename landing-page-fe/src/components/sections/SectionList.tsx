@@ -18,7 +18,7 @@ interface DragOverlayData {
   sectionOrder: number;
 }
 
-interface SectionListProps {
+export interface SectionListProps {
   sections: any[];
   pageId: string;
   onPreview: (section: any) => void;

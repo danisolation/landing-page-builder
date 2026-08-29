@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useInView } from 'framer-motion';
 
-interface CounterAnimationProps {
+export interface CounterAnimationProps {
   target: number;
   suffix?: string;
   duration?: number;

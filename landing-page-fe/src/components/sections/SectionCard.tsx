@@ -55,7 +55,7 @@ interface DragOverlayData {
   sectionOrder: number;
 }
 
-interface SectionCardProps {
+export interface SectionCardProps {
   section: any;
   index: number;
   pageId: string;

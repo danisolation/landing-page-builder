@@ -1,4 +1,4 @@
-interface PublicFooterProps {
+export interface PublicFooterProps {
   pageTitle?: string;
 }
 

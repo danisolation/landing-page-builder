@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 
-interface CtaSectionProps {
+export interface CtaSectionProps {
   content: {
     heading?: string;
     description?: string;

@@ -9,7 +9,7 @@ interface StatItem {
   label?: string;
 }
 
-interface StatsSectionProps {
+export interface StatsSectionProps {
   content: {
     title?: string;
     items?: StatItem[];

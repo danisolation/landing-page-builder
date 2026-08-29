@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 
-interface BreadcrumbsProps {
+export interface BreadcrumbsProps {
   pageTitle?: string;
 }
 

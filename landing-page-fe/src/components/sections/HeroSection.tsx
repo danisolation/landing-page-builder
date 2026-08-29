@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 
-interface HeroSectionProps {
+export interface HeroSectionProps {
   content: {
     heading?: string;
     subheading?: string;

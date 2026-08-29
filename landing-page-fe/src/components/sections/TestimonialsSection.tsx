@@ -11,7 +11,7 @@ interface TestimonialItem {
   avatar?: string;
 }
 
-interface TestimonialsSectionProps {
+export interface TestimonialsSectionProps {
   content: {
     subtitle?: string;
     title?: string;

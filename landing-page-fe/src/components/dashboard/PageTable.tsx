@@ -4,7 +4,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
 
-interface PageTableProps {
+export interface PageTableProps {
   pages: any[];
   onDelete: (id: string, title: string) => void;
 }

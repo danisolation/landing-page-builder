@@ -19,7 +19,7 @@ const sectionComponents: Record<string, any> = {
   testimonials: TestimonialsSection,
 };
 
-interface SectionPreviewModalProps {
+export interface SectionPreviewModalProps {
   type: string;
   content: any;
   isOpen: boolean;

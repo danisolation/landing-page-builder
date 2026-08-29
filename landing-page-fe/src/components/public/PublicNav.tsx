@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Moon, Sun, Menu, X } from 'lucide-react';
 
-interface PublicNavProps {
+export interface PublicNavProps {
   pageTitle: string;
 }
 
