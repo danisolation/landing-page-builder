@@ -51,3 +51,5 @@ Login: `admin` / `123456` at http://localhost:3001/vi/login
 - Progress tracker: `PROGRESS.md` (read this to understand current state and TODOs)
 - **NO Co-Authored-By in commit messages** — do NOT add `Co-Authored-By: Claude` or any similar line
 - **No auto commit/push** — ONLY commit or push when user explicitly asks. Do not ask "want to commit?", just wait for user to say so.
+- **Reports** — BE work: detailed report explaining WHY + WHAT + HOW. FE work: brief report, enough for user to understand.
+- **Always ask when unclear** — never guess. If requirement is ambiguous, ask user before proceeding.

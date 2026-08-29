@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
@@ -6,6 +6,8 @@ import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
@@ -13,19 +15,24 @@ export class AuthService {
 
   // Tạo admin (chỉ dùng 1 lần)
   async register(username: string, password: string) {
+    this.logger.log(`Registering new admin: ${username}`);
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    return this.prisma.admin.create({
+    const admin = await this.prisma.admin.create({
       data: {
         username,
         password: hashedPassword,
       },
     });
+
+    // Không trả password hash về client
+    const { password: _, ...result } = admin;
+    return result;
   }
 
   // Đăng nhập
   async login(dto: LoginDto) {
-    // Tìm admin theo username
+    this.logger.log(`Login attempt: ${dto.username}`);
     const admin = await this.prisma.admin.findUnique({
       where: { username: dto.username },
     });

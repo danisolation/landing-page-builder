@@ -17,8 +17,10 @@ Khi user hỏi về BE:
 
 Trường hợp ngoại lệ — được phép edit BE:
 - Fix typo, formatting rõ ràng
-- Khi user yêu cầu trực tiếp "fix giúp tôi"
+- Khi user yêu cầu trực tiếp
 - Update CLAUDE.md, PROGRESS.md, hoặc docs
+
+Khi user yêu cầu "áp dụng", "implement", "setup" → tạo guide file trong `reports/` thay vì edit code trực tiếp. Guide phải có: code snippet hoàn chỉnh, giải thích tại sao, thứ tự thực hiện, cách kiểm tra.
 
 ---
 

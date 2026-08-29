@@ -1,16 +1,19 @@
 import { Controller, Post, Get, Body, Request } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from './dto/register.dto';
 import { Public } from './public.decorator';
 
 @Controller('auth')
+@Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 attempts/phút — chống brute force
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
   @Post('register')
-  async register(@Body() body: { username: string; password: string }) {
-    return this.authService.register(body.username, body.password);
+  async register(@Body() dto: RegisterDto) {
+    return this.authService.register(dto.username, dto.password);
   }
 
   @Public()
