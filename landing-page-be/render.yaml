@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: free
     rootDir: landing-page-be
-    buildCommand: npm install --legacy-peer-deps && npx prisma generate && npx nest build
+    buildCommand: npm install --legacy-peer-deps --include=dev && npx prisma generate && npx nest build
     startCommand: npx prisma migrate deploy && node dist/main
     envVars:
       - key: DATABASE_URL
