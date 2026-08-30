@@ -52,7 +52,6 @@ export default function EditSectionPage() {
   const {
     register,
     handleSubmit,
-    setValue,
     watch,
     reset,
     formState: { errors },

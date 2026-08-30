@@ -21,7 +21,6 @@ import {
   getPages,
   getPage,
   createPage,
-  updatePage,
   deletePage,
   createSection,
   updateSection,

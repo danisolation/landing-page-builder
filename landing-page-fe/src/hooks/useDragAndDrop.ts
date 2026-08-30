@@ -45,7 +45,11 @@ export function useDragAndDrop({
   const [closestEdge, setClosestEdge] = useState<"top" | "bottom" | null>(null);
 
   const onDragOverlayChangeRef = useRef(onDragOverlayChange);
-  onDragOverlayChangeRef.current = onDragOverlayChange;
+
+  // Keep ref in sync via effect (not during render)
+  useEffect(() => {
+    onDragOverlayChangeRef.current = onDragOverlayChange;
+  });
 
   useEffect(() => {
     const card = cardRef.current;

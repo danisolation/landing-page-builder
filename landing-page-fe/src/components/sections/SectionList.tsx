@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { monitorForElements } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { reorder } from '@atlaskit/pragmatic-drag-and-drop/reorder';
 import { useTranslations } from 'next-intl';
@@ -37,20 +37,21 @@ export default function SectionList({
   onReorder,
 }: SectionListProps) {
   const t = useTranslations('sectionList');
-  const [orderedSections, setOrderedSections] = useState(() =>
-    [...sections].sort((a, b) => a.order - b.order)
-  );
   const [dragOverlay, setDragOverlay] = useState<DragOverlayData | null>(null);
 
-  // Keep a ref to the latest orderedSections so the monitor callback
-  // always reads the current value without needing to re-register.
-  const orderedSectionsRef = useRef(orderedSections);
-  orderedSectionsRef.current = orderedSections;
+  // Compute sorted sections from props directly — no useState + useEffect needed
+  const orderedSections = useMemo(
+    () => [...sections].sort((a, b) => a.order - b.order),
+    [sections],
+  );
 
-  // Sync with prop changes (e.g. after API refetch)
+  // Keep a ref for the drag monitor callback
+  const orderedSectionsRef = useRef(orderedSections);
+
+  // Sync ref with latest orderedSections
   useEffect(() => {
-    setOrderedSections([...sections].sort((a, b) => a.order - b.order));
-  }, [sections]);
+    orderedSectionsRef.current = orderedSections;
+  });
 
   const handleDragOverlayChange = useCallback((data: DragOverlayData | null) => {
     setDragOverlay(data);
@@ -77,7 +78,7 @@ export default function SectionList({
           finishIndex,
         });
 
-        setOrderedSections(newOrder);
+        orderedSectionsRef.current = newOrder;
         onReorder(newOrder.map((s) => s.id));
       },
     });

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
@@ -24,15 +24,11 @@ export default function PagesListPage() {
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
-  const [viewMode, setViewMode] = useState<ViewMode>('table');
-
-  // Load view preference from localStorage
-  useEffect(() => {
+  const [viewMode, setViewMode] = useState<ViewMode>(() => {
+    if (typeof window === 'undefined') return 'table';
     const saved = localStorage.getItem('pages-view-mode') as ViewMode | null;
-    if (saved === 'card' || saved === 'table') {
-      setViewMode(saved);
-    }
-  }, []);
+    return saved === 'card' || saved === 'table' ? saved : 'table';
+  });
 
   const handleViewChange = (mode: ViewMode) => {
     setViewMode(mode);

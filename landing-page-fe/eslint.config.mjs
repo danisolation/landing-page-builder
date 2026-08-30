@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Test files — not linted in CI
+    "e2e/**",
+    "test-ui.js",
+    "src/**/__tests__/**",
+    "vitest.config.ts",
   ]),
 ]);
 
