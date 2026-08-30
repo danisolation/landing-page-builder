@@ -23,6 +23,10 @@ jobs:
         working-directory: landing-page-be
         run: npm ci --legacy-peer-deps
 
+      - name: Generate Prisma client
+        working-directory: landing-page-be
+        run: npx prisma generate
+
       - name: Build Backend
         working-directory: landing-page-be
         run: npm run build
