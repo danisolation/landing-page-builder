@@ -10,27 +10,30 @@ export class PagesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(dto: CreatePageDto) {
-    this.logger.log(`Creating page: ${dto.title}`);
-    return this.prisma.page.create({
+    this.logger.debug(`Creating page: ${dto.title}`);
+    const page = await this.prisma.page.create({
       data: dto,
     });
+    this.logger.log(`Page created: ${page.id} — ${page.title}`);
+    return page;
   }
 
   async findAll() {
-    this.logger.log('Fetching all pages');
+    this.logger.debug('Fetching all pages');
     return this.prisma.page.findMany({
       include: { sections: { orderBy: { order: 'asc' } } },
     });
   }
 
   async findOne(id: string) {
-    this.logger.log(`Fetching page: ${id}`);
+    this.logger.debug(`Fetching page: ${id}`);
     const page = await this.prisma.page.findUnique({
       where: { id },
       include: { sections: { orderBy: { order: 'asc' } } },
     });
 
     if (!page) {
+      this.logger.warn(`Page not found: ${id}`);
       throw new NotFoundException(`Page with id "${id}" not found`);
     }
 
@@ -38,32 +41,36 @@ export class PagesService {
   }
 
   async update(id: string, dto: UpdatePageDto) {
-    this.logger.log(`Updating page: ${id}`);
+    this.logger.debug(`Updating page: ${id}`);
     await this.findOne(id);
 
-    return this.prisma.page.update({
+    const page = await this.prisma.page.update({
       where: { id },
       data: dto,
     });
+    this.logger.log(`Page updated: ${id}`);
+    return page;
   }
 
   async remove(id: string) {
-    this.logger.log(`Deleting page: ${id}`);
+    this.logger.debug(`Deleting page: ${id}`);
     await this.findOne(id);
 
-    return this.prisma.page.delete({
+    await this.prisma.page.delete({
       where: { id },
     });
+    this.logger.log(`Page deleted: ${id}`);
   }
 
   async findBySlug(slug: string) {
-    this.logger.log(`Fetching page by slug: ${slug}`);
+    this.logger.debug(`Fetching page by slug: ${slug}`);
     const page = await this.prisma.page.findUnique({
       where: { slug },
       include: { sections: { orderBy: { order: 'asc' } } },
     });
 
     if (!page) {
+      this.logger.warn(`Page not found by slug: ${slug}`);
       throw new NotFoundException(`Page with slug "${slug}" not found`);
     }
 

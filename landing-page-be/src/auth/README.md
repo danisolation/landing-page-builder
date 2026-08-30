@@ -1,117 +1,117 @@
-# auth/ — Module xác thực (Authentication)
+# auth/ -- Authentication Module
 
-> 📖 Xử lý đăng nhập, đăng ký, bảo vệ route.
-
----
-
-## auth/ làm gì?
-
-```
-POST /auth/register  → Tạo tài khoản admin (public)
-POST /auth/login     → Đăng nhập, trả JWT token (public)
-GET  /auth/profile   → Lấy thông tin user (cần token)
-```
+> Handles login, registration, and route protection.
 
 ---
 
-## Cách auth hoạt động
+## What does auth/ do?
 
-### 1. Đăng ký (Register)
+```
+POST /auth/register  → Creates an admin account (public)
+POST /auth/login     → Logs in, returns a JWT token (public)
+GET  /auth/profile   → Returns user info (requires token)
+```
+
+---
+
+## How auth works
+
+### 1. Register
 ```
 Client → POST /auth/register { username: "admin", password: "123456" }
-  → RegisterDto validate (username 3-50 ký tự, password 8-100 ký tự)
+  → RegisterDto validates (username 3-50 characters, password 8-100 characters)
   → AuthService.register()
-  → Hash password bằng bcrypt (12 rounds)
-  → Lưu vào database
-  → Trả user info (KHÔNG trả password hash)
+  → Hashes password with bcrypt (12 rounds)
+  → Saves to database
+  → Returns user info (does NOT return the password hash)
 ```
 
-### 2. Đăng nhập (Login)
+### 2. Login
 ```
 Client → POST /auth/login { username: "admin", password: "123456" }
-  → LoginDto validate
+  → LoginDto validates
   → AuthService.login()
-  → Tìm user trong database
-  → So sánh password (bcrypt.compare)
-  → Nếu OK → tạo JWT token → trả { access_token: "..." }
-  → Nếu sai → trả 401 Unauthorized
+  → Finds user in database
+  → Compares password (bcrypt.compare)
+  → If OK → creates JWT token → returns { access_token: "..." }
+  → If wrong → returns 401 Unauthorized
 ```
 
-### 3. Bảo vệ route (Guard)
+### 3. Route protection (Guard)
 ```
-Client → GET /pages (có header Authorization: Bearer <token>)
-  → JwtAuthGuard kiểm tra token
-  → Nếu token hợp lệ → cho vào controller
-  → Nếu token sai/hết hạn → trả 401
-  → Nếu route có @Public() decorator → skip guard
+Client → GET /pages (with header Authorization: Bearer <token>)
+  → JwtAuthGuard checks the token
+  → If token is valid → allows access to controller
+  → If token is invalid/expired → returns 401
+  → If route has @Public() decorator → skips the guard
 ```
 
 ---
 
-## Các file trong auth/
+## Files in auth/
 
 ```
 auth/
-├── auth.module.ts          ← Đăng ký controller, service, strategy vào NestJS
+├── auth.module.ts          ← Registers controller, service, strategy with NestJS
 ├── auth.controller.ts      ← Route handlers (POST /login, POST /register, GET /profile)
-├── auth.service.ts         ← Business logic (hash password, tạo token, tìm user)
-├── jwt.strategy.ts         ← Passport strategy: giải mã JWT token
-├── jwt-auth.guard.ts       ← Guard: kiểm tra token trước khi vào controller
-├── public.decorator.ts     ← @Public() decorator: bypass guard
+├── auth.service.ts         ← Business logic (hash password, create token, find user)
+├── jwt.strategy.ts         ← Passport strategy: decodes JWT tokens
+├── jwt-auth.guard.ts       ← Guard: checks token before entering controller
+├── public.decorator.ts     ← @Public() decorator: bypasses the guard
 └── dto/
-    ├── login.dto.ts        ← Validate { username, password }
-    └── register.dto.ts     ← Validate { username: 3-50 ký tự, password: 8-100 ký tự }
+    ├── login.dto.ts        ← Validates { username, password }
+    └── register.dto.ts     ← Validates { username: 3-50 characters, password: 8-100 characters }
 ```
 
 ---
 
-## JWT là gì?
+## What is JWT?
 
-JWT (JSON Web Token) = chuỗi mã hóa chứa thông tin user:
+JWT (JSON Web Token) = an encoded string containing user information:
 ```
 eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwidXNlcm5hbWUiOiJhZG1pbiJ9.signature
 │← Header →│.│← Payload (userId, username) →│.│← Signature (verify) →│
 ```
 
 **Flow:**
-1. Login → server tạo JWT token
-2. Client lưu token (localStorage/cookie)
-3. Mỗi request → client gửi token trong header: `Authorization: Bearer <token>`
-4. Server giải mã token → biết user là ai
+1. Login → server creates a JWT token
+2. Client stores the token (localStorage/cookie)
+3. Each request → client sends the token in the header: `Authorization: Bearer <token>`
+4. Server decodes the token → knows who the user is
 
-**Tại sao dùng JWT thay vì session?**
-- Stateless: server không cần lưu session → dễ scale
-- Cross-domain: token hoạt động trên mọi domain
-- Mobile-friendly: mobile app dễ gửi token
+**Why use JWT instead of sessions?**
+- Stateless: the server doesn't need to store sessions → easy to scale
+- Cross-domain: tokens work across every domain
+- Mobile-friendly: mobile apps can easily send tokens
 
 ---
 
-## Guard là gì?
+## What is a Guard?
 
-Guard = "bảo vệ" route. Có 2 loại:
+A Guard "protects" routes. There are two types:
 
 ### JwtAuthGuard (global)
-- Áp dụng cho TẤT CẢ routes
-- Kiểm tra token hợp lệ
-- Nếu route có `@Public()` → skip
+- Applies to ALL routes
+- Checks that the token is valid
+- If the route has `@Public()` → skips
 
 ### ThrottlerGuard (global)
-- Áp dụng cho TẤT CẢ routes
-- Giới hạn request/phút
-- Auth endpoints: 5/phút, các route khác: 30/phút
+- Applies to ALL routes
+- Limits requests per minute
+- Auth endpoints: 5/min, other routes: 30/min
 
 ---
 
-## @Public() decorator là gì?
+## What is the @Public() decorator?
 
 ```typescript
-@Public()           // ← Bypass JwtAuthGuard
+@Public()           // ← Bypasses JwtAuthGuard
 @Post('login')
 async login(@Body() dto: LoginDto) { ... }
 ```
 
-Nếu không có `@Public()`:
-- `POST /auth/login` → yêu cầu token → nhưng chưa đăng nhập → paradox!
+Without `@Public()`:
+- `POST /auth/login` → requires a token → but the user hasn't logged in yet → paradox!
 
-Với `@Public()`:
-- `POST /auth/login` → skip guard → cho vào controller
+With `@Public()`:
+- `POST /auth/login` → skips the guard → allows access to the controller

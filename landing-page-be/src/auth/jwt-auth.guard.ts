@@ -10,7 +10,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     canActivate(context: ExecutionContext) {
-        // Check nếu handler hoặc controller có @Public()
+        // Check if handler or controller has @Public()
         const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
             context.getHandler(),    // method level
             context.getClass(),      // controller level
@@ -20,6 +20,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
             return true;  // Bypass auth
         }
 
-        return super.canActivate(context);  // Gọi Passport JWT verify
+        return super.canActivate(context);  // Call Passport JWT verify
     }
 }

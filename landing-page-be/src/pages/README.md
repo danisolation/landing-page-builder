@@ -1,118 +1,118 @@
-# pages/ — Module quản lý trang
+# pages/ -- Pages Management Module
 
-> 📖 CRUD (Create, Read, Update, Delete) cho landing pages.
+> CRUD (Create, Read, Update, Delete) for landing pages.
 
 ---
 
-## pages/ làm gì?
+## What does pages/ do?
 
 ```
-POST   /pages          → Tạo trang mới
-GET    /pages          → Lấy danh sách tất cả trang
-GET    /pages/:id      → Lấy chi tiết 1 trang
-GET    /pages/slug/:slug → Lấy trang theo slug (cho FE public)
-PATCH  /pages/:id      → Cập nhật trang
-DELETE /pages/:id      → Xóa trang (cascade xóa luôn sections)
+POST   /pages          → Creates a new page
+GET    /pages          → Returns a list of all pages
+GET    /pages/:id      → Returns details of a single page
+GET    /pages/slug/:slug → Returns a page by slug (for public FE)
+PATCH  /pages/:id      → Updates a page
+DELETE /pages/:id      → Deletes a page (cascades to delete sections)
 ```
 
 ---
 
-## CRUD là gì?
+## What is CRUD?
 
-CRUD = 4 thao tác cơ bản với database:
+CRUD = 4 basic database operations:
 
-| Operation | HTTP Method | SQL | Ví dụ |
-|-----------|------------|-----|-------|
-| **C**reate | POST | INSERT | Tạo trang mới |
-| **R**ead | GET | SELECT | Lấy danh sách trang |
-| **U**pdate | PATCH | UPDATE | Sửa tiêu đề trang |
-| **D**elete | DELETE | DELETE | Xóa trang |
+| Operation | HTTP Method | SQL | Example |
+|-----------|------------|-----|---------|
+| **C**reate | POST | INSERT | Create a new page |
+| **R**ead | GET | SELECT | Fetch a list of pages |
+| **U**pdate | PATCH | UPDATE | Edit a page title |
+| **D**elete | DELETE | DELETE | Delete a page |
 
 ---
 
-## Cấu trúc module
+## Module structure
 
 ```
 pages/
-├── pages.module.ts        ← Đăng controller + service vào NestJS
-├── pages.controller.ts    ← Route handlers (nhận request, gọi service)
+├── pages.module.ts        ← Registers controller + service with NestJS
+├── pages.controller.ts    ← Route handlers (receive request, call service)
 ├── pages.service.ts       ← Business logic (query database)
 └── dto/
-    ├── create-page.dto.ts ← Validate khi tạo: title (bắt buộc), slug (bắt buộc, unique)
-    └── update-page.dto.ts ← Validate khi sửa: tất cả optional (PartialType)
+    ├── create-page.dto.ts ← Validates on create: title (required), slug (required, unique)
+    └── update-page.dto.ts ← Validates on update: all optional (PartialType)
 ```
 
 ---
 
-## Controller vs Service — Phân biệt
+## Controller vs Service -- The difference
 
-**Controller** (nhận request):
+**Controller** (receives requests):
 ```typescript
 @Post()
 async create(@Body() dto: CreatePageDto) {
-  return this.pagesService.create(dto);  // ← Gọi service, KHÔNG query DB ở đây
+  return this.pagesService.create(dto);  // ← Calls the service, does NOT query DB here
 }
 ```
 
-**Service** (xử lý logic):
+**Service** (handles logic):
 ```typescript
 async create(dto: CreatePageDto) {
   this.logger.log(`Creating page: ${dto.title}`);
   return this.prisma.page.create({
-    data: dto,  // ← Query database ở đây
+    data: dto,  // ← Queries the database here
   });
 }
 ```
 
-**Quy tắc:** Controller chỉ nhận request và gọi service. Service xử lý tất cả logic.
+**Rule:** The controller only receives requests and calls the service. The service handles all logic.
 
 ---
 
-## DTO là gì?
+## What is a DTO?
 
-DTO (Data Transfer Object) = "hình dạng" của data client gửi lên.
+DTO (Data Transfer Object) = the "shape" of the data the client sends.
 
 ```typescript
 export class CreatePageDto {
-  @IsString()           // Phải là string
-  @IsNotEmpty()         // Không được rỗng
-  @MaxLength(255)       // Tối đa 255 ký tự
+  @IsString()           // Must be a string
+  @IsNotEmpty()         // Cannot be empty
+  @MaxLength(255)       // Maximum 255 characters
   title!: string;
 
   @IsString()
   @IsNotEmpty()
   @MaxLength(255)
-  @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)  // Chỉ chữ thường, số, dấu gạch ngang
+  @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)  // Only lowercase, numbers, hyphens
   slug!: string;
 }
 ```
 
-**Tại sao cần DTO?**
-- Client gửi `{ title: "", slug: "../../etc/passwd" }` → DTO reject ngay
-- Không có DTO → Prisma query với data bẩn → lỗi hoặc security issue
+**Why do we need DTOs?**
+- Client sends `{ title: "", slug: "../../etc/passwd" }` → DTO rejects it immediately
+- Without DTOs → Prisma queries with dirty data → errors or security issues
 
 ---
 
 ## Prisma query examples
 
 ```typescript
-// Tạo page
+// Create a page
 await prisma.page.create({ data: { title: "Test", slug: "test" } });
 
-// Lấy tất cả pages (kèm sections)
+// Fetch all pages (including sections)
 await prisma.page.findMany({
   include: { sections: { orderBy: { order: 'asc' } } }
 });
 
-// Tìm theo ID
+// Find by ID
 await prisma.page.findUnique({ where: { id: "uuid-here" } });
 
-// Cập nhật
+// Update
 await prisma.page.update({
   where: { id: "uuid-here" },
   data: { title: "New Title" }
 });
 
-// Xóa (cascade xóa luôn sections do schema.prisma définir)
+// Delete (cascades to delete sections as defined in schema.prisma)
 await prisma.page.delete({ where: { id: "uuid-here" } });
 ```

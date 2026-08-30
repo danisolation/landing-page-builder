@@ -1,8 +1,8 @@
 import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreatePageDto {
-  @IsString()      // Phải là string
-  @IsNotEmpty()    // Không được rỗng
+  @IsString()
+  @IsNotEmpty()
   title!: string;
 
   @IsString()
@@ -10,6 +10,6 @@ export class CreatePageDto {
   slug!: string;
 
   @IsString()
-  @IsOptional()    // Có thể bỏ qua (undefined)
+  @IsOptional()
   description?: string;
 }

@@ -8,7 +8,7 @@ import type { CreateSectionInput, UpdateSectionInput } from "@/types";
 export function useSections(pageId: string) {
   const queryClient = useQueryClient();
 
-  // Tạo section — toast handled at call-site
+  // Create section — toast handled at call-site
   const createMutation = useMutation({
     mutationFn: (data: CreateSectionInput) => createSection(pageId, data),
     onSuccess: () => {
@@ -16,7 +16,7 @@ export function useSections(pageId: string) {
     },
   });
 
-  // Cập nhật section — toast handled at call-site
+  // Update section — toast handled at call-site
   const updateMutation = useMutation({
     mutationFn: ({ sectionId, data }: { sectionId: string; data: UpdateSectionInput }) =>
       updateSection(pageId, sectionId, data),
@@ -25,7 +25,7 @@ export function useSections(pageId: string) {
     },
   });
 
-  // Xóa section — toast handled at call-site
+  // Delete section — toast handled at call-site
   const deleteMutation = useMutation({
     mutationFn: (sectionId: string) => deleteSection(pageId, sectionId),
     onSuccess: () => {

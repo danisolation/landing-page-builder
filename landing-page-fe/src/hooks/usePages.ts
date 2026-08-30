@@ -14,7 +14,7 @@ import type { UpdatePageInput } from "@/types";
 export function usePages() {
   const queryClient = useQueryClient();
 
-  // Lấy danh sách pages
+  // Fetch all pages
   const {
     data: pages,
     isLoading,
@@ -24,7 +24,7 @@ export function usePages() {
     queryFn: getPages,
   });
 
-  // Tạo page — toast handled at call-site
+  // Create page — toast handled at call-site
   const createMutation = useMutation({
     mutationFn: createPage,
     onSuccess: () => {
@@ -32,7 +32,7 @@ export function usePages() {
     },
   });
 
-  // Cập nhật page — toast handled at call-site
+  // Update page — toast handled at call-site
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdatePageInput }) =>
       updatePage(id, data),
@@ -41,7 +41,7 @@ export function usePages() {
     },
   });
 
-  // Xóa page — toast handled at call-site
+  // Delete page — toast handled at call-site
   const deleteMutation = useMutation({
     mutationFn: deletePage,
     onSuccess: () => {
@@ -62,7 +62,7 @@ export function usePages() {
   };
 }
 
-// Hook cho 1 page cụ thể
+// Hook for a single page
 export function usePage(id: string) {
   return useQuery({
     queryKey: pageKeys.detail(id),

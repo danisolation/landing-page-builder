@@ -8,34 +8,34 @@ import {
 import { Prisma } from '@prisma/client';
 import { Response, Request } from 'express';
 
-// Map Prisma error codes → HTTP status + message tiếng Việt
+// Map Prisma error codes → HTTP status + user-friendly message
 const PRISMA_ERROR_MAP: Record<
   string,
   { status: number; message: string }
 > = {
   P2000: {
     status: HttpStatus.BAD_REQUEST,
-    message: 'Dữ liệu quá dài cho trường này',
+    message: 'Data too long for this field',
   },
   P2001: {
     status: HttpStatus.NOT_FOUND,
-    message: 'Không tìm thấy bản ghi',
+    message: 'Record not found',
   },
   P2002: {
     status: HttpStatus.CONFLICT,
-    message: 'Dữ liệu đã tồn tại (trùng slug hoặc username)',
+    message: 'Record already exists (duplicate slug or username)',
   },
   P2003: {
     status: HttpStatus.BAD_REQUEST,
-    message: 'Tham chiếu khóa ngoại không hợp lệ',
+    message: 'Invalid foreign key reference',
   },
   P2014: {
     status: HttpStatus.BAD_REQUEST,
-    message: 'Bắt buộc phải có liên kết',
+    message: 'Required relation missing',
   },
   P2025: {
     status: HttpStatus.NOT_FOUND,
-    message: 'Không tìm thấy bản ghi để cập nhật/xóa',
+    message: 'Record not found for update/delete',
   },
 };
 
@@ -46,7 +46,7 @@ export class PrismaExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    // Prisma errors — map sang HTTP response chuẩn
+    // Prisma errors — map to standard HTTP response
     if (exception instanceof Prisma.PrismaClientKnownRequestError) {
       const mapped = PRISMA_ERROR_MAP[exception.code];
       if (mapped) {
@@ -60,7 +60,7 @@ export class PrismaExceptionFilter implements ExceptionFilter {
       }
     }
 
-    // HTTP errors (NestJS exceptions như NotFoundException, UnauthorizedException)
+    // HTTP errors (NestJS exceptions like NotFoundException, UnauthorizedException)
     if (exception instanceof HttpException) {
       const status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
@@ -76,11 +76,11 @@ export class PrismaExceptionFilter implements ExceptionFilter {
       });
     }
 
-    // Unknown errors — KHÔNG expose stack trace cho hacker
+    // Unknown errors — do NOT expose stack trace
     response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       success: false,
       statusCode: 500,
-      message: 'Lỗi hệ thống, vui lòng thử lại sau',
+      message: 'Internal server error, please try again later',
       timestamp: new Date().toISOString(),
       path: request.url,
     });

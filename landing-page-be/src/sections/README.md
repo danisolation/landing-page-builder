@@ -1,83 +1,83 @@
-# sections/ — Module quản lý section
+# sections/ -- Sections Management Module
 
-> 📖 CRUD cho sections (nội dung trong mỗi trang).
-
----
-
-## sections/ làm gì?
-
-```
-POST   /pages/:pageId/sections              → Tạo section mới trong page
-GET    /pages/:pageId/sections              → Lấy tất cả sections của page
-GET    /pages/:pageId/sections/:id          → Lấy chi tiết 1 section
-PATCH  /pages/:pageId/sections/:id          → Cập nhật section
-DELETE /pages/:pageId/sections/:id          → Xóa section
-```
+> CRUD for sections (content within each page).
 
 ---
 
-## Section là gì?
+## What does sections/ do?
 
-Mỗi landing page có nhiều sections xếp chồng lên nhau:
+```
+POST   /pages/:pageId/sections              → Creates a new section in a page
+GET    /pages/:pageId/sections              → Returns all sections of a page
+GET    /pages/:pageId/sections/:id          → Returns details of a single section
+PATCH  /pages/:pageId/sections/:id          → Updates a section
+DELETE /pages/:pageId/sections/:id          → Deletes a section
+```
+
+---
+
+## What is a Section?
+
+Each landing page consists of multiple sections stacked on top of each other:
 
 ```
 ┌─────────────────────────┐
-│      HERO SECTION       │  ← Section 1: Tiêu đề lớn, hình ảnh
+│      HERO SECTION       │  ← Section 1: Large heading, hero image
 ├─────────────────────────┤
-│    FEATURES SECTION     │  ← Section 2: Tính năng sản phẩm
+│    FEATURES SECTION     │  ← Section 2: Product features
 ├─────────────────────────┤
-│      CTA SECTION        │  ← Section 3: Nút kêu gọi hành động
+│      CTA SECTION        │  ← Section 3: Call-to-action button
 └─────────────────────────┘
 ```
 
-Mỗi section có:
+Each section has:
 - `type`: hero, features, cta, stats, testimonials
-- `content`: JSON data (FE định nghĩa shape)
-- `order`: thứ tự hiển thị (1, 2, 3...)
+- `content`: JSON data (FE defines the shape)
+- `order`: display order (1, 2, 3...)
 
 ---
 
-## Nested routes là gì?
+## What are nested routes?
 
-Route `/pages/:pageId/sections` gọi là "nested route" — section nằm trong page:
+The route `/pages/:pageId/sections` is called a "nested route" — sections belong to a page:
 
 ```
-/pages/abc123/sections        ← Tất cả sections của page abc123
-/pages/abc123/sections/def456 ← Section def456 trong page abc123
+/pages/abc123/sections        ← All sections of page abc123
+/pages/abc123/sections/def456 ← Section def456 within page abc123
 ```
 
-**Tại sao cần nested?**
-- Section không tồn tại độc lập — nó luôn thuộc về page
-- Route rõ ràng: biết section thuộc page nào
-- Dễ quản lý: xóa page → cascade xóa tất cả sections
+**Why use nesting?**
+- Sections don't exist independently — they always belong to a page
+- Clear routes: you know which page a section belongs to
+- Easy management: delete a page → cascades to delete all its sections
 
 ---
 
-## Content là JSON
+## Content is JSON
 
-Section content là `Json` type trong database → FE tự định nghĩa shape:
+Section content is a `Json` type in the database → the FE defines the shape:
 
 ```typescript
 // Hero section content
-{ "heading": "Xin chào", "subheading": "Chào mừng đến...", "imageUrl": "..." }
+{ "heading": "Welcome", "subheading": "Thank you for visiting...", "imageUrl": "..." }
 
 // Features section content
 { "features": [
-  { "title": "Nhanh", "description": "...", "icon": "zap" },
-  { "title": "An toàn", "description": "...", "icon": "shield" }
+  { "title": "Fast", "description": "...", "icon": "zap" },
+  { "title": "Secure", "description": "...", "icon": "shield" }
 ] }
 ```
 
-**Tại sao dùng JSON thay vì columns riêng?**
-- Mỗi section type có shape khác nhau → không cần migration khi thêm type mới
-- FE tự validate content theo type
-- BE chỉ lưu và trả về, không cần hiểu content
+**Why use JSON instead of separate columns?**
+- Each section type has a different shape → no migration needed when adding new types
+- The FE validates content according to its type
+- The BE only stores and returns data — it doesn't need to understand the content
 
 ---
 
 ## Existence check
 
-Trước khi tạo section, service kiểm tra page có tồn tại không:
+Before creating a section, the service checks whether the page exists:
 
 ```typescript
 async create(pageId: string, dto: CreateSectionDto) {
@@ -93,6 +93,6 @@ async create(pageId: string, dto: CreateSectionDto) {
 }
 ```
 
-**Tại sao cần check?**
-- Không check → tạo section cho page không tồn tại → foreign key error (P2003)
-- Check trước → trả 404 rõ ràng
+**Why is this check needed?**
+- No check → create a section for a non-existent page → foreign key error (P2003)
+- Check first → returns a clear 404

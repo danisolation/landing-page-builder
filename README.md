@@ -11,7 +11,7 @@
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-06B6D4?style=flat-square&logo=tailwindcss)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker)
 
-Full-stack landing page builder — Admin tạo, quản lý và publish landing pages với nhiều loại section.
+Full-stack landing page builder — Create, manage, and publish landing pages with multiple section types.
 
 [Features](#features) • [Tech Stack](#tech-stack) • [Getting Started](#getting-started) • [Architecture](#architecture) • [API Reference](#api-reference) • [Documentation](#documentation)
 
@@ -21,29 +21,32 @@ Full-stack landing page builder — Admin tạo, quản lý và publish landing 
 
 ## Features
 
-### Quản trị (Admin)
-- **Dashboard** — Tổng quan pages, stats, search, filter, sort
-- **CRUD Pages** — Tạo, sửa, xóa landing pages
-- **CRUD Sections** — 5 loại section với visual editor + live preview
-- **Drag & Drop** — Kéo thả sắp xếp sections
-- **Preview** — Xem trước toàn bộ page hoặc từng section
-- **i18n** — Hỗ trợ Vietnamese / English
+### Admin
+- **Dashboard** — Overview with stats, search, filter, sort
+- **CRUD Pages** — Create, edit, delete landing pages
+- **CRUD Sections** — 5 section types with visual editor + live preview
+- **Drag & Drop** — Reorder sections via drag and drop
+- **Preview** — Preview full page or individual sections
+- **i18n** — Vietnamese / English support
 - **Dark Mode** — Toggle dark/light mode
 - **Responsive** — Mobile + Desktop
 
-### Công khai (Public)
-- **Landing Page** — Render sections với animations
+### Public
+- **Landing Page** — Render sections with scroll animations
 - **Animated Sections** — Scroll-triggered fade-in-up
 - **Counter Animation** — Animated number counters
-- **Dark Mode Toggle** — Người dùng tự chọn theme
+- **Dark Mode Toggle** — User-selectable theme
 
 ### Backend
 - **REST API** — CRUD pages + sections (nested routes)
 - **JWT Authentication** — Login, register, token-based auth
-- **Auth Guard** — Global guard với `@Public()` decorator
-- **Prisma 7** — ORM với driver adapter pattern
+- **Auth Guard** — Global guard with `@Public()` decorator
+- **Prisma 7** — ORM with driver adapter pattern
 - **PostgreSQL 16** — Database (Docker)
-- **Validation** — Global ValidationPipe với DTOs
+- **Validation** — Global ValidationPipe with DTOs
+- **Health Check** — `/health` endpoint with DB connectivity check (`@nestjs/terminus`)
+- **Graceful Shutdown** — SIGTERM/SIGINT handling + `enableShutdownHooks()`
+- **Structured Logging** — Log levels: error > warn > info > debug
 
 ---
 
@@ -214,6 +217,79 @@ Client → CORS → JwtAuthGuard → Controller → Service → Prisma → DB
                   └── No? → Passport JWT verify → 401 if invalid
 ```
 
+### Request Lifecycle
+
+```
+1. Request arrives → Helmet (security headers)
+2. CORS check → reject if origin not allowed
+3. ValidationPipe → whitelist + transform DTO
+4. ThrottlerGuard → rate limit (30 req/min)
+5. JwtAuthGuard → verify token (skip if @Public)
+6. Controller → route handler
+7. Service → business logic
+8. Prisma → database query
+9. ResponseInterceptor → wrap in { success, data, timestamp }
+10. PrismaExceptionFilter → map Prisma errors to HTTP
+```
+
+### Health Check
+
+```
+GET /health → { status: "ok", details: { database: { status: "up" } } }
+```
+
+Checks Prisma DB connectivity via `@nestjs/terminus`. Public endpoint (no auth required).
+
+---
+
+## Testing
+
+### Strategy
+
+| Layer | Tool | Coverage |
+|---|---|---|
+| **BE Unit** | Jest + ts-jest | Services (auth, pages, sections) — mocked Prisma |
+| **BE E2E** | Jest + Supertest | Full API flow — real PostgreSQL |
+| **FE Unit** | Vitest + Testing Library | API client, hooks, section constants |
+| **FE E2E** | Playwright | Login, CRUD, public pages, navigation |
+
+### Running Tests
+
+```bash
+# Backend unit tests
+cd landing-page-be && npm run test
+
+# Backend unit tests with coverage
+cd landing-page-be && npm run test:cov
+
+# Backend e2e tests (requires running PostgreSQL)
+cd landing-page-be && npm run test:e2e
+
+# Frontend unit tests
+cd landing-page-fe && npm run test
+
+# Frontend e2e tests (requires running FE + BE)
+cd landing-page-fe && npx playwright test
+```
+
+---
+
+## CI/CD
+
+GitHub Actions workflow (`.github/workflows/ci.yml`):
+
+- **Trigger**: Push to `main`, PR to `main`
+- **Jobs**:
+  - `lint-and-build` — Install deps, lint, build (FE + BE)
+  - `test-backend` — PostgreSQL service container, run migrations, seed, unit tests, e2e tests
+  - `test-frontend` — Unit tests (Vitest), e2e tests (Playwright)
+
+```yaml
+# Simplified flow
+lint-and-build → test-backend (with PostgreSQL)
+              → test-frontend
+```
+
 ### Database Schema
 
 ```
@@ -293,10 +369,12 @@ curl http://localhost:3000/pages/slug/san-pham-moi
 ```bash
 cd landing-page-fe
 
-npm run dev          # Dev server (port 3001)
-npm run build        # Production build (type-check)
-npm run lint         # ESLint
-npx playwright test  # E2E tests
+npm run dev           # Dev server (port 3001)
+npm run build         # Production build (type-check)
+npm run lint          # ESLint
+npm run test          # Unit tests (Vitest)
+npm run test:watch    # Unit tests (watch mode)
+npx playwright test   # E2E tests
 ```
 
 ### Backend
@@ -305,6 +383,9 @@ npx playwright test  # E2E tests
 cd landing-page-be
 
 npm run start:dev      # Dev server with hot reload (port 3000)
+npm run test           # Unit tests (Jest)
+npm run test:cov       # Unit tests with coverage
+npm run test:e2e       # E2E tests (requires DB)
 npx prisma migrate dev # Run migrations
 npx prisma db seed     # Seed database
 npx prisma studio      # Open Prisma Studio (DB viewer)

@@ -35,7 +35,7 @@ export default function PublicPageClient({ page }: PublicPageClientProps) {
           return (
             <div key={section.id} className="p-8 bg-yellow-50 dark:bg-yellow-900/20 text-center">
               <p className="text-yellow-700 dark:text-yellow-400">
-                Section type &quot;{section.type}&quot; chưa được hỗ trợ
+                Section type &quot;{section.type}&quot; is not supported
               </p>
             </div>
           );

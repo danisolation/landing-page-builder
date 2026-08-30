@@ -1,0 +1,136 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-build:
+    name: Lint & Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # Backend
+      - name: Install BE dependencies
+        working-directory: landing-page-be
+        run: npm ci --legacy-peer-deps
+
+      - name: Build Backend
+        working-directory: landing-page-be
+        run: npm run build
+
+      # Frontend
+      - name: Install FE dependencies
+        working-directory: landing-page-fe
+        run: npm ci --legacy-peer-deps
+
+      - name: Lint Frontend
+        working-directory: landing-page-fe
+        run: npm run lint
+
+      - name: Build Frontend
+        working-directory: landing-page-fe
+        run: npm run build
+
+  test-backend:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    needs: lint-and-build
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: landing_page_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        working-directory: landing-page-be
+        run: npm ci --legacy-peer-deps
+
+      - name: Generate Prisma client
+        working-directory: landing-page-be
+        run: npx prisma generate
+
+      - name: Run migrations
+        working-directory: landing-page-be
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/landing_page_db
+
+      - name: Seed database
+        working-directory: landing-page-be
+        run: npm run seed
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/landing_page_db
+
+      - name: Run unit tests
+        working-directory: landing-page-be
+        run: npm run test:cov
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/landing_page_db
+          JWT_SECRET: test-secret-key-for-ci
+
+      - name: Run e2e tests
+        working-directory: landing-page-be
+        run: npm run test:e2e
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/landing_page_db
+          JWT_SECRET: test-secret-key-for-ci
+          NODE_ENV: test
+
+  test-frontend:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    needs: lint-and-build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        working-directory: landing-page-fe
+        run: npm ci --legacy-peer-deps
+
+      - name: Run unit tests
+        working-directory: landing-page-fe
+        run: npm run test
+
+      - name: Install Playwright browsers
+        working-directory: landing-page-fe
+        run: npx playwright install --with-deps chromium
+
+      - name: Run e2e tests
+        working-directory: landing-page-fe
+        run: npx playwright test
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:3000

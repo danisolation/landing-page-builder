@@ -1,36 +1,36 @@
-# prisma/ — Database layer
+# prisma/ -- Database Layer
 
-> 📖 Kết nối backend với PostgreSQL database.
+> Connects the backend to the PostgreSQL database.
 
 ---
 
-## prisma/ làm gì?
+## What does prisma/ do?
 
 ```
 prisma/
-├── prisma.module.ts    ← Đăng PrismaService là global module
-└── prisma.service.ts   ← Kết nối database, cung cấp PrismaClient
+├── prisma.module.ts    ← Registers PrismaService as a global module
+└── prisma.service.ts   ← Connects to the database, provides PrismaClient
 ```
 
 ---
 
-## Prisma là gì?
+## What is Prisma?
 
-Prisma = ORM (Object-Relational Mapping) — chuyển code TypeScript thành SQL:
+Prisma = ORM (Object-Relational Mapping) — translates TypeScript code into SQL:
 
 ```typescript
-// Code bạn viết:
+// Code you write:
 await prisma.page.findUnique({ where: { id: "abc123" } });
 
-// SQL Prisma tạo:
+// SQL Prisma generates:
 SELECT * FROM "Page" WHERE id = 'abc123';
 ```
 
-**Tại sao dùng Prisma thay vì viết SQL trực tiếp?**
-- Type-safe: TypeScript kiểm tra lỗi khi compile
-- Auto-generate: từ schema.prisma → tạo TypeScript types
-- Migration: thay đổi schema → Prisma tạo migration SQL
-- An toàn: Prisma tự escape parameters → chống SQL injection
+**Why use Prisma instead of writing SQL directly?**
+- Type-safe: TypeScript catches errors at compile time
+- Auto-generated: from schema.prisma → creates TypeScript types
+- Migrations: change the schema → Prisma generates migration SQL
+- Secure: Prisma automatically escapes parameters → prevents SQL injection
 
 ---
 
@@ -40,12 +40,12 @@ SELECT * FROM "Page" WHERE id = 'abc123';
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
   async onModuleInit() {
-    await this.$connect();  // Kết nối DB khi app khởi tạo
+    await this.$connect();  // Connects to DB when the app starts
   }
 }
 ```
 
-**Cách dùng trong service:**
+**Usage in a service:**
 ```typescript
 export class PagesService {
   constructor(private readonly prisma: PrismaService) {}
@@ -58,7 +58,7 @@ export class PagesService {
 
 ---
 
-## Schema (ở prisma/schema.prisma)
+## Schema (in prisma/schema.prisma)
 
 ```prisma
 model Page {
@@ -68,13 +68,13 @@ model Page {
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  sections    Section[]  // ← Relation: 1 page có nhiều sections
+  sections    Section[]  // ← Relation: 1 page has many sections
 }
 
 model Section {
   id        String   @id @default(uuid())
   type      String   // hero, features, cta, stats, testimonials
-  content   Json     // ← Flexible: FE tự định nghĩa shape
+  content   Json     // ← Flexible: FE defines the shape
   order     Int
   pageId    String
   page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
@@ -83,33 +83,33 @@ model Section {
 }
 ```
 
-**Lưu ý:**
-- `@id @default(uuid())` — Primary key, tự generate UUID
-- `@unique` — Slug phải unique
-- `@relation(onDelete: Cascade)` — Xóa page → tự động xóa sections
-- `Json` type — Content là JSON, không cần schema migration khi đổi shape
+**Notes:**
+- `@id @default(uuid())` — Primary key, auto-generates UUID
+- `@unique` — Slug must be unique
+- `@relation(onDelete: Cascade)` — Deleting a page automatically deletes its sections
+- `Json` type — Content is JSON, no schema migration needed when changing the shape
 
 ---
 
 ## Migration
 
-Khi thay đổi schema.prisma:
+When you change schema.prisma:
 ```bash
 npx prisma migrate dev --name add-new-field
 ```
 
-Prisma sẽ:
-1. So sánh schema mới vs database hiện tại
-2. Tạo file SQL migration
-3. Chạy migration
+Prisma will:
+1. Compare the new schema against the current database
+2. Generate a SQL migration file
+3. Run the migration
 4. Regenerate PrismaClient types
 
 ---
 
 ## Prisma Studio
 
-Tool GUI để xem/sửa database:
+A GUI tool for viewing and editing the database:
 ```bash
 npx prisma studio
-# Mở http://localhost:5555
+# Opens http://localhost:5555
 ```

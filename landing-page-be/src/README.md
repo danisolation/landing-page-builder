@@ -1,91 +1,91 @@
-# src/ — Thư mục gốc của Backend
+# src/ -- Backend Root Directory
 
-> 📖 File này giúp bạn hiểu toàn bộ cấu trúc backend. Đọc từ trên xuống.
+> This guide helps you understand the entire backend structure. Read from top to bottom.
 
 ---
 
-## Bạn đang ở đâu?
+## Where are you?
 
 ```
 landing-page-be/
-├── src/                    ← Bạn đang ở đây
+├── src/                    ← You are here
 ├── prisma/                 ← Database schema + seed data
 ├── test/                   ← E2E tests
-├── .env                    ← Biến môi trường (DATABASE_URL, JWT_SECRET)
+├── .env                    ← Environment variables (DATABASE_URL, JWT_SECRET)
 ├── package.json            ← Dependencies
 └── tsconfig.json           ← TypeScript config
 ```
 
 ---
 
-## src/ chứa gì?
+## What's inside src/?
 
 ```
 src/
-├── main.ts                 ← 🚪 CỬA VÀO — App start từ đây
-├── app.module.ts           ← 📋 SƠ ĐỒ TỔ CHỨC — Ai làm gì
-├── app.controller.ts       ← Route "/" (chỉ test)
-├── app.service.ts          ← Logic cho route "/"
+├── main.ts                 ← ENTRY POINT — App starts here
+├── app.module.ts           ← OVERVIEW — Who does what
+├── app.controller.ts       ← Route "/" (test only)
+├── app.service.ts          ← Logic for route "/"
 │
-├── common/                 ← 🧰 HỘP DỤNG CỤ — Code dùng chung
-│   ├── filters/            ← Bắt lỗi → format response
-│   └── interceptors/       ← Xử lý request/response (log, wrap)
+├── common/                 ← TOOLBOX — Shared code
+│   ├── filters/            ← Catch errors → format responses
+│   └── interceptors/       ← Process request/response (log, wrap)
 │
-├── config/                 ← ⚙️ CẤU HÌNH — Env vars, validation
+├── config/                 ← CONFIGURATION — Env vars, validation
 │
-├── prisma/                 ← 🗄️ DATABASE — Kết nối PostgreSQL
+├── prisma/                 ← DATABASE — PostgreSQL connection
 │
-├── auth/                   ← 🔐 ĐĂNG NHẬP — JWT, guards, login/register
+├── auth/                   ← AUTHENTICATION — JWT, guards, login/register
 │
-├── pages/                  ← 📄 QUẢN LÝ TRANG — CRUD pages
+├── pages/                  ← PAGES MANAGEMENT — CRUD pages
 │
-└── sections/               ← 📦 QUẢN LÝ SECTION — CRUD sections trong page
+└── sections/               ← SECTIONS MANAGEMENT — CRUD sections within a page
 ```
 
 ---
 
-## Request đi qua đâu?
+## Request flow
 
 ```
 Client → main.ts → Middleware → Guard → Pipe → Controller → Service → Prisma → Database
                                                           ↑
-                                                    Bạn viết code ở đây
+                                                    You write code here
 ```
 
-1. **main.ts** — Setup mọi thứ (CORS, validation, security, docs)
-2. **Guard** — Kiểm tra auth (có token không? có quyền không?)
-3. **Pipe** — Validate data đầu vào (title có rỗng không?)
-4. **Controller** — Nhận request, gọi service, trả response
-5. **Service** — Business logic (query DB, xử lý data)
-6. **Prisma** — Chuyển code → SQL → PostgreSQL
+1. **main.ts** — Sets up everything (CORS, validation, security, docs)
+2. **Guard** — Checks authentication (is there a token? Is the user authorized?)
+3. **Pipe** — Validates input data (is the title empty?)
+4. **Controller** — Receives the request, calls the service, returns a response
+5. **Service** — Business logic (query DB, process data)
+6. **Prisma** — Translates code → SQL → PostgreSQL
 
 ---
 
-## Module là gì?
+## What is a Module?
 
-Mỗi feature = 1 module. Module chứa:
-- **Controller** — Route handlers (nhận request)
-- **Service** — Business logic (xử lý)
+Each feature = one module. A module contains:
+- **Controller** — Route handlers (receive requests)
+- **Service** — Business logic (processing)
 - **DTO** — Data shape (validate input)
-- **Module** — Đăng ký tất cả vào NestJS
+- **Module** — Registers everything with NestJS
 
 ```
 auth/
-├── auth.module.ts        ← Module: "Tôi là auth, tôi chứa controller + service"
-├── auth.controller.ts    ← Controller: "POST /auth/login → tôi xử lý"
-├── auth.service.ts       ← Service: "Tìm user trong DB, so sánh password"
+├── auth.module.ts        ← Module: "I am auth, I contain controller + service"
+├── auth.controller.ts    ← Controller: "POST /auth/login → I handle it"
+├── auth.service.ts       ← Service: "Find user in DB, compare password"
 └── dto/
     └── login.dto.ts      ← DTO: "username: string, password: string"
 ```
 
 ---
 
-## Thứ tự đọc code
+## Recommended reading order
 
-1. `main.ts` — Xem app setup những gì
-2. `app.module.ts` — Xem có những module nào
-3. `prisma/prisma.service.ts` — Xem kết nối database
-4. `auth/auth.controller.ts` — Xem login/register hoạt động ra sao
-5. `pages/pages.controller.ts` — Xem CRUD pages
-6. `sections/sections.controller.ts` — Xem CRUD sections
-7. `common/` — Xem error handling, logging, response format
+1. `main.ts` — See what the app sets up
+2. `app.module.ts` — See which modules exist
+3. `prisma/prisma.service.ts` — See the database connection
+4. `auth/auth.controller.ts` — See how login/register works
+5. `pages/pages.controller.ts` — See CRUD pages
+6. `sections/sections.controller.ts` — See CRUD sections
+7. `common/` — See error handling, logging, response format

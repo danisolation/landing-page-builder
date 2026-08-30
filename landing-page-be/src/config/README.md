@@ -1,75 +1,75 @@
-# config/ — Cấu hình ứng dụng
+# config/ -- Application Configuration
 
-> 📖 Quản lý biến môi trường (environment variables).
+> Manages environment variables.
 
 ---
 
-## env.validation.ts — Tại sao cần?
+## env.validation.ts -- Why is it needed?
 
-`.env` file chứa thông tin nhạy cảm:
+The `.env` file contains sensitive information:
 ```
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/landing_page"
 JWT_SECRET="dev-secret-change-in-production"
 ```
 
-**Vấn đề:** Nếu bạn quên set `DATABASE_URL`:
-- App crash với lỗi Prisma khó hiểu
-- Bạn mất 30 phút mới phát hiện do thiếu env var
+**The problem:** If you forget to set `DATABASE_URL`:
+- The app crashes with a confusing Prisma error
+- You waste 30 minutes figuring out it's a missing env var
 
-**Giải pháp:** Validate khi startup:
-- Thiếu `DATABASE_URL` → crash NGAY với message rõ ràng
-- Thiếu `JWT_SECRET` → crash NGAY, không dùng fallback insecure
+**The solution:** Validate on startup:
+- Missing `DATABASE_URL` → crash immediately with a clear message
+- Missing `JWT_SECRET` → crash immediately, no insecure fallback
 
 ---
 
-## Cách hoạt động
+## How it works
 
 ```typescript
 class EnvironmentVariables {
   @IsString()
-  DATABASE_URL!: string;    // ← Bắt buộc phải có
+  DATABASE_URL!: string;    // ← Required
 
   @IsString()
-  JWT_SECRET!: string;      // ← Bắt buộc phải có
+  JWT_SECRET!: string;      // ← Required
 
   @IsOptional()
-  NODE_ENV?: string;        // ← Không bắt buộc
+  NODE_ENV?: string;        // ← Optional
 }
 ```
 
-Khi app khởi tạo:
-1. Đọc `.env` file
-2. Tạo instance `EnvironmentVariables`
-3. Chạy validation (class-validator)
-4. Nếu thiếu field bắt buộc → throw Error → app crash
-5. Nếu OK → tiếp tục chạy
+When the app starts:
+1. Reads the `.env` file
+2. Creates an `EnvironmentVariables` instance
+3. Runs validation (class-validator)
+4. If a required field is missing → throws an Error → app crashes
+5. If OK → continues running
 
 ---
 
-## Dấu `!` là gì?
+## What does `!` mean?
 
 ```typescript
 DATABASE_URL!: string;
-//           ^ Dấu này gọi là "definite assignment assertion"
+//           ^ This is called a "definite assignment assertion"
 ```
 
-Nghĩa là: "TypeScript ơi, biến này sẽ được gán giá trị ở runtime (bởi class-validator), compiler không cần kiểm tra."
+It means: "TypeScript, this variable will be assigned a value at runtime (by class-validator), so the compiler doesn't need to check."
 
-Nếu không có `!`, TypeScript báo lỗi: "Property 'DATABASE_URL' has no initializer."
+Without `!`, TypeScript reports an error: "Property 'DATABASE_URL' has no initializer."
 
 ---
 
-## Cách dùng
+## Usage
 
-Trong `app.module.ts`:
+In `app.module.ts`:
 ```typescript
 ConfigModule.forRoot({
-  isGlobal: true,    // ConfigService available ở mọi module
-  validate,          // Chạy validation khi startup
+  isGlobal: true,    // ConfigService available in every module
+  validate,          // Runs validation on startup
 })
 ```
 
-Sau đó ở bất kỳ service nào:
+Then in any service:
 ```typescript
 constructor(private configService: ConfigService) {
   const dbUrl = this.configService.get<string>('DATABASE_URL');

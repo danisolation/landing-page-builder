@@ -1,26 +1,26 @@
-# common/ — Hộp công cụ dùng chung
+# common/ -- Shared Utility Toolkit
 
-> 📖 Code ở đây KHÔNG thuộc feature nào. Mọi module đều có thể dùng.
+> Code here does NOT belong to any specific feature. Every module can use it.
 
 ---
 
-## Tại sao cần common/?
+## Why do we need common/?
 
-Giả sử bạn có 3 module: auth, pages, sections. Mỗi module đều cần:
-- Bắt lỗi Prisma → HTTP response
-- Log request
+Suppose you have 3 modules: auth, pages, sections. Each module needs to:
+- Catch Prisma errors → HTTP response
+- Log requests
 - Wrap response format
 
-Nếu viết riêng cho mỗi module → lặp code 3 lần. Viết 1 lần trong `common/` → mọi module đều dùng được.
+If you write this separately for each module → duplicated code 3 times. Write it once in `common/` → every module can use it.
 
 ---
 
-## Cấu trúc
+## Structure
 
 ```
 common/
 ├── filters/
-│   └── prisma-exception.filter.ts   ← Bắt lỗi DB → response chuẩn
+│   └── prisma-exception.filter.ts   ← Catch DB errors → standard response
 └── interceptors/
     ├── response.interceptor.ts      ← Wrap { success, data, timestamp }
     └── logging.interceptor.ts       ← Log "POST /pages 42ms"
@@ -28,67 +28,67 @@ common/
 
 ---
 
-## filters/ — Bắt lỗi
+## filters/ -- Error handling
 
-**NestJS có khái niệm "Exception Filter"** — nó bắt lỗi và format lại response.
+**NestJS has a concept called "Exception Filter"** — it catches errors and reformats the response.
 
-Nếu KHÔNG có filter:
+Without a filter:
 ```
-Lỗi Prisma P2002 → Client thấy: { "statusCode": 500, "message": "Internal Server Error" }
-                   → Hoặc worse: { "statusCode": 500, "stack": "at line 42..." }
+Prisma error P2002 → Client sees: { "statusCode": 500, "message": "Internal Server Error" }
+                   → Or worse: { "statusCode": 500, "stack": "at line 42..." }
 ```
 
-Nếu CÓ filter:
+With a filter:
 ```
-Lỗi Prisma P2002 → Client thấy: {
+Prisma error P2002 → Client sees: {
   "success": false,
   "statusCode": 409,
-  "message": "Dữ liệu đã tồn tại (trùng slug hoặc username)",
+  "message": "Data already exists (duplicate slug or username)",
   "timestamp": "2026-08-29T12:00:00.000Z",
   "path": "/pages"
 }
 ```
 
-**Cách dùng:** Đăng ký trong `main.ts`:
+**Usage:** Register in `main.ts`:
 ```typescript
 app.useGlobalFilters(new PrismaExceptionFilter());
 ```
 
 ---
 
-## interceptors/ — Xử lý request/response
+## interceptors/ -- Request/response processing
 
-**Interceptor** chạy TRƯỚC và SAU khi controller xử lý:
+**Interceptors** run BEFORE and AFTER the controller handles the request:
 
 ```
-Request vào → Interceptor (trước) → Controller → Interceptor (sau) → Response ra
+Request in → Interceptor (before) → Controller → Interceptor (after) → Response out
 ```
 
 ### response.interceptor.ts
-Chạy SAU controller. Lấy data controller trả về, wrap thành format chuẩn:
+Runs AFTER the controller. Takes the data the controller returns and wraps it into a standard format:
 ```typescript
-// Controller trả: { id: "1", title: "Test" }
-// Interceptor wrap thành: { success: true, data: { id: "1", title: "Test" }, timestamp: "..." }
+// Controller returns: { id: "1", title: "Test" }
+// Interceptor wraps it as: { success: true, data: { id: "1", title: "Test" }, timestamp: "..." }
 ```
 
 ### logging.interceptor.ts
-Chạy SAU controller. Ghi log thời gian xử lý:
+Runs AFTER the controller. Logs the processing time:
 ```typescript
 // Log: "POST /pages 42ms"
 ```
 
-**Cách dùng:** Đăng ký trong `main.ts`:
+**Usage:** Register in `main.ts`:
 ```typescript
 app.useGlobalInterceptors(
-  new LoggingInterceptor(),    // Chạy trước (log trước)
-  new ResponseInterceptor(),   // Chạy sau (wrap response)
+  new LoggingInterceptor(),    // Runs first (logs first)
+  new ResponseInterceptor(),   // Runs second (wraps response)
 );
 ```
 
 ---
 
-## Lưu ý quan trọng
+## Important notes
 
-- **Thứ tự đăng ký quan trọng** — Logging trước, Response sau
-- **Filter chạy khi có lỗi** — Interceptor chạy khi thành công
-- **Global = mọi route** — Không cần đăng ký từng controller
+- **Registration order matters** — Logging first, Response second
+- **Filters run on errors** — Interceptors run on success
+- **Global = all routes** — No need to register per controller

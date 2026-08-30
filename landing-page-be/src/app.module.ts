@@ -8,6 +8,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { PagesModule } from './pages/pages.module';
 import { SectionsModule } from './sections/sections.module';
 import { AuthModule } from './auth/auth.module';
+import { HealthModule } from './health/health.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { validate } from './config/env.validation';
 
@@ -15,29 +16,30 @@ import { validate } from './config/env.validation';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      validate, // Validate env vars khi startup — fail fast nếu thiếu
+      validate, // Validate env vars on startup — fail fast if missing
     }),
     ThrottlerModule.forRoot([
       {
-        ttl: 60000, // 1 phút
-        limit: 30, // 30 requests/phút
+        ttl: 60000, // 1 minute
+        limit: 30, // 30 requests/min
       },
     ]),
     PrismaModule,
     PagesModule,
     SectionsModule,
     AuthModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard, // Auth guard — tất cả routes protected mặc định
+      useClass: JwtAuthGuard, // Auth guard — all routes protected by default
     },
     {
       provide: APP_GUARD,
-      useClass: ThrottlerGuard, // Rate limiting — 30 req/phút
+      useClass: ThrottlerGuard, // Rate limiting — 30 req/min
     },
   ],
 })

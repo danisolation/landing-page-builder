@@ -13,7 +13,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  // Tạo admin (chỉ dùng 1 lần)
+  // Create admin (used once during setup)
   async register(username: string, password: string) {
     this.logger.log(`Registering new admin: ${username}`);
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -25,12 +25,14 @@ export class AuthService {
       },
     });
 
-    // Không trả password hash về client
+    this.logger.log(`Admin registered successfully: ${username}`);
+
+    // Do not return password hash to client
     const { password: _, ...result } = admin;
     return result;
   }
 
-  // Đăng nhập
+  // Login
   async login(dto: LoginDto) {
     this.logger.log(`Login attempt: ${dto.username}`);
     const admin = await this.prisma.admin.findUnique({
@@ -38,24 +40,27 @@ export class AuthService {
     });
 
     if (!admin) {
-      throw new UnauthorizedException('Username hoặc password sai');
+      this.logger.warn(`Login failed — user not found: ${dto.username}`);
+      throw new UnauthorizedException('Invalid username or password');
     }
 
-    // So sánh password
+    // Compare password
     const isPasswordValid = await bcrypt.compare(dto.password, admin.password);
 
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Username hoặc password sai');
+      this.logger.warn(`Login failed — invalid password: ${dto.username}`);
+      throw new UnauthorizedException('Invalid username or password');
     }
 
-    // Tạo JWT token
+    // Generate JWT token
     const payload = { sub: admin.id, username: admin.username };
     const token = await this.jwtService.signAsync(payload);
 
+    this.logger.log(`Login successful: ${dto.username}`);
     return { access_token: token };
   }
 
-  // Lấy thông tin user từ token
+  // Get user info from token
   async getProfile(userId: string) {
     return this.prisma.admin.findUnique({
       where: { id: userId },

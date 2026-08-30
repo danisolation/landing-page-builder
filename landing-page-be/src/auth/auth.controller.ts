@@ -6,7 +6,7 @@ import { RegisterDto } from './dto/register.dto';
 import { Public } from './public.decorator';
 
 @Controller('auth')
-@Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 attempts/phút — chống brute force
+@Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 attempts/min — brute force protection
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -22,7 +22,7 @@ export class AuthController {
     return this.authService.login(dto);
   }
 
-  // GET /auth/profile — cần token (global guard bảo vệ)
+  // GET /auth/profile — requires token (global guard protects)
   @Get('profile')
   async getProfile(@Request() req) {
     return this.authService.getProfile(req.user.id);
