@@ -54,7 +54,7 @@ describe('Auth (e2e)', () => {
       return request(app.getHttpServer())
         .post('/auth/login')
         .send({ username: 'e2e-test-user', password: 'testpass123' })
-        .expect(200)
+        .expect(201)
         .expect((res) => {
           expect(res.body.data.access_token).toBeDefined();
           token = res.body.data.access_token;
