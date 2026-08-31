@@ -45,7 +45,54 @@ jobs:
         run: npm run build
 
   test-backend:
-    name: Backend Tests
+    name: Backend Unit Tests
+    runs-on: ubuntu-latest
+    needs: lint-and-build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        working-directory: landing-page-be
+        run: npm ci --legacy-peer-deps
+
+      - name: Generate Prisma client
+        working-directory: landing-page-be
+        run: npx prisma generate
+
+      - name: Run unit tests
+        working-directory: landing-page-be
+        run: npm run test:cov
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/landing_page_db
+          JWT_SECRET: test-secret-key-for-ci
+
+  test-frontend:
+    name: Frontend Unit Tests
+    runs-on: ubuntu-latest
+    needs: lint-and-build
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        working-directory: landing-page-fe
+        run: npm ci --legacy-peer-deps
+
+      - name: Run unit tests
+        working-directory: landing-page-fe
+        run: npm run test
+
+  test-e2e:
+    name: E2E Tests
     runs-on: ubuntu-latest
     needs: lint-and-build
     services:
@@ -71,7 +118,8 @@ jobs:
         with:
           node-version: 24
 
-      - name: Install dependencies
+      # Backend setup
+      - name: Install BE dependencies
         working-directory: landing-page-be
         run: npm ci --legacy-peer-deps
 
@@ -91,14 +139,8 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/landing_page_db
 
-      - name: Run unit tests
-        working-directory: landing-page-be
-        run: npm run test:cov
-        env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/landing_page_db
-          JWT_SECRET: test-secret-key-for-ci
-
-      - name: Run e2e tests
+      # Backend e2e tests
+      - name: Run BE e2e tests
         working-directory: landing-page-be
         run: npm run test:e2e
         env:
@@ -106,32 +148,47 @@ jobs:
           JWT_SECRET: test-secret-key-for-ci
           NODE_ENV: test
 
-  test-frontend:
-    name: Frontend Tests
-    runs-on: ubuntu-latest
-    needs: lint-and-build
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-
-      - name: Install dependencies
+      # Frontend setup
+      - name: Install FE dependencies
         working-directory: landing-page-fe
         run: npm ci --legacy-peer-deps
-
-      - name: Run unit tests
-        working-directory: landing-page-fe
-        run: npm run test
 
       - name: Install Playwright browsers
         working-directory: landing-page-fe
         run: npx playwright install --with-deps chromium
 
-      - name: Run e2e tests
-        working-directory: landing-page-fe
-        run: npx playwright test
+      # Start BE server for Playwright
+      - name: Start BE server
+        working-directory: landing-page-be
+        run: npm run start:dev &
         env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/landing_page_db
+          JWT_SECRET: test-secret-key-for-ci
+          PORT: 3000
+
+      # Start FE server for Playwright
+      - name: Start FE server
+        working-directory: landing-page-fe
+        run: npm run dev &
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:3000
+
+      # Wait for servers to be ready
+      - name: Wait for servers
+        run: |
+          for i in $(seq 1 30); do
+            curl -s http://localhost:3000/health > /dev/null 2>&1 && break
+            sleep 1
+          done
+          for i in $(seq 1 30); do
+            curl -s http://localhost:3001 > /dev/null 2>&1 && break
+            sleep 1
+          done
+
+      # Frontend e2e tests
+      - name: Run FE e2e tests
+        working-directory: landing-page-fe
+        run: npx playwright test --web-server=false
+        env:
+          PLAYWRIGHT_BASE_URL: http://localhost:3001
           NEXT_PUBLIC_API_URL: http://localhost:3000
