@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run vercel-build",
-  "outputDirectory": "landing-page-fe/.next",
-  "installCommand": "npm install"
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "installCommand": "cd landing-page-fe && npm install"
 }
