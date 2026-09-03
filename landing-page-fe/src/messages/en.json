@@ -10,7 +10,8 @@
     "back": "Back",
     "admin": "Admin",
     "logout": "Logout",
-    "appName": "Landing Page Builder"
+    "appName": "Landing Page Builder",
+    "close": "Close"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -30,7 +31,9 @@
     "deleteSuccess": "Page deleted successfully!",
     "deleteFailed": "Failed to delete page",
     "deleteConfirmTitle": "Delete page?",
-    "deleteConfirmMsg": "Are you sure you want to delete \"{title}\"? This action cannot be undone."
+    "deleteConfirmMsg": "Are you sure you want to delete \"{title}\"? This action cannot be undone.",
+    "cardView": "Card view",
+    "tableView": "Table view"
   },
   "login": {
     "title": "Login",

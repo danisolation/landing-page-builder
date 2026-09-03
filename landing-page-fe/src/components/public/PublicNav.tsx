@@ -46,13 +46,13 @@ export default function PublicNav({ pageTitle }: PublicNavProps) {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm'
+          ? 'bg-background/80 backdrop-blur-md shadow-sm'
           : 'bg-transparent'
       } ${hidden ? '-translate-y-full' : 'translate-y-0'}`}
     >
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         <span className={`font-bold text-lg transition-colors ${
-          scrolled ? 'text-gray-900 dark:text-white' : 'text-white'
+          scrolled ? 'text-foreground' : 'text-white'
         }`}>
           {pageTitle}
         </span>
@@ -61,7 +61,7 @@ export default function PublicNav({ pageTitle }: PublicNavProps) {
           onClick={toggleDark}
           className={`p-2 rounded-lg transition-colors ${
             scrolled
-              ? 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+              ? 'text-muted-foreground hover:bg-accent'
               : 'text-white/80 hover:text-white hover:bg-white/10'
           }`}
           aria-label="Toggle dark mode"

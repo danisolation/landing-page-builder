@@ -10,7 +10,8 @@
     "back": "Quay lại",
     "admin": "Admin",
     "logout": "Đăng xuất",
-    "appName": "Landing Page Builder"
+    "appName": "Landing Page Builder",
+    "close": "Đóng"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -30,7 +31,9 @@
     "deleteSuccess": "Đã xóa page thành công!",
     "deleteFailed": "Xóa page thất bại",
     "deleteConfirmTitle": "Xóa page?",
-    "deleteConfirmMsg": "Bạn có chắc muốn xóa \"{title}\"? Hành động này không thể hoàn tác."
+    "deleteConfirmMsg": "Bạn có chắc muốn xóa \"{title}\"? Hành động này không thể hoàn tác.",
+    "cardView": "Hiển thị dạng thẻ",
+    "tableView": "Hiển thị dạng bảng"
   },
   "login": {
     "title": "Đăng nhập",

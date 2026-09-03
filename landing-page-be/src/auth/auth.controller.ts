@@ -10,7 +10,8 @@ import { Public } from './public.decorator';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Public()
+  // POST /auth/register — yêu cầu auth (chỉ admin mới tạo được admin mới)
+  // Seed script tạo admin đầu tiên, không cần public endpoint
   @Post('register')
   async register(@Body() dto: RegisterDto) {
     return this.authService.register(dto.username, dto.password);

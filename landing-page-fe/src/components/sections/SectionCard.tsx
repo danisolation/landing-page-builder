@@ -116,7 +116,7 @@ export default memo(function SectionCard({
           <span
             className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ring-1 capitalize ${sectionTypeColors[section.type] || 'bg-muted text-muted-foreground ring-border'}`}
           >
-            {section.type}
+            {tTypes(section.type)}
           </span>
           <span className="text-xs text-muted-foreground font-mono">
             #{section.order}

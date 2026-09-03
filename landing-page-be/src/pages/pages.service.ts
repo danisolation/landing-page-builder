@@ -63,14 +63,14 @@ export class PagesService {
   }
 
   async findBySlug(slug: string) {
-    this.logger.debug(`Fetching page by slug: ${slug}`);
+    this.logger.debug(`Fetching published page by slug: ${slug}`);
     const page = await this.prisma.page.findUnique({
-      where: { slug },
+      where: { slug, isPublished: true },
       include: { sections: { orderBy: { order: 'asc' } } },
     });
 
     if (!page) {
-      this.logger.warn(`Page not found by slug: ${slug}`);
+      this.logger.warn(`Published page not found by slug: ${slug}`);
       throw new NotFoundException(`Page with slug "${slug}" not found`);
     }
 

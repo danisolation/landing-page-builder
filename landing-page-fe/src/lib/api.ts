@@ -36,8 +36,23 @@ async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise
   });
 
   if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || "API Error");
+    // 401 → token hết hạn, redirect về login
+    if (res.status === 401 && typeof window !== "undefined") {
+      localStorage.removeItem("token");
+      document.cookie = "token=; path=/; max-age=0";
+      window.location.href = "/vi/login";
+      throw new Error("Phiên đăng nhập đã hết hạn");
+    }
+
+    // Handle non-JSON error responses (e.g. 502 from proxy)
+    let errorMessage = "API Error";
+    try {
+      const error = await res.json();
+      errorMessage = error.message || errorMessage;
+    } catch {
+      errorMessage = `HTTP ${res.status}: ${res.statusText}`;
+    }
+    throw new Error(errorMessage);
   }
 
   const json: ApiResponse<T> = await res.json();

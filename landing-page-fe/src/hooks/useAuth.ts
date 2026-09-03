@@ -12,8 +12,8 @@ export function useAuth() {
       loginAPI(data.username, data.password),
     onSuccess: (data) => {
       localStorage.setItem("token", data.access_token);
-      // Store in cookie for middleware
-      document.cookie = `token=${data.access_token}; path=/; max-age=86400`;
+      // Store in cookie for middleware (Secure requires HTTPS; SameSite prevents CSRF)
+      document.cookie = `token=${data.access_token}; path=/; max-age=86400; SameSite=Strict${process.env.NODE_ENV === 'production' ? '; Secure' : ''}`;
       router.push("/dashboard");
     },
   });

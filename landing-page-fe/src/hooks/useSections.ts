@@ -2,7 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createSection, updateSection, deleteSection } from "@/lib/api";
-import { sectionKeys } from "@/lib/query-keys";
+import { sectionKeys, pageKeys } from "@/lib/query-keys";
 import type { CreateSectionInput, UpdateSectionInput } from "@/types";
 
 export function useSections(pageId: string) {
@@ -13,6 +13,7 @@ export function useSections(pageId: string) {
     mutationFn: (data: CreateSectionInput) => createSection(pageId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: sectionKeys.byPage(pageId) });
+      queryClient.invalidateQueries({ queryKey: pageKeys.detail(pageId) });
     },
   });
 
@@ -22,6 +23,7 @@ export function useSections(pageId: string) {
       updateSection(pageId, sectionId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: sectionKeys.byPage(pageId) });
+      queryClient.invalidateQueries({ queryKey: pageKeys.detail(pageId) });
     },
   });
 
@@ -30,6 +32,7 @@ export function useSections(pageId: string) {
     mutationFn: (sectionId: string) => deleteSection(pageId, sectionId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: sectionKeys.byPage(pageId) });
+      queryClient.invalidateQueries({ queryKey: pageKeys.detail(pageId) });
     },
   });
 

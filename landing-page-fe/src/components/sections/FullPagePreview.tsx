@@ -90,7 +90,7 @@ export default function FullPagePreview({ page, isOpen, onClose }: FullPagePrevi
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="absolute inset-4 md:inset-6 lg:inset-10 bg-white dark:bg-gray-950 rounded-2xl shadow-2xl overflow-hidden flex flex-col outline-none"
+            className="absolute inset-4 md:inset-6 lg:inset-10 bg-background rounded-2xl shadow-2xl overflow-hidden flex flex-col outline-none"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Admin toolbar */}
@@ -125,7 +125,7 @@ export default function FullPagePreview({ page, isOpen, onClose }: FullPagePrevi
             </div>
 
             {/* Page preview content — scrollable */}
-            <div className="flex-1 overflow-auto min-h-full bg-white dark:bg-gray-950 scroll-smooth">
+            <div className="flex-1 overflow-auto min-h-full bg-background scroll-smooth">
               {sortedSections.length === 0 ? (
                 <div className="flex items-center justify-center h-full text-muted-foreground">
                   <p>{t('noSections')}</p>

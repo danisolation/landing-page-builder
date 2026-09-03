@@ -2,11 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { GripVertical } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import HeroSection from './HeroSection';
 import FeaturesSection from './FeaturesSection';
 import CtaSection from './CtaSection';
 import StatsSection from './StatsSection';
 import TestimonialsSection from './TestimonialsSection';
+import { sectionTypeColors, getSectionSummary } from '@/lib/section-utils';
 import type { SectionType, SectionContent } from '@/types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -17,32 +19,6 @@ const sectionComponents: Record<SectionType, React.ComponentType<{ content: any 
   stats: StatsSection,
   testimonials: TestimonialsSection,
 };
-
-const typeColors: Record<string, string> = {
-  hero: 'bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400',
-  features: 'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400',
-  cta: 'bg-orange-50 dark:bg-orange-950/30 text-orange-700 dark:text-orange-400',
-  stats: 'bg-green-50 dark:bg-green-950/30 text-green-700 dark:text-green-400',
-  testimonials: 'bg-pink-50 dark:bg-pink-950/30 text-pink-700 dark:text-pink-400',
-};
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-function getSectionSummary(type: SectionType, content: any): string {
-  switch (type) {
-    case 'hero':
-      return content.heading || '—';
-    case 'features':
-      return `${content.title || 'Features'} (${content.items?.length || 0})`;
-    case 'cta':
-      return content.heading || '—';
-    case 'stats':
-      return `${content.title || 'Stats'} (${content.items?.length || 0})`;
-    case 'testimonials':
-      return `${content.title || 'Testimonials'} (${content.items?.length || 0})`;
-    default:
-      return type;
-  }
-}
 
 export interface DragOverlayProps {
   data: {
@@ -57,6 +33,7 @@ export default function DragOverlay({ data }: DragOverlayProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
+  const tTypes = useTranslations('sectionTypes');
 
   useEffect(() => {
     // Mount then trigger entrance animation
@@ -131,16 +108,16 @@ export default function DragOverlay({ data }: DragOverlayProps) {
         <div className="flex-1 min-w-0 px-3 sm:px-4 py-2.5 sm:py-3 flex flex-col justify-center gap-1">
           <div className="flex items-center gap-2">
             <span
-              className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ring-1 capitalize ${typeColors[data.sectionType] || 'bg-muted text-muted-foreground ring-border'}`}
+              className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ring-1 capitalize ${sectionTypeColors[data.sectionType] || 'bg-muted text-muted-foreground ring-border'}`}
             >
-              {data.sectionType}
+              {tTypes(data.sectionType)}
             </span>
             <span className="text-xs text-muted-foreground font-mono">
               #{data.sectionOrder}
             </span>
           </div>
           <p className="text-sm text-muted-foreground truncate">
-            {getSectionSummary(data.sectionType, data.sectionContent)}
+            {getSectionSummary(data.sectionType, data.sectionContent, tTypes)}
           </p>
         </div>
       </div>
