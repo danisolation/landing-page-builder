@@ -4,7 +4,7 @@ import { Suspense, lazy, useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { usePage, usePages } from '@/hooks/usePages';
@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 import { SkeletonForm } from '@/components/ui/loading';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import FieldHint from '@/components/ui/field-hint';
@@ -37,6 +38,7 @@ export default function EditPagePage() {
       .min(1, tValidation('required', { field: t('slugLabel') }))
       .regex(/^[a-z0-9-]+$/, tValidation('slugFormat')),
     description: z.string().optional(),
+    isPublished: z.boolean().optional(),
   });
 
   type EditPageFormData = z.infer<typeof editPageSchema>;
@@ -52,6 +54,7 @@ export default function EditPagePage() {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm<EditPageFormData>({
     resolver: zodResolver(editPageSchema),
@@ -59,6 +62,7 @@ export default function EditPagePage() {
       title: '',
       slug: '',
       description: '',
+      isPublished: false,
     },
   });
 
@@ -68,6 +72,7 @@ export default function EditPagePage() {
         title: page.title,
         slug: page.slug,
         description: page.description || '',
+        isPublished: page.isPublished,
       });
     }
   }, [page, reset]);
@@ -207,6 +212,23 @@ export default function EditPagePage() {
                 <FieldHint text={t('descHint')} />
               </div>
               <Textarea {...register('description')} rows={2} />
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Controller
+                control={control}
+                name="isPublished"
+                render={({ field }) => (
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                )}
+              />
+              <div className="space-y-0.5">
+                <Label className="text-sm font-medium">{t('publishLabel')}</Label>
+                <FieldHint text={t('publishHint')} />
+              </div>
             </div>
 
             <Button type="submit" disabled={isUpdating} size="sm">

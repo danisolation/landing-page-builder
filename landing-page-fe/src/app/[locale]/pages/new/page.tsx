@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { usePages } from "@/hooks/usePages";
@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import FieldHint from "@/components/ui/field-hint";
 
@@ -28,6 +29,7 @@ export default function NewPagePage() {
       .min(1, tValidation("required", { field: t("slugLabel") }))
       .regex(/^[a-z0-9-]+$/, tValidation("slugFormat")),
     description: z.string().optional(),
+    isPublished: z.boolean().optional(),
   });
 
   type NewPageFormData = z.infer<typeof newPageSchema>;
@@ -36,6 +38,7 @@ export default function NewPagePage() {
     register,
     handleSubmit,
     watch,
+    control,
     formState: { errors },
   } = useForm<NewPageFormData>({
     resolver: zodResolver(newPageSchema),
@@ -43,6 +46,7 @@ export default function NewPagePage() {
       title: "",
       slug: "",
       description: "",
+      isPublished: false,
     },
   });
 
@@ -113,6 +117,23 @@ export default function NewPagePage() {
                   {...register("description")}
                   rows={3}
                 />
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Controller
+                  control={control}
+                  name="isPublished"
+                  render={({ field }) => (
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  )}
+                />
+                <div className="space-y-0.5">
+                  <Label className="text-sm font-medium">{t("publishLabel")}</Label>
+                  <FieldHint text={t("publishHint")} />
+                </div>
               </div>
 
               <div className="flex gap-3 pt-2">

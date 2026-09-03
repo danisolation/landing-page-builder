@@ -94,7 +94,9 @@
     "failed": "Tạo page thất bại",
     "titleHint": "Tên hiển thị của page trong dashboard",
     "slugHint": "Địa chỉ URL, chỉ chữ thường, số và dấu gạch ngang",
-    "descHint": "Mô tả ngắn, hiển thị khi chia sẻ link"
+    "descHint": "Mô tả ngắn, hiển thị khi chia sẻ link",
+    "publishLabel": "Xuất bản",
+    "publishHint": "Bật để hiển thị page trên URL công khai"
   },
   "editPage": {
     "title": "Sửa page",
@@ -120,6 +122,8 @@
     "sectionDuplicateFailed": "Nhân bản thất bại",
     "deleteConfirmTitle": "Xóa section?",
     "deleteConfirmMessage": "Bạn có chắc muốn xóa section này? Hành động này không thể hoàn tác.",
+    "publishLabel": "Xuất bản",
+    "publishHint": "Bật để hiển thị page trên URL công khai",
     "previewPage": "Xem trước",
     "previewSection": "Xem trước"
   },

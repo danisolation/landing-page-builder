@@ -94,7 +94,9 @@
     "failed": "Failed to create page",
     "titleHint": "Display name shown in the dashboard",
     "slugHint": "URL path, only lowercase letters, numbers, and hyphens",
-    "descHint": "Short description shown when sharing the link"
+    "descHint": "Short description shown when sharing the link",
+    "publishLabel": "Publish",
+    "publishHint": "Turn on to make this page visible at its public URL"
   },
   "editPage": {
     "title": "Edit Page",
@@ -120,6 +122,8 @@
     "sectionDuplicateFailed": "Failed to duplicate",
     "deleteConfirmTitle": "Delete section?",
     "deleteConfirmMessage": "Are you sure you want to delete this section? This action cannot be undone.",
+    "publishLabel": "Publish",
+    "publishHint": "Turn on to make this page visible at its public URL",
     "previewPage": "Preview",
     "previewSection": "Preview"
   },
