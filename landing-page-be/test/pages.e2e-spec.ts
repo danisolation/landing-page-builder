@@ -91,10 +91,11 @@ describe('Pages (e2e)', () => {
       return request(app.getHttpServer())
         .patch(`/pages/${pageId}`)
         .set('Authorization', `Bearer ${token}`)
-        .send({ title: 'Updated E2E Page' })
+        .send({ title: 'Updated E2E Page', isPublished: true })
         .expect(200)
         .expect((res) => {
           expect(res.body.data.title).toBe('Updated E2E Page');
+          expect(res.body.data.isPublished).toBe(true);
         });
     });
   });

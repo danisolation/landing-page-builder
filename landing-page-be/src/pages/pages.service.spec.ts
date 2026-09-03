@@ -149,7 +149,7 @@ describe('PagesService', () => {
 
       expect(result).toEqual(mockPage);
       expect(prisma.page.findUnique).toHaveBeenCalledWith({
-        where: { slug: 'test-page' },
+        where: { slug: 'test-page', isPublished: true },
         include: { sections: { orderBy: { order: 'asc' } } },
       });
     });
