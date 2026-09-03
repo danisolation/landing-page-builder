@@ -46,6 +46,9 @@ export default function EditPagePage() {
       .min(1, tValidation("required", { field: t("slugLabel") }))
       .regex(/^[a-z0-9-]+$/, tValidation("slugFormat")),
     description: z.string().optional(),
+    metaTitle: z.string().max(255).optional(),
+    metaDescription: z.string().max(500).optional(),
+    ogImageUrl: z.string().max(2048).optional(),
     isPublished: z.boolean().optional(),
   });
 
@@ -64,6 +67,7 @@ export default function EditPagePage() {
     handleSubmit,
     reset,
     control,
+    watch,
     formState: { errors },
   } = useForm<EditPageFormData>({
     resolver: zodResolver(editPageSchema),
@@ -71,6 +75,9 @@ export default function EditPagePage() {
       title: "",
       slug: "",
       description: "",
+      metaTitle: "",
+      metaDescription: "",
+      ogImageUrl: "",
       isPublished: false,
     },
   });
@@ -81,6 +88,9 @@ export default function EditPagePage() {
         title: page.title,
         slug: page.slug,
         description: page.description || "",
+        metaTitle: page.metaTitle || "",
+        metaDescription: page.metaDescription || "",
+        ogImageUrl: page.ogImageUrl || "",
         isPublished: page.isPublished,
       });
     }
@@ -281,6 +291,70 @@ export default function EditPagePage() {
                 </Label>
                 <FieldHint text={t("publishHint")} />
               </div>
+            </div>
+
+            <Button type="submit" disabled={isUpdating} size="sm">
+              {isUpdating ? tCommon("saving") : tCommon("save")}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      {/* SEO Section */}
+      <Card className="mb-6">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg">{t("seoTitle")}</CardTitle>
+          <p className="text-sm text-muted-foreground">{t("seoHint")}</p>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            <div className="space-y-2">
+              <div className="flex items-center">
+                <Label className="text-sm font-medium">
+                  {t("metaTitleLabel")}
+                </Label>
+                <FieldHint text={t("metaTitleHint")} />
+              </div>
+              <Input {...register("metaTitle")} placeholder={page?.title} />
+              <p className="text-xs text-muted-foreground text-right">
+                {t("charCount", {
+                  count: (watch("metaTitle") || "").length,
+                  max: 255,
+                })}
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center">
+                <Label className="text-sm font-medium">
+                  {t("metaDescLabel")}
+                </Label>
+                <FieldHint text={t("metaDescHint")} />
+              </div>
+              <Textarea
+                {...register("metaDescription")}
+                rows={2}
+                placeholder={page?.description || ""}
+              />
+              <p className="text-xs text-muted-foreground text-right">
+                {t("charCount", {
+                  count: (watch("metaDescription") || "").length,
+                  max: 500,
+                })}
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center">
+                <Label className="text-sm font-medium">
+                  {t("ogImageUrlLabel")}
+                </Label>
+                <FieldHint text={t("ogImageUrlHint")} />
+              </div>
+              <Input
+                {...register("ogImageUrl")}
+                placeholder="https://example.com/og-image.jpg"
+              />
             </div>
 
             <Button type="submit" disabled={isUpdating} size="sm">

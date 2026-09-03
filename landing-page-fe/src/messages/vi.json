@@ -128,7 +128,16 @@
     "previewSection": "Xem trước",
     "saveAsTemplate": "Lưu thành template",
     "templateSaved": "Đã lưu template!",
-    "templateSaveFailed": "Lưu template thất bại"
+    "templateSaveFailed": "Lưu template thất bại",
+    "seoTitle": "SEO",
+    "seoHint": "Tối ưu hiển thị khi chia sẻ link trên mạng xã hội và kết quả tìm kiếm",
+    "metaTitleLabel": "Meta Title",
+    "metaTitleHint": "Hiển thị trên tab trình duyệt và kết quả tìm kiếm. Để trống sẽ dùng tiêu đề trang.",
+    "metaDescLabel": "Meta Description",
+    "metaDescHint": "Mô tả hiển thị khi chia sẻ link. Khuyến nghị 120-160 ký tự.",
+    "ogImageUrlLabel": "Ảnh chia sẻ (URL)",
+    "ogImageUrlHint": "URL ảnh hiển thị khi chia sẻ trên Facebook, Zalo, Slack. Khuyến nghị 1200x630px.",
+    "charCount": "{count}/{max}"
   },
   "sectionList": {
     "title": "Sections",

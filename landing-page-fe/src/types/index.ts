@@ -4,6 +4,11 @@ export interface Page {
   title: string;
   slug: string;
   description?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  ogImageUrl?: string;
+  keywords?: string;
+  canonicalUrl?: string;
   isPublished: boolean;
   createdAt: string;
   updatedAt: string;
@@ -14,6 +19,11 @@ export interface CreatePageInput {
   title: string;
   slug: string;
   description?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  ogImageUrl?: string;
+  keywords?: string;
+  canonicalUrl?: string;
   isPublished?: boolean;
   sections?: TemplateSectionDef[];
 }
@@ -22,6 +32,11 @@ export interface UpdatePageInput {
   title?: string;
   slug?: string;
   description?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  ogImageUrl?: string;
+  keywords?: string;
+  canonicalUrl?: string;
   isPublished?: boolean;
 }
 

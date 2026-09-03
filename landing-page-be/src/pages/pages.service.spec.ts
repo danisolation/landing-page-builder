@@ -20,6 +20,11 @@ describe('PagesService', () => {
     title: 'Test Page',
     slug: 'test-page',
     description: 'A test page',
+    metaTitle: null,
+    metaDescription: null,
+    ogImageUrl: null,
+    keywords: null,
+    canonicalUrl: null,
     isPublished: false,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -83,6 +88,36 @@ describe('PagesService', () => {
       });
       expect(result.sections).toHaveLength(2);
     });
+
+    it('should create a page with SEO fields', async () => {
+      const pageWithSeo = {
+        ...mockPage,
+        metaTitle: 'Custom SEO Title',
+        metaDescription: 'SEO description for search engines',
+        ogImageUrl: 'https://example.com/og-image.jpg',
+      };
+      prisma.page.create.mockResolvedValue(pageWithSeo);
+
+      const result = await service.create({
+        title: 'Test Page',
+        slug: 'test-page',
+        metaTitle: 'Custom SEO Title',
+        metaDescription: 'SEO description for search engines',
+        ogImageUrl: 'https://example.com/og-image.jpg',
+      });
+
+      expect(prisma.page.create).toHaveBeenCalledWith({
+        data: {
+          title: 'Test Page',
+          slug: 'test-page',
+          metaTitle: 'Custom SEO Title',
+          metaDescription: 'SEO description for search engines',
+          ogImageUrl: 'https://example.com/og-image.jpg',
+        },
+        include: { sections: { orderBy: { order: 'asc' } } },
+      });
+      expect(result.metaTitle).toBe('Custom SEO Title');
+    });
   });
 
   describe('findAll', () => {
@@ -139,6 +174,32 @@ describe('PagesService', () => {
       await expect(
         service.update('nonexistent', { title: 'Test' }),
       ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should update page SEO fields', async () => {
+      prisma.page.findUnique.mockResolvedValue(mockPage);
+      prisma.page.update.mockResolvedValue({
+        ...mockPage,
+        metaTitle: 'Updated SEO Title',
+        metaDescription: 'Updated description',
+        ogImageUrl: 'https://example.com/new-image.jpg',
+      });
+
+      const result = await service.update('page-1', {
+        metaTitle: 'Updated SEO Title',
+        metaDescription: 'Updated description',
+        ogImageUrl: 'https://example.com/new-image.jpg',
+      });
+
+      expect(prisma.page.update).toHaveBeenCalledWith({
+        where: { id: 'page-1' },
+        data: {
+          metaTitle: 'Updated SEO Title',
+          metaDescription: 'Updated description',
+          ogImageUrl: 'https://example.com/new-image.jpg',
+        },
+      });
+      expect(result.metaTitle).toBe('Updated SEO Title');
     });
   });
 

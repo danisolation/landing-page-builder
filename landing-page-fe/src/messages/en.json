@@ -128,7 +128,16 @@
     "previewSection": "Preview",
     "saveAsTemplate": "Save as template",
     "templateSaved": "Template saved!",
-    "templateSaveFailed": "Failed to save template"
+    "templateSaveFailed": "Failed to save template",
+    "seoTitle": "SEO",
+    "seoHint": "Optimize how your page appears when shared on social media and search results",
+    "metaTitleLabel": "Meta Title",
+    "metaTitleHint": "Shown in browser tab and search results. Falls back to page title if empty.",
+    "metaDescLabel": "Meta Description",
+    "metaDescHint": "Description shown when sharing the link. Recommended 120-160 characters.",
+    "ogImageUrlLabel": "Share Image (URL)",
+    "ogImageUrlHint": "Image URL shown when shared on Facebook, Zalo, Slack. Recommended 1200x630px.",
+    "charCount": "{count}/{max}"
   },
   "sectionList": {
     "title": "Sections",

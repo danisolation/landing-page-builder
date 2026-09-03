@@ -13,13 +13,18 @@ datasource db {
 
 // Landing Page
 model Page {
-  id          String   @id @default(uuid())
-  title       String
-  slug        String   @unique
-  description String?
-  isPublished Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              String   @id @default(uuid())
+  title           String
+  slug            String   @unique
+  description     String?
+  metaTitle       String?  // SEO: override <title> tag
+  metaDescription String?  // SEO: <meta name="description">
+  ogImageUrl      String?  // SEO: <meta property="og:image"> (URL only)
+  keywords        String?  // SEO: <meta name="keywords"> (comma-separated)
+  canonicalUrl    String?  // SEO: canonical URL override
+  isPublished     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   sections Section[]
 }

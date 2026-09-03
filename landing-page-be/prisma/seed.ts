@@ -28,13 +28,18 @@ async function main() {
 
   // 3. Tạo Pages với đầy đủ 5 loại sections
 
-  // Page 1: Sản phẩm mới (Published)
+  // Page 1: Sản phẩm mới (Published) - WITH FULL SEO
   const page1 = await prisma.page.create({
     data: {
       title: 'Sản phẩm mới',
       slug: 'san-pham-moi',
       description: 'Giới thiệu sản phẩm ABC - Giải pháp toàn diện cho doanh nghiệp',
       isPublished: true,
+      metaTitle: 'ABC - Giải pháp toàn diện cho doanh nghiệp | Sản phẩm mới 2026',
+      metaDescription: 'Khám phá ABC - Nền tảng toàn diện giúp doanh nghiệp tối ưu hiệu suất, tăng trưởng doanh thu với AI thông minh. Đăng ký dùng thử miễn phí!',
+      ogImageUrl: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=1200&h=630&fit=crop',
+      keywords: 'phần mềm doanh nghiệp, giải pháp AI, tối ưu hiệu suất, ABC platform',
+      canonicalUrl: 'https://abc.example.com/vi/san-pham-moi',
     },
   });
 
