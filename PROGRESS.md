@@ -11,6 +11,7 @@ Last updated: 2026-09-03
 ## ✅ Completed
 
 ### Page Templates (2026-09-03)
+
 - [x] BE: `CreatePageDto` accepts optional nested `sections[]` — page + sections created atomically via Prisma nested write
 - [x] BE: `Template` model (migration `20260903063314_add_template`) + `templates` module (GET/POST/DELETE `/templates`, auth-guarded)
 - [x] BE: unit tests (`templates.service.spec.ts`, updated `pages.service.spec.ts`) + e2e (`templates.e2e-spec.ts`, nested-sections cases in `pages.e2e-spec.ts`) — 33 unit + 42 e2e pass
@@ -21,6 +22,7 @@ Last updated: 2026-09-03
 - [x] Verified: FE build + lint clean, browser smoke test full flow (create from template → 5 sections → save as template → gallery → delete)
 
 ### FE Codebase — CLAUDE.md Compliance (commit 6d0b547)
+
 - [x] All 7 routes present and correct
 - [x] File naming conventions (PascalCase, usePascalCase, kebab-case)
 - [x] All 5 section types have renderer + editor + constants
@@ -45,6 +47,7 @@ Last updated: 2026-09-03
 - [x] Clean code rules added to CLAUDE.md
 
 ### BE
+
 - [x] NestJS + Prisma 7 + PostgreSQL setup
 - [x] CRUD for pages and sections
 - [x] Auth with JWT
@@ -70,29 +73,33 @@ All previous TODOs completed on 2026-08-29:
 ## 🔧 Common Issues & Fixes
 
 ### FE e2e tests fail with login timeout (waitForURL /dashboard)
+
 **Cause:** Environmental, not a product bug — back-to-back full-suite runs exhaust the BE rate-limit window (30 req/min; every login + admin fetch counts) and the Next dev server compiles routes on demand under load. Failures rotate between tests; every test passes in isolation (e.g. 2.4s solo).
 **Fix:** Pause ~1 min between suite runs, run spec files individually, or run against `next build && next start`.
 
 ### Playwright tests fail with "test.describe() called in wrong place"
+
 **Fix:** Run `npm install` in `landing-page-fe/` — version conflict between `playwright` and `@playwright/test`.
 
 ### Build fails after editing messages files
+
 **Fix:** Check both `vi.json` and `en.json` have matching keys. Missing key = runtime error.
 
 ### Section editor placeholder still shows hardcoded text
+
 **Check:** The placeholder must use `t('placeholderKey')`, not a string literal. Editor placeholders are in `heroEditor`, `ctaEditor`, `featuresEditor`, `statsEditor`, `testimonialsEditor` namespaces.
 
 ---
 
 ## 📁 Key Files Reference
 
-| File | Purpose |
-|------|---------|
-| `landing-page-fe/CLAUDE.md` | FE rules — auto-loads when working in FE |
-| `landing-page-be/CLAUDE.md` | BE rules — auto-loads when working in BE |
-| `landing-page-fe/src/messages/vi.json` | Vietnamese translations |
-| `landing-page-fe/src/messages/en.json` | English translations |
+| File                                                           | Purpose                                          |
+| -------------------------------------------------------------- | ------------------------------------------------ |
+| `landing-page-fe/CLAUDE.md`                                    | FE rules — auto-loads when working in FE         |
+| `landing-page-be/CLAUDE.md`                                    | BE rules — auto-loads when working in BE         |
+| `landing-page-fe/src/messages/vi.json`                         | Vietnamese translations                          |
+| `landing-page-fe/src/messages/en.json`                         | English translations                             |
 | `landing-page-fe/src/components/sections/section-constants.ts` | Section type registry (editors, defaults, types) |
-| `landing-page-fe/src/hooks/` | TanStack Query hooks |
-| `landing-page-fe/src/lib/api.ts` | API client (fetchAPI with auth) |
-| `landing-page-fe/e2e/` | Playwright e2e tests |
+| `landing-page-fe/src/hooks/`                                   | TanStack Query hooks                             |
+| `landing-page-fe/src/lib/api.ts`                               | API client (fetchAPI with auth)                  |
+| `landing-page-fe/e2e/`                                         | Playwright e2e tests                             |

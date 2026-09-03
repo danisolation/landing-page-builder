@@ -14,9 +14,7 @@ describe('TemplatesService', () => {
     };
   };
 
-  const mockSections = [
-    { type: 'hero', content: { heading: 'Hi' }, order: 0 },
-  ];
+  const mockSections = [{ type: 'hero', content: { heading: 'Hi' }, order: 0 }];
 
   const mockTemplate = {
     id: 'template-1',

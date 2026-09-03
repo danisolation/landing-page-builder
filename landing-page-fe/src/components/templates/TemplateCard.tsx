@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { Eye, Trash2 } from 'lucide-react';
+import { Eye, Trash2 } from "lucide-react";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
-import type { SectionType } from '@/types';
+import type { SectionType } from "@/types";
 
 export interface TemplateCardData {
   id: string;
@@ -36,7 +36,7 @@ export default function TemplateCard({
   onDelete,
 }: TemplateCardProps) {
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
+    if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       onSelect();
     }
@@ -50,8 +50,9 @@ export default function TemplateCard({
       onClick={onSelect}
       onKeyDown={handleKeyDown}
       className={cn(
-        'group flex flex-col gap-2 rounded-xl border border-border bg-card p-4 text-left transition-all cursor-pointer hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-ring',
-        selected && 'border-blue-500 dark:border-blue-500 ring-2 ring-blue-500/30'
+        "group flex flex-col gap-2 rounded-xl border border-border bg-card p-4 text-left transition-all cursor-pointer hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        selected &&
+          "border-blue-500 dark:border-blue-500 ring-2 ring-blue-500/30",
       )}
     >
       <div className="flex items-start justify-between gap-2">
@@ -64,7 +65,9 @@ export default function TemplateCard({
       </div>
 
       {data.description && (
-        <p className="text-xs text-muted-foreground line-clamp-2">{data.description}</p>
+        <p className="text-xs text-muted-foreground line-clamp-2">
+          {data.description}
+        </p>
       )}
 
       {data.sectionTypes.length > 0 && (

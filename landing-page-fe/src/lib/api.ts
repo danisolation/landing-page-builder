@@ -19,7 +19,10 @@ interface ApiResponse<T> {
   timestamp: string;
 }
 
-async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+async function fetchAPI<T>(
+  endpoint: string,
+  options: RequestInit = {},
+): Promise<T> {
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
@@ -73,11 +76,15 @@ export const getProfile = () => fetchAPI<Profile>("/auth/profile");
 // Pages
 export const getPages = () => fetchAPI<Page[]>("/pages");
 export const getPage = (id: string) => fetchAPI<Page>(`/pages/${id}`);
-export const getPageBySlug = (slug: string) => fetchAPI<Page>(`/pages/slug/${slug}`);
+export const getPageBySlug = (slug: string) =>
+  fetchAPI<Page>(`/pages/slug/${slug}`);
 export const createPage = (data: CreatePageInput) =>
   fetchAPI<Page>("/pages", { method: "POST", body: JSON.stringify(data) });
 export const updatePage = (id: string, data: UpdatePageInput) =>
-  fetchAPI<Page>(`/pages/${id}`, { method: "PATCH", body: JSON.stringify(data) });
+  fetchAPI<Page>(`/pages/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
 export const deletePage = (id: string) =>
   fetchAPI<void>(`/pages/${id}`, { method: "DELETE" });
 
@@ -87,17 +94,26 @@ export const createSection = (pageId: string, data: CreateSectionInput) =>
     method: "POST",
     body: JSON.stringify(data),
   });
-export const updateSection = (pageId: string, sectionId: string, data: UpdateSectionInput) =>
+export const updateSection = (
+  pageId: string,
+  sectionId: string,
+  data: UpdateSectionInput,
+) =>
   fetchAPI<Section>(`/pages/${pageId}/sections/${sectionId}`, {
     method: "PATCH",
     body: JSON.stringify(data),
   });
 export const deleteSection = (pageId: string, sectionId: string) =>
-  fetchAPI<void>(`/pages/${pageId}/sections/${sectionId}`, { method: "DELETE" });
+  fetchAPI<void>(`/pages/${pageId}/sections/${sectionId}`, {
+    method: "DELETE",
+  });
 
 // Templates
 export const getTemplates = () => fetchAPI<Template[]>("/templates");
 export const createTemplate = (data: CreateTemplateInput) =>
-  fetchAPI<Template>("/templates", { method: "POST", body: JSON.stringify(data) });
+  fetchAPI<Template>("/templates", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
 export const deleteTemplate = (id: string) =>
   fetchAPI<void>(`/templates/${id}`, { method: "DELETE" });

@@ -33,7 +33,12 @@ export interface PageFilters {
 }
 
 // Section types
-export type SectionType = "hero" | "features" | "cta" | "stats" | "testimonials";
+export type SectionType =
+  | "hero"
+  | "features"
+  | "cta"
+  | "stats"
+  | "testimonials";
 
 export interface Section {
   id: string;

@@ -1,20 +1,22 @@
-'use client';
+"use client";
 
-import { Suspense, lazy, useMemo, useState } from 'react';
+import { Suspense, lazy, useMemo, useState } from "react";
 
-import { toast } from 'sonner';
-import { useTranslations } from 'next-intl';
+import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { showConfirm } from '@/components/ui/confirm-dialog';
-import TemplateCard from './TemplateCard';
-import { builtInTemplates } from './template-constants';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { showConfirm } from "@/components/ui/confirm-dialog";
+import TemplateCard from "./TemplateCard";
+import { builtInTemplates } from "./template-constants";
 
-import { useTemplates } from '@/hooks/useTemplates';
+import { useTemplates } from "@/hooks/useTemplates";
 
-import type { Section, SectionType, TemplateSectionDef } from '@/types';
+import type { Section, SectionType, TemplateSectionDef } from "@/types";
 
-const FullPagePreview = lazy(() => import('@/components/sections/FullPagePreview'));
+const FullPagePreview = lazy(
+  () => import("@/components/sections/FullPagePreview"),
+);
 
 interface PreviewState {
   name: string;
@@ -26,30 +28,38 @@ export interface TemplateGalleryProps {
   onSelect: (id: string, sections: TemplateSectionDef[]) => void;
 }
 
-const SECTION_TYPES: SectionType[] = ['hero', 'features', 'cta', 'stats', 'testimonials'];
+const SECTION_TYPES: SectionType[] = [
+  "hero",
+  "features",
+  "cta",
+  "stats",
+  "testimonials",
+];
 
-export default function TemplateGallery({ selectedId, onSelect }: TemplateGalleryProps) {
-  const t = useTranslations('templates');
-  const tSection = useTranslations('sectionTypes');
+export default function TemplateGallery({
+  selectedId,
+  onSelect,
+}: TemplateGalleryProps) {
+  const t = useTranslations("templates");
+  const tSection = useTranslations("sectionTypes");
   const { templates, error, deleteTemplate } = useTemplates();
   const [preview, setPreview] = useState<PreviewState | null>(null);
 
   const sectionLabels = useMemo(
     () =>
-      Object.fromEntries(SECTION_TYPES.map((type) => [type, tSection(type)])) as Record<
-        SectionType,
-        string
-      >,
-    [tSection]
+      Object.fromEntries(
+        SECTION_TYPES.map((type) => [type, tSection(type)]),
+      ) as Record<SectionType, string>,
+    [tSection],
   );
 
   const cardLabels = useMemo(
     () => ({
-      preview: t('preview'),
-      deleteTemplate: t('deleteTemplate'),
-      customBadge: t('customBadge'),
+      preview: t("preview"),
+      deleteTemplate: t("deleteTemplate"),
+      customBadge: t("customBadge"),
     }),
-    [t]
+    [t],
   );
 
   // Synthetic page — FullPagePreview cần Section[] đầy đủ field
@@ -58,11 +68,11 @@ export default function TemplateGallery({ selectedId, onSelect }: TemplateGaller
     const now = new Date().toISOString();
     return {
       title: preview.name,
-      slug: 'preview',
+      slug: "preview",
       sections: preview.sections.map((s, i) => ({
         ...s,
         id: `preview-${i}`,
-        pageId: 'preview',
+        pageId: "preview",
         createdAt: now,
         updatedAt: now,
       })) as Section[],
@@ -70,37 +80,42 @@ export default function TemplateGallery({ selectedId, onSelect }: TemplateGaller
   }, [preview]);
 
   const handleDelete = async (id: string) => {
-    const confirmed = await showConfirm(t('deleteConfirmTitle'), t('deleteConfirmMessage'));
+    const confirmed = await showConfirm(
+      t("deleteConfirmTitle"),
+      t("deleteConfirmMessage"),
+    );
     if (!confirmed) return;
 
     deleteTemplate(id, {
       onSuccess: () => {
-        toast.success(t('deleted'));
-        if (selectedId === id) onSelect('blank', []);
+        toast.success(t("deleted"));
+        if (selectedId === id) onSelect("blank", []);
       },
-      onError: (err: Error) => toast.error(err.message || t('deleteFailed')),
+      onError: (err: Error) => toast.error(err.message || t("deleteFailed")),
     });
   };
 
   return (
     <Card className="mb-6">
       <CardHeader className="pb-4">
-        <CardTitle className="text-lg">{t('chooseTemplate')}</CardTitle>
-        <p className="text-sm text-muted-foreground">{t('chooseTemplateHint')}</p>
+        <CardTitle className="text-lg">{t("chooseTemplate")}</CardTitle>
+        <p className="text-sm text-muted-foreground">
+          {t("chooseTemplateHint")}
+        </p>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           <TemplateCard
             data={{
-              id: 'blank',
-              name: t('blankName'),
-              description: t('blankDescription'),
+              id: "blank",
+              name: t("blankName"),
+              description: t("blankDescription"),
               sectionTypes: [],
             }}
-            selected={selectedId === 'blank'}
+            selected={selectedId === "blank"}
             sectionLabels={sectionLabels}
             labels={cardLabels}
-            onSelect={() => onSelect('blank', [])}
+            onSelect={() => onSelect("blank", [])}
           />
 
           {builtInTemplates.map((template) => (
@@ -117,7 +132,10 @@ export default function TemplateGallery({ selectedId, onSelect }: TemplateGaller
               labels={cardLabels}
               onSelect={() => onSelect(template.id, template.sections)}
               onPreview={() =>
-                setPreview({ name: t(`builtin.${template.id}.name`), sections: template.sections })
+                setPreview({
+                  name: t(`builtin.${template.id}.name`),
+                  sections: template.sections,
+                })
               }
             />
           ))}
@@ -136,14 +154,18 @@ export default function TemplateGallery({ selectedId, onSelect }: TemplateGaller
               sectionLabels={sectionLabels}
               labels={cardLabels}
               onSelect={() => onSelect(template.id, template.sections)}
-              onPreview={() => setPreview({ name: template.name, sections: template.sections })}
+              onPreview={() =>
+                setPreview({ name: template.name, sections: template.sections })
+              }
               onDelete={() => handleDelete(template.id)}
             />
           ))}
         </div>
 
         {error && (
-          <p className="text-xs text-muted-foreground mt-3">{t('loadCustomFailed')}</p>
+          <p className="text-xs text-muted-foreground mt-3">
+            {t("loadCustomFailed")}
+          </p>
         )}
       </CardContent>
 

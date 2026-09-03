@@ -1,44 +1,50 @@
-'use client';
+"use client";
 
-import { Suspense, lazy, useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import { toast } from 'sonner';
-import { useTranslations } from 'next-intl';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { usePage, usePages } from '@/hooks/usePages';
-import { useSections } from '@/hooks/useSections';
-import { useTemplates } from '@/hooks/useTemplates';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { SkeletonForm } from '@/components/ui/loading';
-import Breadcrumbs from '@/components/layout/Breadcrumbs';
-import FieldHint from '@/components/ui/field-hint';
-import SectionList from '@/components/sections/SectionList';
-import SaveTemplateDialog from '@/components/templates/SaveTemplateDialog';
-import { showConfirm } from '@/components/ui/confirm-dialog';
+import { Suspense, lazy, useEffect, useState } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { toast } from "sonner";
+import { useTranslations } from "next-intl";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { usePage, usePages } from "@/hooks/usePages";
+import { useSections } from "@/hooks/useSections";
+import { useTemplates } from "@/hooks/useTemplates";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { SkeletonForm } from "@/components/ui/loading";
+import Breadcrumbs from "@/components/layout/Breadcrumbs";
+import FieldHint from "@/components/ui/field-hint";
+import SectionList from "@/components/sections/SectionList";
+import SaveTemplateDialog from "@/components/templates/SaveTemplateDialog";
+import { showConfirm } from "@/components/ui/confirm-dialog";
 
-const SectionPreviewModal = lazy(() => import('@/components/sections/SectionPreviewModal'));
-const FullPagePreview = lazy(() => import('@/components/sections/FullPagePreview'));
-import { Eye, LayoutTemplate } from 'lucide-react';
-import type { Section } from '@/types';
+const SectionPreviewModal = lazy(
+  () => import("@/components/sections/SectionPreviewModal"),
+);
+const FullPagePreview = lazy(
+  () => import("@/components/sections/FullPagePreview"),
+);
+import { Eye, LayoutTemplate } from "lucide-react";
+import type { Section } from "@/types";
 
 export default function EditPagePage() {
-  const t = useTranslations('editPage');
-  const tCommon = useTranslations('common');
-  const tValidation = useTranslations('validation');
+  const t = useTranslations("editPage");
+  const tCommon = useTranslations("common");
+  const tValidation = useTranslations("validation");
 
   const editPageSchema = z.object({
-    title: z.string().min(1, tValidation('required', { field: t('titleLabel') })),
+    title: z
+      .string()
+      .min(1, tValidation("required", { field: t("titleLabel") })),
     slug: z
       .string()
-      .min(1, tValidation('required', { field: t('slugLabel') }))
-      .regex(/^[a-z0-9-]+$/, tValidation('slugFormat')),
+      .min(1, tValidation("required", { field: t("slugLabel") }))
+      .regex(/^[a-z0-9-]+$/, tValidation("slugFormat")),
     description: z.string().optional(),
     isPublished: z.boolean().optional(),
   });
@@ -62,9 +68,9 @@ export default function EditPagePage() {
   } = useForm<EditPageFormData>({
     resolver: zodResolver(editPageSchema),
     defaultValues: {
-      title: '',
-      slug: '',
-      description: '',
+      title: "",
+      slug: "",
+      description: "",
       isPublished: false,
     },
   });
@@ -74,7 +80,7 @@ export default function EditPagePage() {
       reset({
         title: page.title,
         slug: page.slug,
-        description: page.description || '',
+        description: page.description || "",
         isPublished: page.isPublished,
       });
     }
@@ -98,12 +104,12 @@ export default function EditPagePage() {
       },
       {
         onSuccess: () => {
-          toast.success(t('templateSaved'));
+          toast.success(t("templateSaved"));
           setShowSaveTemplate(false);
         },
         onError: (error: Error) =>
-          toast.error(error.message || t('templateSaveFailed')),
-      }
+          toast.error(error.message || t("templateSaveFailed")),
+      },
     );
   };
 
@@ -111,16 +117,17 @@ export default function EditPagePage() {
     updatePage(
       { id: pageId, data },
       {
-        onSuccess: () => toast.success(t('saveSuccess')),
-        onError: (error: Error) => toast.error(error.message || t('saveFailed')),
-      }
+        onSuccess: () => toast.success(t("saveSuccess")),
+        onError: (error: Error) =>
+          toast.error(error.message || t("saveFailed")),
+      },
     );
   };
 
   const handleDuplicateSection = (section: Section) => {
     const maxOrder = Math.max(
       0,
-      ...(page?.sections?.map((s) => s.order) || [0])
+      ...(page?.sections?.map((s) => s.order) || [0]),
     );
     createSection(
       {
@@ -129,24 +136,24 @@ export default function EditPagePage() {
         order: maxOrder + 1,
       },
       {
-        onSuccess: () => toast.success(t('sectionDuplicated')),
+        onSuccess: () => toast.success(t("sectionDuplicated")),
         onError: (error: Error) =>
-          toast.error(error.message || t('sectionDuplicateFailed')),
-      }
+          toast.error(error.message || t("sectionDuplicateFailed")),
+      },
     );
   };
 
   const handleDeleteSection = async (section: Section) => {
     const confirmed = await showConfirm(
-      t('deleteConfirmTitle'),
-      t('deleteConfirmMessage')
+      t("deleteConfirmTitle"),
+      t("deleteConfirmMessage"),
     );
     if (!confirmed) return;
 
     deleteSection(section.id, {
-      onSuccess: () => toast.success(t('sectionDeleted')),
+      onSuccess: () => toast.success(t("sectionDeleted")),
       onError: (error: Error) =>
-        toast.error(error.message || t('sectionDeleteFailed')),
+        toast.error(error.message || t("sectionDeleteFailed")),
     });
   };
 
@@ -161,10 +168,10 @@ export default function EditPagePage() {
       <div>
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-foreground tracking-tight">
-            {t('title')}
+            {t("title")}
           </h1>
           <Button variant="outline" disabled size="sm">
-            {tCommon('back')}
+            {tCommon("back")}
           </Button>
         </div>
         <div className="space-y-8">
@@ -181,7 +188,7 @@ export default function EditPagePage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <h1 className="text-2xl font-bold text-foreground tracking-tight">
-          {t('title')}
+          {t("title")}
         </h1>
         <div className="flex gap-2">
           <Button
@@ -191,7 +198,7 @@ export default function EditPagePage() {
             disabled={!page?.sections?.length}
           >
             <LayoutTemplate size={14} className="mr-1.5" />
-            {t('saveAsTemplate')}
+            {t("saveAsTemplate")}
           </Button>
           <Button
             variant="outline"
@@ -199,14 +206,14 @@ export default function EditPagePage() {
             onClick={() => setShowFullPreview(true)}
           >
             <Eye size={14} className="mr-1.5" />
-            {t('previewPage')}
+            {t("previewPage")}
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => router.push('/pages')}
+            onClick={() => router.push("/pages")}
           >
-            {tCommon('back')}
+            {tCommon("back")}
           </Button>
         </div>
       </div>
@@ -214,39 +221,47 @@ export default function EditPagePage() {
       {/* Page Info */}
       <Card className="mb-6">
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg">{t('pageInfo')}</CardTitle>
+          <CardTitle className="text-lg">{t("pageInfo")}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <div className="flex items-center">
-                  <Label className="text-sm font-medium">{t('titleLabel')}</Label>
-                  <FieldHint text={t('titleHint')} />
+                  <Label className="text-sm font-medium">
+                    {t("titleLabel")}
+                  </Label>
+                  <FieldHint text={t("titleHint")} />
                 </div>
-                <Input {...register('title')} />
+                <Input {...register("title")} />
                 {errors.title && (
-                  <p className="text-xs text-destructive">{errors.title.message}</p>
+                  <p className="text-xs text-destructive">
+                    {errors.title.message}
+                  </p>
                 )}
               </div>
               <div className="space-y-2">
                 <div className="flex items-center">
-                  <Label className="text-sm font-medium">{t('slugLabel')}</Label>
-                  <FieldHint text={t('slugHint')} />
+                  <Label className="text-sm font-medium">
+                    {t("slugLabel")}
+                  </Label>
+                  <FieldHint text={t("slugHint")} />
                 </div>
-                <Input {...register('slug')} />
+                <Input {...register("slug")} />
                 {errors.slug && (
-                  <p className="text-xs text-destructive">{errors.slug.message}</p>
+                  <p className="text-xs text-destructive">
+                    {errors.slug.message}
+                  </p>
                 )}
               </div>
             </div>
 
             <div className="space-y-2">
               <div className="flex items-center">
-                <Label className="text-sm font-medium">{t('descLabel')}</Label>
-                <FieldHint text={t('descHint')} />
+                <Label className="text-sm font-medium">{t("descLabel")}</Label>
+                <FieldHint text={t("descHint")} />
               </div>
-              <Textarea {...register('description')} rows={2} />
+              <Textarea {...register("description")} rows={2} />
             </div>
 
             <div className="flex items-center gap-3">
@@ -261,13 +276,15 @@ export default function EditPagePage() {
                 )}
               />
               <div className="space-y-0.5">
-                <Label className="text-sm font-medium">{t('publishLabel')}</Label>
-                <FieldHint text={t('publishHint')} />
+                <Label className="text-sm font-medium">
+                  {t("publishLabel")}
+                </Label>
+                <FieldHint text={t("publishHint")} />
               </div>
             </div>
 
             <Button type="submit" disabled={isUpdating} size="sm">
-              {isUpdating ? tCommon('saving') : tCommon('save')}
+              {isUpdating ? tCommon("saving") : tCommon("save")}
             </Button>
           </form>
         </CardContent>

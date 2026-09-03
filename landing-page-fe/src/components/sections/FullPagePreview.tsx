@@ -1,22 +1,25 @@
-'use client';
+"use client";
 
-import { useEffect, useMemo, useRef, useCallback } from 'react';
-import { X, ExternalLink } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useParams } from 'next/navigation';
-import { useTranslations } from 'next-intl';
-import HeroSection from './HeroSection';
-import FeaturesSection from './FeaturesSection';
-import CtaSection from './CtaSection';
-import StatsSection from './StatsSection';
-import TestimonialsSection from './TestimonialsSection';
-import PublicFooter from '@/components/public/PublicFooter';
-import AnimatedSection from '@/components/public/AnimatedSection';
-import { Button } from '@/components/ui/button';
-import type { Section, SectionType } from '@/types';
+import { useEffect, useMemo, useRef, useCallback } from "react";
+import { X, ExternalLink } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
+import HeroSection from "./HeroSection";
+import FeaturesSection from "./FeaturesSection";
+import CtaSection from "./CtaSection";
+import StatsSection from "./StatsSection";
+import TestimonialsSection from "./TestimonialsSection";
+import PublicFooter from "@/components/public/PublicFooter";
+import AnimatedSection from "@/components/public/AnimatedSection";
+import { Button } from "@/components/ui/button";
+import type { Section, SectionType } from "@/types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const sectionComponents: Record<SectionType, React.ComponentType<{ content: any }>> = {
+const sectionComponents: Record<
+  SectionType,
+  React.ComponentType<{ content: any }>
+> = {
   hero: HeroSection,
   features: FeaturesSection,
   cta: CtaSection,
@@ -35,15 +38,23 @@ export interface FullPagePreviewProps {
   showOpenLink?: boolean;
 }
 
-export default function FullPagePreview({ page, isOpen, onClose, showOpenLink = true }: FullPagePreviewProps) {
+export default function FullPagePreview({
+  page,
+  isOpen,
+  onClose,
+  showOpenLink = true,
+}: FullPagePreviewProps) {
   const params = useParams();
   const locale = params.locale as string;
-  const t = useTranslations('fullPagePreview');
+  const t = useTranslations("fullPagePreview");
   const dialogRef = useRef<HTMLDivElement>(null);
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') onClose();
-  }, [onClose]);
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    },
+    [onClose],
+  );
 
   // Focus trap: focus the dialog on open
   useEffect(() => {
@@ -55,12 +66,12 @@ export default function FullPagePreview({ page, isOpen, onClose, showOpenLink = 
   // Lock body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [isOpen]);
 
@@ -90,16 +101,14 @@ export default function FullPagePreview({ page, isOpen, onClose, showOpenLink = 
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
             className="absolute inset-4 md:inset-6 lg:inset-10 bg-background rounded-2xl shadow-2xl overflow-hidden flex flex-col outline-none"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Admin toolbar */}
             <div className="flex items-center justify-between px-6 py-3 border-b border-border bg-card shrink-0 z-30">
               <div className="flex items-center gap-3">
-                <h2 className="font-semibold text-foreground">
-                  {page.title}
-                </h2>
+                <h2 className="font-semibold text-foreground">{page.title}</h2>
                 {showOpenLink && (
                   <span className="text-xs text-muted-foreground font-mono bg-muted px-2 py-0.5 rounded">
                     /{page.slug}
@@ -115,14 +124,14 @@ export default function FullPagePreview({ page, isOpen, onClose, showOpenLink = 
                     className="inline-flex items-center justify-center gap-1.5 text-sm font-medium border border-border bg-card text-foreground hover:bg-accent px-3 py-1.5 rounded-md transition-colors"
                   >
                     <ExternalLink size={14} />
-                    {t('openInNewTab')}
+                    {t("openInNewTab")}
                   </a>
                 )}
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={onClose}
-                  aria-label={t('closePreview')}
+                  aria-label={t("closePreview")}
                 >
                   <X size={18} />
                 </Button>
@@ -133,7 +142,7 @@ export default function FullPagePreview({ page, isOpen, onClose, showOpenLink = 
             <div className="flex-1 overflow-auto min-h-full bg-background scroll-smooth">
               {sortedSections.length === 0 ? (
                 <div className="flex items-center justify-center h-full text-muted-foreground">
-                  <p>{t('noSections')}</p>
+                  <p>{t("noSections")}</p>
                 </div>
               ) : (
                 <>
@@ -142,16 +151,24 @@ export default function FullPagePreview({ page, isOpen, onClose, showOpenLink = 
 
                     if (!SectionComponent) {
                       return (
-                        <div key={section.id} className="p-8 bg-yellow-50 dark:bg-yellow-900/20 text-center">
+                        <div
+                          key={section.id}
+                          className="p-8 bg-yellow-50 dark:bg-yellow-900/20 text-center"
+                        >
                           <p className="text-yellow-700 dark:text-yellow-400 text-sm">
-                            {t('unsupportedSection', { type: section.type })}
+                            {t("unsupportedSection", { type: section.type })}
                           </p>
                         </div>
                       );
                     }
 
-                    if (section.type === 'hero') {
-                      return <SectionComponent key={section.id} content={section.content} />;
+                    if (section.type === "hero") {
+                      return (
+                        <SectionComponent
+                          key={section.id}
+                          content={section.content}
+                        />
+                      );
                     }
 
                     return (

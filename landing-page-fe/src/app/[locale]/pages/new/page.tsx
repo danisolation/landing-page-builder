@@ -29,10 +29,15 @@ export default function NewPagePage() {
   const tValidation = useTranslations("validation");
   const router = useRouter();
   const { createPage, isCreating } = usePages();
-  const [template, setTemplate] = useState<SelectedTemplate>({ id: "blank", sections: [] });
+  const [template, setTemplate] = useState<SelectedTemplate>({
+    id: "blank",
+    sections: [],
+  });
 
   const newPageSchema = z.object({
-    title: z.string().min(1, tValidation("required", { field: t("titleLabel") })),
+    title: z
+      .string()
+      .min(1, tValidation("required", { field: t("titleLabel") })),
     slug: z
       .string()
       .min(1, tValidation("required", { field: t("slugLabel") }))
@@ -74,7 +79,7 @@ export default function NewPagePage() {
         onError: (error: Error) => {
           toast.error(error.message || t("failed"));
         },
-      }
+      },
     );
   };
 
@@ -82,7 +87,9 @@ export default function NewPagePage() {
     <div>
       <Breadcrumbs />
 
-      <h1 className="text-2xl font-bold text-foreground tracking-tight mb-6">{t("title")}</h1>
+      <h1 className="text-2xl font-bold text-foreground tracking-tight mb-6">
+        {t("title")}
+      </h1>
 
       <TemplateGallery
         selectedId={template.id}
@@ -98,21 +105,24 @@ export default function NewPagePage() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div className="space-y-2">
                 <div className="flex items-center">
-                  <Label htmlFor="title" className="text-sm font-medium">{t("titleLabel")}</Label>
+                  <Label htmlFor="title" className="text-sm font-medium">
+                    {t("titleLabel")}
+                  </Label>
                   <FieldHint text={t("titleHint")} />
                 </div>
-                <Input
-                  id="title"
-                  {...register("title")}
-                />
+                <Input id="title" {...register("title")} />
                 {errors.title && (
-                  <p className="text-xs text-destructive">{errors.title.message}</p>
+                  <p className="text-xs text-destructive">
+                    {errors.title.message}
+                  </p>
                 )}
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-center">
-                  <Label htmlFor="slug" className="text-sm font-medium">{t("slugLabel")}</Label>
+                  <Label htmlFor="slug" className="text-sm font-medium">
+                    {t("slugLabel")}
+                  </Label>
                   <FieldHint text={t("slugHint")} />
                 </div>
                 <Input
@@ -121,14 +131,20 @@ export default function NewPagePage() {
                   placeholder="san-pham-moi"
                 />
                 {errors.slug && (
-                  <p className="text-xs text-destructive">{errors.slug.message}</p>
+                  <p className="text-xs text-destructive">
+                    {errors.slug.message}
+                  </p>
                 )}
-                <p className="text-xs text-muted-foreground font-mono">URL: /{slugValue || "..."}</p>
+                <p className="text-xs text-muted-foreground font-mono">
+                  URL: /{slugValue || "..."}
+                </p>
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-center">
-                  <Label htmlFor="description" className="text-sm font-medium">{t("descLabel")}</Label>
+                  <Label htmlFor="description" className="text-sm font-medium">
+                    {t("descLabel")}
+                  </Label>
                   <FieldHint text={t("descHint")} />
                 </div>
                 <Textarea
@@ -150,7 +166,9 @@ export default function NewPagePage() {
                   )}
                 />
                 <div className="space-y-0.5">
-                  <Label className="text-sm font-medium">{t("publishLabel")}</Label>
+                  <Label className="text-sm font-medium">
+                    {t("publishLabel")}
+                  </Label>
                   <FieldHint text={t("publishHint")} />
                 </div>
               </div>
