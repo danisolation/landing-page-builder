@@ -51,6 +51,10 @@ jobs:
         working-directory: landing-page-be
         run: npx prisma migrate deploy
 
+      - name: Seed database
+        working-directory: landing-page-be
+        run: npm run seed
+
       - name: Build Backend
         working-directory: landing-page-be
         run: npm run build
