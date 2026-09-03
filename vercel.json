@@ -1,5 +1,5 @@
 {
-  "rootDirectory": "landing-page-fe",
-  "buildCommand": "npm run build",
-  "outputDirectory": ".next"
+  "installCommand": "cd landing-page-fe && npm install",
+  "buildCommand": "cd landing-page-fe && npm run build",
+  "outputDirectory": "landing-page-fe/.next"
 }
