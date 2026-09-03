@@ -11,10 +11,28 @@ export class PagesService {
 
   async create(dto: CreatePageDto) {
     this.logger.debug(`Creating page: ${dto.title}`);
+    const { sections, ...pageData } = dto;
+    // Nested write — page + sections tạo trong cùng 1 query (atomic)
     const page = await this.prisma.page.create({
-      data: dto,
+      data: {
+        ...pageData,
+        ...(sections?.length
+          ? {
+              sections: {
+                create: sections.map((s) => ({
+                  type: s.type,
+                  content: s.content,
+                  order: s.order,
+                })),
+              },
+            }
+          : {}),
+      },
+      include: { sections: { orderBy: { order: 'asc' } } },
     });
-    this.logger.log(`Page created: ${page.id} — ${page.title}`);
+    this.logger.log(
+      `Page created: ${page.id} — ${page.title} (${page.sections.length} sections)`,
+    );
     return page;
   }
 

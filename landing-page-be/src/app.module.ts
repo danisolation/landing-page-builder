@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { PagesModule } from './pages/pages.module';
 import { SectionsModule } from './sections/sections.module';
+import { TemplatesModule } from './templates/templates.module';
 import { AuthModule } from './auth/auth.module';
 import { HealthModule } from './health/health.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
@@ -27,6 +28,7 @@ import { validate } from './config/env.validation';
     PrismaModule,
     PagesModule,
     SectionsModule,
+    TemplatesModule,
     AuthModule,
     HealthModule,
   ],

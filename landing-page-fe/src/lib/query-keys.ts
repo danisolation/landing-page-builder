@@ -17,3 +17,7 @@ export const sectionKeys = {
 export const authKeys = {
   profile: ["auth", "profile"] as const,
 } as const;
+
+export const templateKeys = {
+  all: ["templates"] as const,
+} as const;

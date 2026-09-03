@@ -58,8 +58,33 @@ describe('PagesService', () => {
 
       expect(prisma.page.create).toHaveBeenCalledWith({
         data: { title: 'Test Page', slug: 'test-page' },
+        include: { sections: { orderBy: { order: 'asc' } } },
       });
       expect(result).toEqual(mockPage);
+    });
+
+    it('should create a page with nested sections', async () => {
+      const sections = [
+        { type: 'hero', content: { heading: 'Hi' }, order: 0 },
+        { type: 'cta', content: { heading: 'Buy' }, order: 1 },
+      ];
+      prisma.page.create.mockResolvedValue({ ...mockPage, sections });
+
+      const result = await service.create({
+        title: 'Test Page',
+        slug: 'test-page',
+        sections,
+      });
+
+      expect(prisma.page.create).toHaveBeenCalledWith({
+        data: {
+          title: 'Test Page',
+          slug: 'test-page',
+          sections: { create: sections },
+        },
+        include: { sections: { orderBy: { order: 'asc' } } },
+      });
+      expect(result.sections).toHaveLength(2);
     });
   });
 

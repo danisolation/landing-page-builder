@@ -125,7 +125,10 @@
     "publishLabel": "Xuất bản",
     "publishHint": "Bật để hiển thị page trên URL công khai",
     "previewPage": "Xem trước",
-    "previewSection": "Xem trước"
+    "previewSection": "Xem trước",
+    "saveAsTemplate": "Lưu thành template",
+    "templateSaved": "Đã lưu template!",
+    "templateSaveFailed": "Lưu template thất bại"
   },
   "sectionList": {
     "title": "Sections",
@@ -298,6 +301,48 @@
     "cta": "CTA",
     "stats": "Stats",
     "testimonials": "Testimonials"
+  },
+  "templates": {
+    "chooseTemplate": "Chọn template",
+    "chooseTemplateHint": "Bắt đầu với bộ sections dựng sẵn hoặc trang trống",
+    "blankName": "Trang trống",
+    "blankDescription": "Bắt đầu từ đầu, không có section nào",
+    "customBadge": "Tùy chỉnh",
+    "preview": "Xem trước",
+    "deleteTemplate": "Xóa template",
+    "deleteConfirmTitle": "Xóa template?",
+    "deleteConfirmMessage": "Template sẽ bị xóa vĩnh viễn. Hành động này không thể hoàn tác.",
+    "deleted": "Đã xóa template!",
+    "deleteFailed": "Xóa template thất bại",
+    "loadCustomFailed": "Không tải được template tùy chỉnh",
+    "builtin": {
+      "saas": {
+        "name": "Sản phẩm SaaS",
+        "description": "Hero, tính năng, số liệu, đánh giá và CTA — đầy đủ cho trang sản phẩm"
+      },
+      "launch": {
+        "name": "Ra mắt sản phẩm",
+        "description": "Tập trung chuyển đổi: hero, số liệu, tính năng và CTA"
+      },
+      "event": {
+        "name": "Sự kiện",
+        "description": "Giới thiệu sự kiện, điểm nổi bật và cảm nhận người tham dự"
+      },
+      "agency": {
+        "name": "Agency / Portfolio",
+        "description": "Giới thiệu dịch vụ với số liệu và đánh giá khách hàng"
+      }
+    }
+  },
+  "saveTemplateDialog": {
+    "title": "Lưu thành template",
+    "hint": "Lưu bộ sections hiện tại để tái sử dụng khi tạo page mới",
+    "nameLabel": "Tên template",
+    "namePlaceholder": "VD: Trang sản phẩm của tôi",
+    "descLabel": "Mô tả",
+    "descPlaceholder": "Mô tả ngắn về template này",
+    "save": "Lưu template",
+    "saving": "Đang lưu..."
   },
   "aria": {
     "toggleSidebar": "Toggle sidebar",

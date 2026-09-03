@@ -2,13 +2,23 @@
 
 > Auto-updated. any() session reads this to continue work.
 
-## Current Status: All TODOs completed, code quality improved
+## Current Status: Page Templates feature shipped (both phases)
 
-Last updated: 2026-08-29
+Last updated: 2026-09-03
 
 ---
 
 ## ✅ Completed
+
+### Page Templates (2026-09-03)
+- [x] BE: `CreatePageDto` accepts optional nested `sections[]` — page + sections created atomically via Prisma nested write
+- [x] BE: `Template` model (migration `20260903063314_add_template`) + `templates` module (GET/POST/DELETE `/templates`, auth-guarded)
+- [x] BE: unit tests (`templates.service.spec.ts`, updated `pages.service.spec.ts`) + e2e (`templates.e2e-spec.ts`, nested-sections cases in `pages.e2e-spec.ts`) — 33 unit + 42 e2e pass
+- [x] FE: 4 built-in templates (`saas`, `launch`, `event`, `agency`) in `components/templates/template-constants.ts` — Vietnamese content
+- [x] FE: `TemplateGallery` + `TemplateCard` on `/pages/new` — select, preview (FullPagePreview with `showOpenLink={false}`), delete custom
+- [x] FE: create-from-template → redirect to `/pages/[id]/edit`; blank → `/pages` (unchanged)
+- [x] FE: "Lưu thành template" on edit page (`SaveTemplateDialog`), `useTemplates` hook, i18n vi/en
+- [x] Verified: FE build + lint clean, browser smoke test full flow (create from template → 5 sections → save as template → gallery → delete)
 
 ### FE Codebase — CLAUDE.md Compliance (commit 6d0b547)
 - [x] All 7 routes present and correct
@@ -58,6 +68,10 @@ All previous TODOs completed on 2026-08-29:
 ---
 
 ## 🔧 Common Issues & Fixes
+
+### FE e2e tests fail with login timeout (waitForURL /dashboard)
+**Cause:** Environmental, not a product bug — back-to-back full-suite runs exhaust the BE rate-limit window (30 req/min; every login + admin fetch counts) and the Next dev server compiles routes on demand under load. Failures rotate between tests; every test passes in isolation (e.g. 2.4s solo).
+**Fix:** Pause ~1 min between suite runs, run spec files individually, or run against `next build && next start`.
 
 ### Playwright tests fail with "test.describe() called in wrong place"
 **Fix:** Run `npm install` in `landing-page-fe/` — version conflict between `playwright` and `@playwright/test`.

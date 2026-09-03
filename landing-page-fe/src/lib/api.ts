@@ -5,6 +5,8 @@ import type {
   Section,
   CreateSectionInput,
   UpdateSectionInput,
+  Template,
+  CreateTemplateInput,
   AuthResponse,
   Profile,
 } from "@/types";
@@ -92,3 +94,10 @@ export const updateSection = (pageId: string, sectionId: string, data: UpdateSec
   });
 export const deleteSection = (pageId: string, sectionId: string) =>
   fetchAPI<void>(`/pages/${pageId}/sections/${sectionId}`, { method: "DELETE" });
+
+// Templates
+export const getTemplates = () => fetchAPI<Template[]>("/templates");
+export const createTemplate = (data: CreateTemplateInput) =>
+  fetchAPI<Template>("/templates", { method: "POST", body: JSON.stringify(data) });
+export const deleteTemplate = (id: string) =>
+  fetchAPI<void>(`/templates/${id}`, { method: "DELETE" });

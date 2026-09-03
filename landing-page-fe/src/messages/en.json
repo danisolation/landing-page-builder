@@ -125,7 +125,10 @@
     "publishLabel": "Publish",
     "publishHint": "Turn on to make this page visible at its public URL",
     "previewPage": "Preview",
-    "previewSection": "Preview"
+    "previewSection": "Preview",
+    "saveAsTemplate": "Save as template",
+    "templateSaved": "Template saved!",
+    "templateSaveFailed": "Failed to save template"
   },
   "sectionList": {
     "title": "Sections",
@@ -298,6 +301,48 @@
     "cta": "CTA",
     "stats": "Stats",
     "testimonials": "Testimonials"
+  },
+  "templates": {
+    "chooseTemplate": "Choose a template",
+    "chooseTemplateHint": "Start with a pre-built set of sections or a blank page",
+    "blankName": "Blank page",
+    "blankDescription": "Start from scratch with no sections",
+    "customBadge": "Custom",
+    "preview": "Preview",
+    "deleteTemplate": "Delete template",
+    "deleteConfirmTitle": "Delete template?",
+    "deleteConfirmMessage": "The template will be permanently deleted. This action cannot be undone.",
+    "deleted": "Template deleted!",
+    "deleteFailed": "Failed to delete template",
+    "loadCustomFailed": "Failed to load custom templates",
+    "builtin": {
+      "saas": {
+        "name": "SaaS Product",
+        "description": "Hero, features, stats, testimonials and CTA — everything for a product page"
+      },
+      "launch": {
+        "name": "Product Launch",
+        "description": "Conversion-focused: hero, stats, features and CTA"
+      },
+      "event": {
+        "name": "Event",
+        "description": "Present your event with highlights and attendee testimonials"
+      },
+      "agency": {
+        "name": "Agency / Portfolio",
+        "description": "Showcase services with stats and client testimonials"
+      }
+    }
+  },
+  "saveTemplateDialog": {
+    "title": "Save as template",
+    "hint": "Save the current sections to reuse when creating new pages",
+    "nameLabel": "Template name",
+    "namePlaceholder": "e.g. My product page",
+    "descLabel": "Description",
+    "descPlaceholder": "Short description of this template",
+    "save": "Save template",
+    "saving": "Saving..."
   },
   "aria": {
     "toggleSidebar": "Toggle sidebar",

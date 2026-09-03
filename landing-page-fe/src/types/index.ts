@@ -15,6 +15,7 @@ export interface CreatePageInput {
   slug: string;
   description?: string;
   isPublished?: boolean;
+  sections?: TemplateSectionDef[];
 }
 
 export interface UpdatePageInput {
@@ -119,6 +120,28 @@ export type SectionContent =
   | CtaContent
   | StatsContent
   | TestimonialsContent;
+
+// Template types
+export interface TemplateSectionDef {
+  type: SectionType;
+  content: SectionContent;
+  order: number;
+}
+
+export interface Template {
+  id: string;
+  name: string;
+  description?: string;
+  sections: TemplateSectionDef[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateTemplateInput {
+  name: string;
+  description?: string;
+  sections: TemplateSectionDef[];
+}
 
 // Auth types
 export interface LoginInput {

@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { usePage, usePages } from '@/hooks/usePages';
 import { useSections } from '@/hooks/useSections';
+import { useTemplates } from '@/hooks/useTemplates';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,11 +20,12 @@ import { SkeletonForm } from '@/components/ui/loading';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import FieldHint from '@/components/ui/field-hint';
 import SectionList from '@/components/sections/SectionList';
+import SaveTemplateDialog from '@/components/templates/SaveTemplateDialog';
 import { showConfirm } from '@/components/ui/confirm-dialog';
 
 const SectionPreviewModal = lazy(() => import('@/components/sections/SectionPreviewModal'));
 const FullPagePreview = lazy(() => import('@/components/sections/FullPagePreview'));
-import { Eye } from 'lucide-react';
+import { Eye, LayoutTemplate } from 'lucide-react';
 import type { Section } from '@/types';
 
 export default function EditPagePage() {
@@ -49,6 +51,7 @@ export default function EditPagePage() {
   const { data: page, isLoading } = usePage(pageId);
   const { updatePage, isUpdating } = usePages();
   const { createSection, updateSection, deleteSection } = useSections(pageId);
+  const { createTemplate, isCreating: isSavingTemplate } = useTemplates();
 
   const {
     register,
@@ -80,6 +83,29 @@ export default function EditPagePage() {
   // Preview state
   const [previewSection, setPreviewSection] = useState<Section | null>(null);
   const [showFullPreview, setShowFullPreview] = useState(false);
+  const [showSaveTemplate, setShowSaveTemplate] = useState(false);
+
+  const handleSaveTemplate = (name: string, description?: string) => {
+    createTemplate(
+      {
+        name,
+        description,
+        sections: (page?.sections ?? []).map((s) => ({
+          type: s.type,
+          content: s.content,
+          order: s.order,
+        })),
+      },
+      {
+        onSuccess: () => {
+          toast.success(t('templateSaved'));
+          setShowSaveTemplate(false);
+        },
+        onError: (error: Error) =>
+          toast.error(error.message || t('templateSaveFailed')),
+      }
+    );
+  };
 
   const onSubmit = (data: EditPageFormData) => {
     updatePage(
@@ -158,6 +184,15 @@ export default function EditPagePage() {
           {t('title')}
         </h1>
         <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowSaveTemplate(true)}
+            disabled={!page?.sections?.length}
+          >
+            <LayoutTemplate size={14} className="mr-1.5" />
+            {t('saveAsTemplate')}
+          </Button>
           <Button
             variant="outline"
             size="sm"
@@ -270,6 +305,14 @@ export default function EditPagePage() {
           />
         </Suspense>
       )}
+
+      {/* Save as Template */}
+      <SaveTemplateDialog
+        isOpen={showSaveTemplate}
+        isSaving={isSavingTemplate}
+        onClose={() => setShowSaveTemplate(false)}
+        onSave={handleSaveTemplate}
+      />
     </div>
   );
 }

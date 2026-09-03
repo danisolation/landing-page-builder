@@ -51,6 +51,43 @@ describe('Pages (e2e)', () => {
         .send({ title: 'No Slug' })
         .expect(400);
     });
+
+    it('should create a page with nested sections (from template)', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/pages')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          title: 'E2E Template Page',
+          slug: 'e2e-template-page',
+          sections: [
+            { type: 'hero', content: { heading: 'Hi' }, order: 0 },
+            { type: 'cta', content: { heading: 'Buy' }, order: 1 },
+          ],
+        })
+        .expect(201);
+
+      expect(res.body.data.sections).toHaveLength(2);
+      expect(res.body.data.sections[0].type).toBe('hero');
+      expect(res.body.data.sections[1].order).toBe(1);
+
+      // Dọn dẹp — xóa page test (sections cascade)
+      await request(app.getHttpServer())
+        .delete(`/pages/${res.body.data.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+    });
+
+    it('should reject nested section with invalid type', () => {
+      return request(app.getHttpServer())
+        .post('/pages')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          title: 'Bad Section',
+          slug: 'bad-section-page',
+          sections: [{ type: 'banner', content: {}, order: 0 }],
+        })
+        .expect(400);
+    });
   });
 
   describe('GET /pages', () => {

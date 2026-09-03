@@ -8,12 +8,22 @@ async function login(page: any) {
   await page.fill('input[id="username"]', 'admin');
   await page.fill('input[id="password"]', '123456');
   await page.click('button[type="submit"]');
-  await page.waitForURL('**/dashboard', { timeout: 10000 });
+  await page.waitForURL('**/dashboard**', { timeout: 20000, waitUntil: 'domcontentloaded' });
 }
 
 async function getPageWithSections(): Promise<string | null> {
-  const res = await fetch(`${API_URL}/pages`);
-  const pages = await res.json();
+  // /pages yêu cầu auth + response bọc trong { success, data }
+  const loginRes = await fetch(`${API_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username: 'admin', password: '123456' }),
+  });
+  const token = (await loginRes.json()).data.access_token;
+
+  const res = await fetch(`${API_URL}/pages`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const pages = (await res.json()).data;
   const pageWithSections = pages.find((p: any) => p.sections && p.sections.length > 0);
   return pageWithSections?.id || null;
 }

@@ -1,4 +1,14 @@
-import { IsString, IsNotEmpty, IsOptional, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsBoolean,
+  IsArray,
+  ArrayMaxSize,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+import { CreateSectionDto } from '../../sections/dto/create-section.dto';
 
 export class CreatePageDto {
   @IsString()
@@ -16,4 +26,12 @@ export class CreatePageDto {
   @IsBoolean()
   @IsOptional()
   isPublished?: boolean;
+
+  // Sections khởi tạo cùng page (dùng cho tạo page từ template) — tùy chọn
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(20)
+  @ValidateNested({ each: true })
+  @Type(() => CreateSectionDto)
+  sections?: CreateSectionDto[];
 }

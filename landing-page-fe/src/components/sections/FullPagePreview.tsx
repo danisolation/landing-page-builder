@@ -32,9 +32,10 @@ export interface FullPagePreviewProps {
   };
   isOpen: boolean;
   onClose: () => void;
+  showOpenLink?: boolean;
 }
 
-export default function FullPagePreview({ page, isOpen, onClose }: FullPagePreviewProps) {
+export default function FullPagePreview({ page, isOpen, onClose, showOpenLink = true }: FullPagePreviewProps) {
   const params = useParams();
   const locale = params.locale as string;
   const t = useTranslations('fullPagePreview');
@@ -99,20 +100,24 @@ export default function FullPagePreview({ page, isOpen, onClose }: FullPagePrevi
                 <h2 className="font-semibold text-foreground">
                   {page.title}
                 </h2>
-                <span className="text-xs text-muted-foreground font-mono bg-muted px-2 py-0.5 rounded">
-                  /{page.slug}
-                </span>
+                {showOpenLink && (
+                  <span className="text-xs text-muted-foreground font-mono bg-muted px-2 py-0.5 rounded">
+                    /{page.slug}
+                  </span>
+                )}
               </div>
               <div className="flex items-center gap-2">
-                <a
-                  href={`/${locale}/${page.slug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-1.5 text-sm font-medium border border-border bg-card text-foreground hover:bg-accent px-3 py-1.5 rounded-md transition-colors"
-                >
-                  <ExternalLink size={14} />
-                  {t('openInNewTab')}
-                </a>
+                {showOpenLink && (
+                  <a
+                    href={`/${locale}/${page.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-1.5 text-sm font-medium border border-border bg-card text-foreground hover:bg-accent px-3 py-1.5 rounded-md transition-colors"
+                  >
+                    <ExternalLink size={14} />
+                    {t('openInNewTab')}
+                  </a>
+                )}
                 <Button
                   variant="ghost"
                   size="sm"

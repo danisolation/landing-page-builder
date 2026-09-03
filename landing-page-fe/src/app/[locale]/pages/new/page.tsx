@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
@@ -15,12 +16,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import FieldHint from "@/components/ui/field-hint";
+import TemplateGallery from "@/components/templates/TemplateGallery";
+import type { TemplateSectionDef } from "@/types";
+
+interface SelectedTemplate {
+  id: string;
+  sections: TemplateSectionDef[];
+}
 
 export default function NewPagePage() {
   const t = useTranslations("newPage");
   const tValidation = useTranslations("validation");
   const router = useRouter();
   const { createPage, isCreating } = usePages();
+  const [template, setTemplate] = useState<SelectedTemplate>({ id: "blank", sections: [] });
 
   const newPageSchema = z.object({
     title: z.string().min(1, tValidation("required", { field: t("titleLabel") })),
@@ -53,15 +62,20 @@ export default function NewPagePage() {
   const slugValue = watch("slug");
 
   const onSubmit = (data: NewPageFormData) => {
-    createPage(data, {
-      onSuccess: () => {
-        toast.success(t("success"));
-        router.push("/pages");
-      },
-      onError: (error: Error) => {
-        toast.error(error.message || t("failed"));
-      },
-    });
+    const hasSections = template.sections.length > 0;
+    createPage(
+      { ...data, ...(hasSections ? { sections: template.sections } : {}) },
+      {
+        onSuccess: (page) => {
+          toast.success(t("success"));
+          // Có sections từ template → vào thẳng editor để tùy chỉnh
+          router.push(hasSections ? `/pages/${page.id}/edit` : "/pages");
+        },
+        onError: (error: Error) => {
+          toast.error(error.message || t("failed"));
+        },
+      }
+    );
   };
 
   return (
@@ -69,6 +83,11 @@ export default function NewPagePage() {
       <Breadcrumbs />
 
       <h1 className="text-2xl font-bold text-foreground tracking-tight mb-6">{t("title")}</h1>
+
+      <TemplateGallery
+        selectedId={template.id}
+        onSelect={(id, sections) => setTemplate({ id, sections })}
+      />
 
       <div>
         <Card>
