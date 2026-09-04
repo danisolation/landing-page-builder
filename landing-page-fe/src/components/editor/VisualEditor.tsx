@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
@@ -8,17 +8,17 @@ import { EditorProvider, useEditorState } from "./hooks/useEditorState";
 import EditorToolbar from "./EditorToolbar";
 import EditorSidebar from "./EditorSidebar";
 import LiveCanvas from "./LiveCanvas";
+import { createSection, updateSection, deleteSection } from "@/lib/api";
 import type { Page, Section } from "@/types";
 
 type ViewMode = "desktop" | "tablet" | "mobile";
 
 interface VisualEditorProps {
   page: Page;
-  onSave: (data: Partial<Page>) => Promise<void>;
   onPublish: (isPublished: boolean) => Promise<void>;
 }
 
-function VisualEditorContent({ page, onSave, onPublish }: VisualEditorProps) {
+function VisualEditorContent({ page, onPublish }: VisualEditorProps) {
   const t = useTranslations("editor");
   const router = useRouter();
   const { state, setSections, dispatch } = useEditorState();
@@ -33,6 +33,68 @@ function VisualEditorContent({ page, onSave, onPublish }: VisualEditorProps) {
       setSections(page.sections);
     }
   }, [page.sections, setSections]);
+
+  const pageId = page.id;
+  const baselineRef = useRef<Section[]>([]);
+
+  // Initialize baseline for comparison
+  useEffect(() => {
+    if (page.sections) {
+      baselineRef.current = page.sections;
+      setSections(page.sections);
+    }
+  }, [page.sections, setSections]);
+
+  // Sync sections to backend via sections API
+  const syncSections = useCallback(
+    async (sections: Section[]) => {
+      const baseline = baselineRef.current;
+
+      // Deleted: in baseline but not in current
+      const currentIds = new Set(
+        sections.filter((s) => !s.id.startsWith("temp-")).map((s) => s.id)
+      );
+      const toDelete = baseline.filter((s) => !currentIds.has(s.id));
+      for (const s of toDelete) {
+        await deleteSection(pageId, s.id);
+      }
+
+      // Created + updated (in index order so order is persisted)
+      const synced: Section[] = [];
+      for (let i = 0; i < sections.length; i++) {
+        const s = sections[i];
+        if (s.id.startsWith("temp-")) {
+          const created = await createSection(pageId, {
+            type: s.type,
+            content: s.content,
+            order: i,
+          });
+          synced.push(created);
+        } else {
+          const original = baseline.find((b) => b.id === s.id);
+          const changed =
+            !original ||
+            original.order !== i ||
+            JSON.stringify(original.content) !== JSON.stringify(s.content) ||
+            original.type !== s.type;
+          if (changed) {
+            const updated = await updateSection(pageId, s.id, {
+              type: s.type,
+              content: s.content,
+              order: i,
+            });
+            synced.push(updated);
+          } else {
+            synced.push(s);
+          }
+        }
+      }
+
+      baselineRef.current = synced;
+      setSections(synced);
+    },
+    [pageId, setSections]
+  );
 
   // Auto-save with debounce
   useEffect(() => {
@@ -51,34 +113,19 @@ function VisualEditorContent({ page, onSave, onPublish }: VisualEditorProps) {
     dispatch({ type: "SET_SAVING", payload: true });
 
     try {
-      // Save sections to API
-      const sectionsData = state.sections.map((s) => ({
-        id: s.id.startsWith("temp-") ? undefined : s.id,
-        type: s.type,
-        content: s.content,
-        order: s.order,
-      }));
-
-      await onSave({ sections: sectionsData as any });
+      await syncSections(state.sections);
       dispatch({ type: "MARK_CLEAN" });
     } catch (error) {
       console.error("Auto-save failed:", error);
     } finally {
       dispatch({ type: "SET_SAVING", payload: false });
     }
-  }, [state.sections, state.isDirty, state.isSaving, dispatch, onSave]);
+  }, [state.sections, state.isDirty, state.isSaving, dispatch, syncSections]);
 
   const handleSave = async () => {
     dispatch({ type: "SET_SAVING", payload: true });
     try {
-      const sectionsData = state.sections.map((s) => ({
-        id: s.id.startsWith("temp-") ? undefined : s.id,
-        type: s.type,
-        content: s.content,
-        order: s.order,
-      }));
-
-      await onSave({ sections: sectionsData as any });
+      await syncSections(state.sections);
       dispatch({ type: "MARK_CLEAN" });
       toast.success(t("saveSuccess"));
     } catch (error) {

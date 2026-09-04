@@ -9,7 +9,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { useEditorState } from "./hooks/useEditorState";
 import { sectionTypes } from "@/components/sections/section-constants";
@@ -49,16 +48,16 @@ export default function AddSectionDropZone({ index }: AddSectionDropZoneProps) {
     <div className="relative py-4 flex items-center justify-center">
       <div className="absolute inset-x-0 top-1/2 h-px bg-border" />
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogTrigger>
-          <Button
-            variant="outline"
-            size="sm"
-            className="relative z-10 rounded-full shadow-md hover:shadow-lg transition-shadow"
-          >
-            <Plus size={16} className="mr-2" />
-            {t("addSection")}
-          </Button>
-        </DialogTrigger>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="relative z-10 rounded-full shadow-md hover:shadow-lg transition-shadow"
+          onClick={() => setIsOpen(true)}
+        >
+          <Plus size={16} className="mr-2" />
+          {t("addSection")}
+        </Button>
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>{t("chooseSectionType")}</DialogTitle>

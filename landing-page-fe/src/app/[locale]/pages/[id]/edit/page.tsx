@@ -20,7 +20,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import VisualEditor from "@/components/editor/VisualEditor";
 import type { Page } from "@/types";
@@ -186,12 +185,15 @@ export default function EditPagePage() {
 
         <div className="flex items-center gap-2">
           <Dialog open={showSettings} onOpenChange={setShowSettings}>
-            <DialogTrigger>
-              <Button variant="outline" size="sm">
-                <Settings size={16} className="mr-2" />
-                {t("pageSettings")}
-              </Button>
-            </DialogTrigger>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowSettings(true)}
+            >
+              <Settings size={16} className="mr-2" />
+              {t("pageSettings")}
+            </Button>
             <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>{t("pageSettings")}</DialogTitle>
@@ -328,7 +330,6 @@ export default function EditPagePage() {
       <div className="flex-1">
         <VisualEditor
           page={page}
-          onSave={handleSave}
           onPublish={handlePublish}
         />
       </div>
