@@ -53,7 +53,15 @@ export type SectionType =
   | "features"
   | "cta"
   | "stats"
-  | "testimonials";
+  | "testimonials"
+  | "pricing"
+  | "faq"
+  | "logoCloud"
+  | "team"
+  | "gallery"
+  | "contact"
+  | "compare"
+  | "banner";
 
 export interface Section {
   id: string;
@@ -134,12 +142,117 @@ export interface TestimonialsContent {
   items: TestimonialItem[];
 }
 
+// New section content types
+export interface PricingPlan {
+  name: string;
+  price: string;
+  period?: string;
+  description?: string;
+  features: string[];
+  highlighted?: boolean;
+  buttonText?: string;
+  buttonLink?: string;
+}
+
+export interface PricingContent {
+  subtitle?: string;
+  title?: string;
+  description?: string;
+  plans: PricingPlan[];
+}
+
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+export interface FaqContent {
+  subtitle?: string;
+  title?: string;
+  description?: string;
+  items: FaqItem[];
+}
+
+export interface LogoItem {
+  name: string;
+  url?: string;
+  imageUrl?: string;
+}
+
+export interface LogoCloudContent {
+  subtitle?: string;
+  title?: string;
+  items: LogoItem[];
+}
+
+export interface TeamMember {
+  name: string;
+  role?: string;
+  avatar?: string;
+  bio?: string;
+}
+
+export interface TeamContent {
+  subtitle?: string;
+  title?: string;
+  description?: string;
+  members: TeamMember[];
+}
+
+export interface GalleryImage {
+  url: string;
+  alt?: string;
+  caption?: string;
+}
+
+export interface GalleryContent {
+  subtitle?: string;
+  title?: string;
+  description?: string;
+  images: GalleryImage[];
+  columns?: number;
+}
+
+export interface ContactContent {
+  subtitle?: string;
+  title?: string;
+  description?: string;
+  fields?: string[];
+  submitText?: string;
+}
+
+export interface CompareFeature {
+  name: string;
+  values: string[];
+}
+
+export interface CompareContent {
+  title?: string;
+  columns: string[];
+  features: CompareFeature[];
+}
+
+export interface BannerContent {
+  text: string;
+  link?: string;
+  linkText?: string;
+  dismissible?: boolean;
+}
+
 export type SectionContent =
   | HeroContent
   | FeaturesContent
   | CtaContent
   | StatsContent
-  | TestimonialsContent;
+  | TestimonialsContent
+  | PricingContent
+  | FaqContent
+  | LogoCloudContent
+  | TeamContent
+  | GalleryContent
+  | ContactContent
+  | CompareContent
+  | BannerContent;
 
 // Template types
 export interface TemplateSectionDef {

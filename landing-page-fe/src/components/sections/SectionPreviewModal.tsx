@@ -4,22 +4,9 @@ import { useEffect, useRef, useCallback } from 'react';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import HeroSection from './HeroSection';
-import FeaturesSection from './FeaturesSection';
-import CtaSection from './CtaSection';
-import StatsSection from './StatsSection';
-import TestimonialsSection from './TestimonialsSection';
+import { sectionComponents } from '@/lib/section-components';
 import { Button } from '@/components/ui/button';
 import type { SectionType, SectionContent } from '@/types';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const sectionComponents: Record<SectionType, React.ComponentType<{ content: any }>> = {
-  hero: HeroSection,
-  features: FeaturesSection,
-  cta: CtaSection,
-  stats: StatsSection,
-  testimonials: TestimonialsSection,
-};
 
 export interface SectionPreviewModalProps {
   type: SectionType;
@@ -37,7 +24,6 @@ export default function SectionPreviewModal({ type, content, isOpen, onClose }: 
     if (e.key === 'Escape') onClose();
   }, [onClose]);
 
-  // Focus trap: focus the dialog on open
   useEffect(() => {
     if (isOpen && dialogRef.current) {
       dialogRef.current.focus();
@@ -79,7 +65,6 @@ export default function SectionPreviewModal({ type, content, isOpen, onClose }: 
             className="absolute inset-4 md:inset-6 lg:inset-10 bg-background rounded-2xl shadow-2xl overflow-hidden flex flex-col outline-none"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-card shrink-0 z-10">
               <h2 className="font-semibold text-foreground capitalize">
                 {t('previewTitle', { type })}
@@ -89,7 +74,6 @@ export default function SectionPreviewModal({ type, content, isOpen, onClose }: 
               </Button>
             </div>
 
-            {/* Content — scrollable, full width */}
             <div className="flex-1 overflow-auto bg-background">
               {SectionComponent ? (
                 <SectionComponent content={content} />

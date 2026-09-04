@@ -49,6 +49,15 @@ export function usePages() {
     },
   });
 
+  // Publish/Unpublish page
+  const publishMutation = useMutation({
+    mutationFn: ({ id, isPublished }: { id: string; isPublished: boolean }) =>
+      updatePage(id, { isPublished }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: pageKeys.all });
+    },
+  });
+
   return {
     pages,
     isLoading,
@@ -59,6 +68,8 @@ export function usePages() {
     isUpdating: updateMutation.isPending,
     deletePage: deleteMutation.mutate,
     isDeleting: deleteMutation.isPending,
+    publishPage: publishMutation.mutate,
+    isPublishing: publishMutation.isPending,
   };
 }
 

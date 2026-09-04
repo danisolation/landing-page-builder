@@ -5,27 +5,11 @@ import { X, ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import HeroSection from "./HeroSection";
-import FeaturesSection from "./FeaturesSection";
-import CtaSection from "./CtaSection";
-import StatsSection from "./StatsSection";
-import TestimonialsSection from "./TestimonialsSection";
+import { sectionComponents } from '@/lib/section-components';
 import PublicFooter from "@/components/public/PublicFooter";
 import AnimatedSection from "@/components/public/AnimatedSection";
 import { Button } from "@/components/ui/button";
-import type { Section, SectionType } from "@/types";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const sectionComponents: Record<
-  SectionType,
-  React.ComponentType<{ content: any }>
-> = {
-  hero: HeroSection,
-  features: FeaturesSection,
-  cta: CtaSection,
-  stats: StatsSection,
-  testimonials: TestimonialsSection,
-};
+import type { Section } from "@/types";
 
 export interface FullPagePreviewProps {
   page: {
@@ -56,14 +40,12 @@ export default function FullPagePreview({
     [onClose],
   );
 
-  // Focus trap: focus the dialog on open
   useEffect(() => {
     if (isOpen && dialogRef.current) {
       dialogRef.current.focus();
     }
   }, [isOpen]);
 
-  // Lock body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -75,7 +57,6 @@ export default function FullPagePreview({
     };
   }, [isOpen]);
 
-  // Sort sections by order as safety net
   const sortedSections = useMemo(() => {
     if (!page.sections) return [];
     return [...page.sections].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
@@ -105,7 +86,6 @@ export default function FullPagePreview({
             className="absolute inset-4 md:inset-6 lg:inset-10 bg-background rounded-2xl shadow-2xl overflow-hidden flex flex-col outline-none"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Admin toolbar */}
             <div className="flex items-center justify-between px-6 py-3 border-b border-border bg-card shrink-0 z-30">
               <div className="flex items-center gap-3">
                 <h2 className="font-semibold text-foreground">{page.title}</h2>
@@ -138,7 +118,6 @@ export default function FullPagePreview({
               </div>
             </div>
 
-            {/* Page preview content — scrollable */}
             <div className="flex-1 overflow-auto min-h-full bg-background scroll-smooth">
               {sortedSections.length === 0 ? (
                 <div className="flex items-center justify-center h-full text-muted-foreground">

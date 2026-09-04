@@ -8,20 +8,13 @@ import { Link } from '@/i18n/navigation';
 import { useDragAndDrop } from '@/hooks/useDragAndDrop';
 import { getSectionSummary, sectionTypeColors } from '@/lib/section-utils';
 import type { Section, SectionType, SectionContent } from '@/types';
-import HeroSection from './HeroSection';
-import FeaturesSection from './FeaturesSection';
-import CtaSection from './CtaSection';
-import StatsSection from './StatsSection';
-import TestimonialsSection from './TestimonialsSection';
+import { sectionComponents } from '@/lib/section-components';
+
+
+
+
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const sectionComponents: Record<SectionType, React.ComponentType<{ content: any }>> = {
-  hero: HeroSection,
-  features: FeaturesSection,
-  cta: CtaSection,
-  stats: StatsSection,
-  testimonials: TestimonialsSection,
-};
 
 interface DragOverlayData {
   sectionId: string;

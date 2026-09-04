@@ -1,41 +1,44 @@
 "use client";
 
-import { Suspense, lazy, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { usePage, usePages } from "@/hooks/usePages";
-import { useSections } from "@/hooks/useSections";
-import { useTemplates } from "@/hooks/useTemplates";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { SkeletonForm } from "@/components/ui/loading";
-import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import FieldHint from "@/components/ui/field-hint";
-import SectionList from "@/components/sections/SectionList";
-import SaveTemplateDialog from "@/components/templates/SaveTemplateDialog";
-import { showConfirm } from "@/components/ui/confirm-dialog";
-
-const SectionPreviewModal = lazy(
-  () => import("@/components/sections/SectionPreviewModal"),
-);
-const FullPagePreview = lazy(
-  () => import("@/components/sections/FullPagePreview"),
-);
-import { Eye, LayoutTemplate } from "lucide-react";
-import type { Section } from "@/types";
+import { Eye, Settings, X } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import VisualEditor from "@/components/editor/VisualEditor";
+import type { Page } from "@/types";
 
 export default function EditPagePage() {
   const t = useTranslations("editPage");
   const tCommon = useTranslations("common");
   const tValidation = useTranslations("validation");
+
+  const router = useRouter();
+  const params = useParams();
+  const pageId = params.id as string;
+
+  const { data: page, isLoading } = usePage(pageId);
+  const { updatePage, isUpdating, publishPage } = usePages();
+
+  const [showSettings, setShowSettings] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   const editPageSchema = z.object({
     title: z
@@ -49,24 +52,17 @@ export default function EditPagePage() {
     metaTitle: z.string().max(255).optional(),
     metaDescription: z.string().max(500).optional(),
     ogImageUrl: z.string().max(2048).optional(),
+    keywords: z.string().optional(),
+    canonicalUrl: z.string().optional(),
     isPublished: z.boolean().optional(),
   });
 
   type EditPageFormData = z.infer<typeof editPageSchema>;
-  const router = useRouter();
-  const params = useParams();
-  const pageId = params.id as string;
-
-  const { data: page, isLoading } = usePage(pageId);
-  const { updatePage, isUpdating } = usePages();
-  const { createSection, updateSection, deleteSection } = useSections(pageId);
-  const { createTemplate, isCreating: isSavingTemplate } = useTemplates();
 
   const {
     register,
     handleSubmit,
     reset,
-    control,
     watch,
     formState: { errors },
   } = useForm<EditPageFormData>({
@@ -78,6 +74,8 @@ export default function EditPagePage() {
       metaTitle: "",
       metaDescription: "",
       ogImageUrl: "",
+      keywords: "",
+      canonicalUrl: "",
       isPublished: false,
     },
   });
@@ -91,37 +89,12 @@ export default function EditPagePage() {
         metaTitle: page.metaTitle || "",
         metaDescription: page.metaDescription || "",
         ogImageUrl: page.ogImageUrl || "",
+        keywords: page.keywords || "",
+        canonicalUrl: page.canonicalUrl || "",
         isPublished: page.isPublished,
       });
     }
   }, [page, reset]);
-
-  // Preview state
-  const [previewSection, setPreviewSection] = useState<Section | null>(null);
-  const [showFullPreview, setShowFullPreview] = useState(false);
-  const [showSaveTemplate, setShowSaveTemplate] = useState(false);
-
-  const handleSaveTemplate = (name: string, description?: string) => {
-    createTemplate(
-      {
-        name,
-        description,
-        sections: (page?.sections ?? []).map((s) => ({
-          type: s.type,
-          content: s.content,
-          order: s.order,
-        })),
-      },
-      {
-        onSuccess: () => {
-          toast.success(t("templateSaved"));
-          setShowSaveTemplate(false);
-        },
-        onError: (error: Error) =>
-          toast.error(error.message || t("templateSaveFailed")),
-      },
-    );
-  };
 
   const onSubmit = (data: EditPageFormData) => {
     updatePage(
@@ -134,42 +107,33 @@ export default function EditPagePage() {
     );
   };
 
-  const handleDuplicateSection = (section: Section) => {
-    const maxOrder = Math.max(
-      0,
-      ...(page?.sections?.map((s) => s.order) || [0]),
-    );
-    createSection(
-      {
-        type: section.type,
-        content: { ...section.content },
-        order: maxOrder + 1,
-      },
-      {
-        onSuccess: () => toast.success(t("sectionDuplicated")),
-        onError: (error: Error) =>
-          toast.error(error.message || t("sectionDuplicateFailed")),
-      },
-    );
-  };
-
-  const handleDeleteSection = async (section: Section) => {
-    const confirmed = await showConfirm(
-      t("deleteConfirmTitle"),
-      t("deleteConfirmMessage"),
-    );
-    if (!confirmed) return;
-
-    deleteSection(section.id, {
-      onSuccess: () => toast.success(t("sectionDeleted")),
-      onError: (error: Error) =>
-        toast.error(error.message || t("sectionDeleteFailed")),
+  const handleSave = async (data: Partial<Page>) => {
+    return new Promise<void>((resolve, reject) => {
+      updatePage(
+        { id: pageId, data },
+        {
+          onSuccess: () => resolve(),
+          onError: (error: Error) => reject(error),
+        },
+      );
     });
   };
 
-  const handleReorder = (sectionIds: string[]) => {
-    sectionIds.forEach((id, index) => {
-      updateSection({ sectionId: id, data: { order: index } });
+  const handlePublish = async (isPublished: boolean) => {
+    return new Promise<void>((resolve, reject) => {
+      publishPage(
+        { id: pageId, isPublished },
+        {
+          onSuccess: () => {
+            toast.success(isPublished ? t("published") : t("unpublished"));
+            resolve();
+          },
+          onError: (error: Error) => {
+            toast.error(error.message || t("publishFailed"));
+            reject(error);
+          },
+        },
+      );
     });
   };
 
@@ -191,219 +155,202 @@ export default function EditPagePage() {
     );
   }
 
-  return (
-    <div>
-      <Breadcrumbs pageTitle={page?.title} />
+  if (!page) {
+    return <div>Page not found</div>;
+  }
 
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <h1 className="text-2xl font-bold text-foreground tracking-tight">
-          {t("title")}
-        </h1>
-        <div className="flex gap-2">
+  return (
+    <div className="h-screen flex flex-col">
+      {/* Top toolbar */}
+      <div className="h-14 border-b bg-background flex items-center justify-between px-4">
+        <div className="flex items-center gap-4">
           <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowSaveTemplate(true)}
-            disabled={!page?.sections?.length}
-          >
-            <LayoutTemplate size={14} className="mr-1.5" />
-            {t("saveAsTemplate")}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowFullPreview(true)}
-          >
-            <Eye size={14} className="mr-1.5" />
-            {t("previewPage")}
-          </Button>
-          <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={() => router.push("/pages")}
           >
             {tCommon("back")}
           </Button>
+          <div className="h-4 w-px bg-border" />
+          <h1 className="font-medium truncate max-w-[200px]">{page.title}</h1>
+          <span
+            className={`text-xs px-2 py-0.5 rounded-full ${
+              page.isPublished
+                ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
+            }`}
+          >
+            {page.isPublished ? tCommon("published") : tCommon("draft")}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Dialog open={showSettings} onOpenChange={setShowSettings}>
+            <DialogTrigger>
+              <Button variant="outline" size="sm">
+                <Settings size={16} className="mr-2" />
+                {t("pageSettings")}
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>{t("pageSettings")}</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center">
+                      <Label className="text-sm font-medium">
+                        {t("titleLabel")}
+                      </Label>
+                      <FieldHint text={t("titleHint")} />
+                    </div>
+                    <Input {...register("title")} />
+                    {errors.title && (
+                      <p className="text-xs text-destructive">
+                        {errors.title.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center">
+                      <Label className="text-sm font-medium">
+                        {t("slugLabel")}
+                      </Label>
+                      <FieldHint text={t("slugHint")} />
+                    </div>
+                    <Input {...register("slug")} />
+                    {errors.slug && (
+                      <p className="text-xs text-destructive">
+                        {errors.slug.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center">
+                    <Label className="text-sm font-medium">{t("descLabel")}</Label>
+                    <FieldHint text={t("descHint")} />
+                  </div>
+                  <Textarea {...register("description")} rows={2} />
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="isPublished"
+                      {...register("isPublished")}
+                      className="h-4 w-4 rounded border-gray-300"
+                    />
+                    <Label htmlFor="isPublished" className="text-sm font-medium">
+                      {t("publishLabel")}
+                    </Label>
+                  </div>
+                  <FieldHint text={t("publishHint")} />
+                </div>
+
+                {/* SEO Section */}
+                <div className="border-t pt-5">
+                  <h3 className="text-lg font-medium mb-4">{t("seoTitle")}</h3>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">
+                        {t("metaTitleLabel")}
+                      </Label>
+                      <Input {...register("metaTitle")} placeholder={page?.title} />
+                      <p className="text-xs text-muted-foreground text-right">
+                        {t("charCount", {
+                          count: (watch("metaTitle") || "").length,
+                          max: 255,
+                        })}
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">
+                        {t("metaDescLabel")}
+                      </Label>
+                      <Textarea
+                        {...register("metaDescription")}
+                        rows={2}
+                        placeholder={page?.description || ""}
+                      />
+                      <p className="text-xs text-muted-foreground text-right">
+                        {t("charCount", {
+                          count: (watch("metaDescription") || "").length,
+                          max: 500,
+                        })}
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">
+                        {t("ogImageUrlLabel")}
+                      </Label>
+                      <Input
+                        {...register("ogImageUrl")}
+                        placeholder="https://example.com/og-image.jpg"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Keywords</Label>
+                      <Input {...register("keywords")} placeholder="keyword1, keyword2" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Canonical URL</Label>
+                      <Input
+                        {...register("canonicalUrl")}
+                        placeholder="https://example.com/page"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <Button type="submit" disabled={isUpdating} className="w-full">
+                  {isUpdating ? tCommon("saving") : tCommon("save")}
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowPreview(true)}
+          >
+            <Eye size={16} className="mr-2" />
+            {t("previewPage")}
+          </Button>
         </div>
       </div>
 
-      {/* Page Info */}
-      <Card className="mb-6">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-lg">{t("pageInfo")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <Label className="text-sm font-medium">
-                    {t("titleLabel")}
-                  </Label>
-                  <FieldHint text={t("titleHint")} />
-                </div>
-                <Input {...register("title")} />
-                {errors.title && (
-                  <p className="text-xs text-destructive">
-                    {errors.title.message}
-                  </p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center">
-                  <Label className="text-sm font-medium">
-                    {t("slugLabel")}
-                  </Label>
-                  <FieldHint text={t("slugHint")} />
-                </div>
-                <Input {...register("slug")} />
-                {errors.slug && (
-                  <p className="text-xs text-destructive">
-                    {errors.slug.message}
-                  </p>
-                )}
-              </div>
+      {/* Visual Editor */}
+      <div className="flex-1">
+        <VisualEditor
+          page={page}
+          onSave={handleSave}
+          onPublish={handlePublish}
+        />
+      </div>
+
+      {/* Preview Modal */}
+      {showPreview && (
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center">
+          <div className="bg-background w-full h-full max-w-6xl max-h-[90vh] rounded-lg overflow-hidden flex flex-col">
+            <div className="h-12 border-b flex items-center justify-between px-4">
+              <span className="font-medium">{t("previewPage")}</span>
+              <Button variant="ghost" size="icon" onClick={() => setShowPreview(false)}>
+                <X size={18} />
+              </Button>
             </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center">
-                <Label className="text-sm font-medium">{t("descLabel")}</Label>
-                <FieldHint text={t("descHint")} />
-              </div>
-              <Textarea {...register("description")} rows={2} />
-            </div>
-
-            <div className="flex items-center gap-3">
-              <Controller
-                control={control}
-                name="isPublished"
-                render={({ field }) => (
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                )}
-              />
-              <div className="space-y-0.5">
-                <Label className="text-sm font-medium">
-                  {t("publishLabel")}
-                </Label>
-                <FieldHint text={t("publishHint")} />
-              </div>
-            </div>
-
-            <Button type="submit" disabled={isUpdating} size="sm">
-              {isUpdating ? tCommon("saving") : tCommon("save")}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-
-      {/* SEO Section */}
-      <Card className="mb-6">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-lg">{t("seoTitle")}</CardTitle>
-          <p className="text-sm text-muted-foreground">{t("seoHint")}</p>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-            <div className="space-y-2">
-              <div className="flex items-center">
-                <Label className="text-sm font-medium">
-                  {t("metaTitleLabel")}
-                </Label>
-                <FieldHint text={t("metaTitleHint")} />
-              </div>
-              <Input {...register("metaTitle")} placeholder={page?.title} />
-              <p className="text-xs text-muted-foreground text-right">
-                {t("charCount", {
-                  count: (watch("metaTitle") || "").length,
-                  max: 255,
-                })}
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center">
-                <Label className="text-sm font-medium">
-                  {t("metaDescLabel")}
-                </Label>
-                <FieldHint text={t("metaDescHint")} />
-              </div>
-              <Textarea
-                {...register("metaDescription")}
-                rows={2}
-                placeholder={page?.description || ""}
-              />
-              <p className="text-xs text-muted-foreground text-right">
-                {t("charCount", {
-                  count: (watch("metaDescription") || "").length,
-                  max: 500,
-                })}
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center">
-                <Label className="text-sm font-medium">
-                  {t("ogImageUrlLabel")}
-                </Label>
-                <FieldHint text={t("ogImageUrlHint")} />
-              </div>
-              <Input
-                {...register("ogImageUrl")}
-                placeholder="https://example.com/og-image.jpg"
-              />
-            </div>
-
-            <Button type="submit" disabled={isUpdating} size="sm">
-              {isUpdating ? tCommon("saving") : tCommon("save")}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-
-      {/* Section List */}
-      <SectionList
-        sections={page?.sections || []}
-        pageId={pageId}
-        onPreview={(section) => setPreviewSection(section)}
-        onDuplicate={handleDuplicateSection}
-        onDelete={handleDeleteSection}
-        onReorder={handleReorder}
-      />
-
-      {/* Section Preview Modal */}
-      {previewSection && (
-        <Suspense fallback={<SkeletonForm />}>
-          <SectionPreviewModal
-            type={previewSection.type}
-            content={previewSection.content}
-            isOpen={!!previewSection}
-            onClose={() => setPreviewSection(null)}
-          />
-        </Suspense>
+            <iframe
+              src={`/${page.slug}`}
+              className="flex-1 w-full"
+              title="Preview"
+            />
+          </div>
+        </div>
       )}
-
-      {/* Full Page Preview */}
-      {page && (
-        <Suspense fallback={<SkeletonForm />}>
-          <FullPagePreview
-            page={page}
-            isOpen={showFullPreview}
-            onClose={() => setShowFullPreview(false)}
-          />
-        </Suspense>
-      )}
-
-      {/* Save as Template */}
-      <SaveTemplateDialog
-        isOpen={showSaveTemplate}
-        isSaving={isSavingTemplate}
-        onClose={() => setShowSaveTemplate(false)}
-        onSave={handleSaveTemplate}
-      />
     </div>
   );
 }
