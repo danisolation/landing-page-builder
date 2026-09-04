@@ -96,17 +96,6 @@ function VisualEditorContent({ page, onPublish }: VisualEditorProps) {
     [pageId, setSections]
   );
 
-  // Auto-save with debounce
-  useEffect(() => {
-    if (!state.isDirty) return;
-
-    const timer = setTimeout(() => {
-      handleAutoSave();
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, [state.sections, state.isDirty]);
-
   const handleAutoSave = useCallback(async () => {
     if (!state.isDirty || state.isSaving) return;
 
@@ -121,6 +110,17 @@ function VisualEditorContent({ page, onPublish }: VisualEditorProps) {
       dispatch({ type: "SET_SAVING", payload: false });
     }
   }, [state.sections, state.isDirty, state.isSaving, dispatch, syncSections]);
+
+  // Auto-save with debounce
+  useEffect(() => {
+    if (!state.isDirty) return;
+
+    const timer = setTimeout(() => {
+      handleAutoSave();
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [handleAutoSave]);
 
   const handleSave = async () => {
     dispatch({ type: "SET_SAVING", payload: true });

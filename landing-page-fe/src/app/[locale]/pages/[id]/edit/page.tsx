@@ -22,7 +22,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import VisualEditor from "@/components/editor/VisualEditor";
-import type { Page } from "@/types";
 
 export default function EditPagePage() {
   const t = useTranslations("editPage");
@@ -104,18 +103,6 @@ export default function EditPagePage() {
           toast.error(error.message || t("saveFailed")),
       },
     );
-  };
-
-  const handleSave = async (data: Partial<Page>) => {
-    return new Promise<void>((resolve, reject) => {
-      updatePage(
-        { id: pageId, data },
-        {
-          onSuccess: () => resolve(),
-          onError: (error: Error) => reject(error),
-        },
-      );
-    });
   };
 
   const handlePublish = async (isPublished: boolean) => {
