@@ -36,8 +36,11 @@ export function usePages() {
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdatePageInput }) =>
       updatePage(id, data),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: pageKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: pageKeys.detail(variables.id),
+      });
     },
   });
 
@@ -53,8 +56,11 @@ export function usePages() {
   const publishMutation = useMutation({
     mutationFn: ({ id, isPublished }: { id: string; isPublished: boolean }) =>
       updatePage(id, { isPublished }),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: pageKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: pageKeys.detail(variables.id),
+      });
     },
   });
 

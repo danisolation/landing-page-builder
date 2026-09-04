@@ -113,7 +113,7 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3">
               <div className="space-y-2">
                 <div className="flex items-center">
                   <Label>{t('name')}</Label>

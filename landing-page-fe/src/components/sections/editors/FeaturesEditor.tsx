@@ -91,7 +91,7 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
               </Button>
             </div>
 
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 gap-3">
               <div className="space-y-2">
                 <div className="flex items-center">
                   <Label>{t('icon')}</Label>

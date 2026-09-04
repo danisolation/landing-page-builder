@@ -1,0 +1,12 @@
+# Taste — Root
+- Communicates in Vietnamese and expects replies/explanations in Vietnamese (technical terms may stay in English). Confidence: 1
+- Wants to be taught, not just served: explain reasoning and steps first, and only write code when explicitly asked ("khi nào tôi yêu cầu làm dùm thì mới làm"). Confidence: 0.9
+- Prefers working in small, sequential steps with each step explained ("tuần tự đi", "giải thích từng bước nhỏ") over large unexplained jumps. Confidence: 0.85
+- Values durable, agent-readable project docs and rules (for FE and BE) so a fresh session or another machine can pick up where the last one left off. Confidence: 0.8
+- Asks for a plan ("lên plan") before implementation begins. Confidence: 0.85
+- MVP/POC-first product mindset: every claimed feature must actually work end-to-end; dislikes piling on features that cannot run ("ôm đồm nhiều feature quá mà lại chạy không được"). Confidence: 0.85
+- During requirements interviews, prefers being asked questions one at a time rather than many at once. Confidence: 0.6
+- Wants all pages in a project to tell a unified, coherent brand/product story — dislikes disconnected pages that make it unclear what the project is about ("các page không liên quan đến nhau, nhìn vào không biết dự án này đang làm gì"). Confidence: 0.85
+- Targets no-code users (freelancers, marketers, startups) — the product must be simple, fast, and require zero coding knowledge. Confidence: 0.8
+- Wants a visual/WYSIWYG editor (drag-drop, inline editing, live preview) as the core differentiator — aspires to Wix/Squarespace-class editing experience. Confidence: 0.8
+- Sets a high bar for product quality: rejects "underwhelming" features, wants the app to be compelling and competitive ("make the app more worthwhile"). Confidence: 0.75

@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/select';
 import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import SectionPreviewModal from '@/components/sections/SectionPreviewModal';
-import { defaultContent, sectionEditors } from '@/components/sections/section-constants';
+import { defaultContent, sectionEditors, sectionTypes } from '@/components/sections/section-constants';
 import type { SectionType, SectionContent } from '@/types';
 
 export default function NewSectionPage() {
@@ -136,11 +136,11 @@ export default function NewSectionPage() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="hero">{tTypes('hero')}</SelectItem>
-                <SelectItem value="features">{tTypes('features')}</SelectItem>
-                <SelectItem value="cta">{tTypes('cta')}</SelectItem>
-                <SelectItem value="stats">{tTypes('stats')}</SelectItem>
-                <SelectItem value="testimonials">{tTypes('testimonials')}</SelectItem>
+                {sectionTypes.map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {tTypes(type)}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             {errors.type && (

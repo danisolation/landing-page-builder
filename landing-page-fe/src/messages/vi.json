@@ -11,7 +11,9 @@
     "admin": "Admin",
     "logout": "Đăng xuất",
     "appName": "Landing Page Builder",
-    "close": "Đóng"
+    "close": "Đóng",
+    "draft": "Nháp",
+    "published": "Đã xuất bản"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -137,7 +139,11 @@
     "metaDescHint": "Mô tả hiển thị khi chia sẻ link. Khuyến nghị 120-160 ký tự.",
     "ogImageUrlLabel": "Ảnh chia sẻ (URL)",
     "ogImageUrlHint": "URL ảnh hiển thị khi chia sẻ trên Facebook, Zalo, Slack. Khuyến nghị 1200x630px.",
-    "charCount": "{count}/{max}"
+    "charCount": "{count}/{max}",
+    "pageSettings": "Cài đặt trang",
+    "publishFailed": "Xuất bản thất bại",
+    "published": "Đã xuất bản!",
+    "unpublished": "Đã gỡ xuất bản"
   },
   "sectionList": {
     "title": "Sections",
@@ -309,7 +315,10 @@
     "features": "Features",
     "cta": "CTA",
     "stats": "Stats",
-    "testimonials": "Testimonials"
+    "testimonials": "Testimonials",
+    "pricing": "Bảng giá",
+    "faq": "Hỏi đáp",
+    "logoCloud": "Logo đối tác"
   },
   "templates": {
     "chooseTemplate": "Chọn template",
@@ -394,7 +403,13 @@
     "sectionSpacing": "Khoảng cách section",
     "contentWidth": "Chiều rộng nội dung",
     "saveSuccess": "Lưu thành công!",
-    "saveFailed": "Lưu thất bại"
+    "saveFailed": "Lưu thất bại",
+    "unsupportedSection": "Section loại \"{type}\" chưa hỗ trợ chỉnh sửa trực quan",
+    "unsupportedSectionHint": "Bạn vẫn có thể sửa từ danh sách section hoặc xóa nó",
+    "styleComingSoon": "Giao diện tổng sắp ra mắt",
+    "styleComingSoonHint": "Hiện tại, hãy chỉnh từng section trong panel bên phải.",
+    "backToSections": "Quay lại",
+    "dragToReorder": "Kéo để sắp xếp"
   },
   "pricingEditor": {
     "subtitle": "Phụ đề",

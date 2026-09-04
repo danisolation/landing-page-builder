@@ -10,10 +10,18 @@ import TestimonialsSection from '@/components/sections/TestimonialsSection';
 import PricingSection from '@/components/sections/PricingSection';
 import FaqSection from '@/components/sections/FaqSection';
 import LogoCloudSection from '@/components/sections/LogoCloudSection';
-import type { SectionType } from '@/types';
+import type { SectionType, SectionContent } from '@/types';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const sectionComponents: Record<SectionType, React.ComponentType<{ content: any }>> = {
+export interface EditableSectionComponentProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  content: any;
+  isEditing?: boolean;
+  onContentChange?: (content: SectionContent) => void;
+}
+
+export const sectionComponents: Partial<
+  Record<SectionType, React.ComponentType<EditableSectionComponentProps>>
+> = {
   hero: HeroSection,
   features: FeaturesSection,
   cta: CtaSection,
@@ -22,10 +30,4 @@ export const sectionComponents: Record<SectionType, React.ComponentType<{ conten
   pricing: PricingSection,
   faq: FaqSection,
   logoCloud: LogoCloudSection,
-  // Placeholder for sections without dedicated renderer yet
-  team: HeroSection,
-  gallery: HeroSection,
-  contact: HeroSection,
-  compare: HeroSection,
-  banner: HeroSection,
 };

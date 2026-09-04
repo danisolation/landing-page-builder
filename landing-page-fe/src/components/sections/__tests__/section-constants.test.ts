@@ -3,8 +3,8 @@ import { defaultContent, sectionTypes } from '../section-constants';
 
 describe('section-constants', () => {
   describe('sectionTypes', () => {
-    it('should contain exactly 5 section types', () => {
-      expect(sectionTypes).toHaveLength(5);
+    it('should contain the implemented section types', () => {
+      expect(sectionTypes).toHaveLength(8);
     });
 
     it('should include all expected types', () => {
@@ -13,6 +13,9 @@ describe('section-constants', () => {
       expect(sectionTypes).toContain('cta');
       expect(sectionTypes).toContain('stats');
       expect(sectionTypes).toContain('testimonials');
+      expect(sectionTypes).toContain('pricing');
+      expect(sectionTypes).toContain('faq');
+      expect(sectionTypes).toContain('logoCloud');
     });
   });
 

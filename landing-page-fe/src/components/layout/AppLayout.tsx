@@ -30,6 +30,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
+  // Fullscreen editor mode — hide app sidebar, remove content constraints
+  const isEditorPage = /^\/pages\/[^/]+\/edit/.test(pathWithoutLocale);
+
   const navItems = [
     { href: '/dashboard', label: t('nav.dashboard'), icon: Icons.dashboard },
     { href: '/pages', label: t('nav.pages'), icon: Icons.pages },
@@ -75,10 +78,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           />
         )}
 
-        {/* Sidebar */}
+        {/* Sidebar — hidden in fullscreen editor mode */}
         <aside
           className={`fixed top-16 bottom-0 left-0 z-40 bg-card border-r border-border overflow-hidden transition-all duration-300 ease-in-out
-            w-0 lg:w-64
+            w-0 ${isEditorPage ? '' : 'lg:w-64'}
             ${mobileSidebarOpen ? '!w-64 z-50' : ''}
           `}
         >
@@ -109,10 +112,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 transition-sidebar lg:ml-64">
-          <div className="p-4 lg:p-8 max-w-7xl mx-auto">
-            {children}
-          </div>
+        <main className={`flex-1 transition-sidebar ${isEditorPage ? '' : 'lg:ml-64'}`}>
+          {isEditorPage ? (
+            children
+          ) : (
+            <div className="p-4 lg:p-8 max-w-7xl mx-auto">
+              {children}
+            </div>
+          )}
         </main>
       </div>
     </div>

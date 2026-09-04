@@ -121,7 +121,7 @@ export default function PricingEditor({ content, onChange }: PricingEditorProps)
               </Button>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3">
               <div className="space-y-2">
                 <Label>{t("planName")}</Label>
                 <Input

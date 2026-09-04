@@ -128,8 +128,22 @@ export const defaultContent: Record<SectionType, SectionContent> = {
   },
 };
 
+export const implementedSectionTypes = [
+  'hero',
+  'features',
+  'cta',
+  'stats',
+  'testimonials',
+  'pricing',
+  'faq',
+  'logoCloud',
+] as const;
+
+export type ImplementedSectionType = (typeof implementedSectionTypes)[number];
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const sectionEditors: Record<SectionType, React.ComponentType<{ content: any; onChange: (content: any) => void }>> = {
+export type SectionEditorComponent = React.ComponentType<{ content: any; onChange: (content: any) => void }>;
+export const sectionEditors: Partial<Record<SectionType, SectionEditorComponent>> = {
   hero: HeroEditor,
   features: FeaturesEditor,
   cta: CtaEditor,
@@ -138,11 +152,6 @@ export const sectionEditors: Record<SectionType, React.ComponentType<{ content: 
   pricing: PricingEditor,
   faq: FaqEditor,
   logoCloud: LogoCloudEditor,
-  team: HeroEditor, // Fallback
-  gallery: HeroEditor, // Fallback
-  contact: HeroEditor, // Fallback
-  compare: HeroEditor, // Fallback
-  banner: HeroEditor, // Fallback
 };
 
-export const sectionTypes = ['hero', 'features', 'cta', 'stats', 'testimonials', 'pricing', 'faq', 'logoCloud', 'team', 'gallery', 'contact', 'compare', 'banner'] as const;
+export const sectionTypes = implementedSectionTypes;
