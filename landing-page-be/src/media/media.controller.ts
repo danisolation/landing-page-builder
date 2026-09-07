@@ -7,7 +7,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Request } from 'express';
+import type { Request } from 'express';
 import { randomUUID } from 'crypto';
 import { MediaService } from './media.service';
 
