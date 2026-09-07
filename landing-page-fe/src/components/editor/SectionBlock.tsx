@@ -110,14 +110,15 @@ export default function SectionBlock({
         </div>
       )}
 
-      {/* Drag handle */}
+      {/* Drag handle - visible on hover/selection */}
       <div
         className={cn(
-          "absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full pr-2 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing",
+          "absolute -left-8 top-1/2 -translate-y-1/2 p-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grab bg-background border shadow-sm hover:bg-muted",
           isSelected && "opacity-100"
         )}
+        title={t("dragToReorder")}
       >
-        <GripVertical size={20} className="text-muted-foreground" />
+        <GripVertical size={16} className="text-muted-foreground" />
       </div>
 
       {/* Section content wrapper */}

@@ -4,12 +4,21 @@ import { createContext, useContext, useReducer, useCallback, type ReactNode } fr
 import type { Section, SectionType, SectionContent } from "@/types";
 import { defaultContent } from "@/components/sections/section-constants";
 
+// Global page styles
+export interface GlobalStyle {
+  primaryColor: string;
+  fontFamily: string;
+  sectionSpacing: number;
+  contentWidth: number;
+}
+
 // Editor state
 interface EditorState {
   sections: Section[];
   selectedSectionId: string | null;
   isDirty: boolean;
   isSaving: boolean;
+  globalStyle: GlobalStyle;
   // History for undo/redo
   past: Section[][];
   future: Section[][];
@@ -23,6 +32,7 @@ type EditorAction =
   | { type: "DELETE_SECTION"; payload: string }
   | { type: "REORDER_SECTIONS"; payload: { fromIndex: number; toIndex: number } }
   | { type: "DUPLICATE_SECTION"; payload: string }
+  | { type: "UPDATE_GLOBAL_STYLE"; payload: Partial<GlobalStyle> }
   | { type: "UNDO" }
   | { type: "REDO" }
   | { type: "MARK_DIRTY" }
@@ -34,6 +44,12 @@ const initialState: EditorState = {
   selectedSectionId: null,
   isDirty: false,
   isSaving: false,
+  globalStyle: {
+    primaryColor: "#3b82f6",
+    fontFamily: "inter",
+    sectionSpacing: 80,
+    contentWidth: 1200,
+  },
   past: [],
   future: [],
 };
@@ -136,6 +152,13 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
       };
     }
 
+    case "UPDATE_GLOBAL_STYLE":
+      return {
+        ...state,
+        globalStyle: { ...state.globalStyle, ...action.payload },
+        isDirty: true,
+      };
+
     case "UNDO": {
       if (state.past.length === 0) return state;
       const previous = state.past[state.past.length - 1];
@@ -188,6 +211,7 @@ interface EditorContextType {
   deleteSection: (id: string) => void;
   reorderSections: (fromIndex: number, toIndex: number) => void;
   duplicateSection: (id: string) => void;
+  updateGlobalStyle: (style: Partial<GlobalStyle>) => void;
   undo: () => void;
   redo: () => void;
   canUndo: boolean;
@@ -227,6 +251,10 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "DUPLICATE_SECTION", payload: id });
   }, []);
 
+  const updateGlobalStyle = useCallback((style: Partial<GlobalStyle>) => {
+    dispatch({ type: "UPDATE_GLOBAL_STYLE", payload: style });
+  }, []);
+
   const undo = useCallback(() => dispatch({ type: "UNDO" }), []);
   const redo = useCallback(() => dispatch({ type: "REDO" }), []);
 
@@ -242,6 +270,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
         deleteSection,
         reorderSections,
         duplicateSection,
+        updateGlobalStyle,
         undo,
         redo,
         canUndo: state.past.length > 0,

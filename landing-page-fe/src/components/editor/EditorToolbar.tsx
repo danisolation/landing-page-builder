@@ -88,13 +88,15 @@ export default function EditorToolbar({
 
       {/* Right: Actions */}
       <div className="flex items-center gap-2">
-        {/* Save status indicator */}
-        {state.isDirty && (
-          <span className="text-xs text-muted-foreground">{t("unsaved")}</span>
-        )}
-        {state.isSaving && (
-          <span className="text-xs text-blue-500">{t("saving")}</span>
-        )}
+        {/* Save status indicator - announced to screen readers */}
+        <div aria-live="polite" className="flex items-center">
+          {state.isDirty && (
+            <span className="text-xs text-muted-foreground">{t("unsaved")}</span>
+          )}
+          {state.isSaving && (
+            <span className="text-xs text-blue-500">{t("saving")}</span>
+          )}
+        </div>
 
         <Button variant="outline" size="sm" onClick={onPreview}>
           <Eye size={16} className="mr-2" />

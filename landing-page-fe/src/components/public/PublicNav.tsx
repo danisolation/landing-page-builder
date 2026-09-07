@@ -59,14 +59,14 @@ export default function PublicNav({ pageTitle }: PublicNavProps) {
 
         <button
           onClick={toggleDark}
-          className={`p-2 rounded-lg transition-colors ${
+          className={`p-3 rounded-lg transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${
             scrolled
               ? 'text-muted-foreground hover:bg-accent'
               : 'text-white/80 hover:text-white hover:bg-white/10'
           }`}
           aria-label="Toggle dark mode"
         >
-          {isDark ? <Sun size={18} /> : <Moon size={18} />}
+          {isDark ? <Sun size={20} /> : <Moon size={20} />}
         </button>
       </div>
     </nav>

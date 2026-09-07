@@ -44,7 +44,7 @@ export default function PricingSection({ content }: PricingSectionProps) {
             </p>
           )}
           {content.title && (
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">{content.title}</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 break-words text-wrap-balance">{content.title}</h2>
           )}
           {content.description && (
             <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -54,7 +54,7 @@ export default function PricingSection({ content }: PricingSectionProps) {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
           {content.plans?.map((plan, index) => (
             <div
               key={index}

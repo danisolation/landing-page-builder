@@ -42,11 +42,11 @@ export default function CtaSection({ content }: CtaSectionProps) {
             transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
           }}
         >
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 break-words text-wrap-balance">
             {content.heading || 'Ready to get started?'}
           </h2>
           {content.description && (
-            <p className="text-blue-100/80 text-lg mb-8 max-w-xl mx-auto">
+            <p className="text-blue-50 text-base sm:text-lg mb-6 sm:mb-8 max-w-xl mx-auto">
               {content.description}
             </p>
           )}
@@ -59,12 +59,12 @@ export default function CtaSection({ content }: CtaSectionProps) {
             transform: btnVisible ? 'translateY(0)' : 'translateY(20px)',
             transition: 'opacity 0.6s ease-out 0.15s, transform 0.6s ease-out 0.15s',
           }}
-          className="flex flex-col sm:flex-row gap-4 justify-center"
+          className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center"
         >
           {content.buttonText && (
             <a
               href={content.buttonLink || '#'}
-              className="inline-flex items-center justify-center bg-white dark:bg-gray-900 text-indigo-600 dark:text-indigo-400 px-8 py-4 rounded-full font-semibold text-lg hover:scale-105 hover:shadow-2xl transition-all duration-300 shadow-lg"
+              className="inline-flex items-center justify-center bg-white dark:bg-gray-900 text-indigo-600 dark:text-indigo-400 px-6 py-3 sm:px-8 sm:py-4 rounded-full font-semibold text-base sm:text-lg hover:scale-105 hover:shadow-2xl transition-all duration-300 shadow-lg min-w-0 max-w-full"
             >
               {content.buttonText}
             </a>
@@ -72,7 +72,7 @@ export default function CtaSection({ content }: CtaSectionProps) {
           {content.secondaryButtonText && (
             <a
               href={content.secondaryButtonLink || '#'}
-              className="inline-flex items-center justify-center border-2 border-white/30 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white/10 hover:border-white/50 transition-all duration-300"
+              className="inline-flex items-center justify-center border-2 border-white/30 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-full font-semibold text-base sm:text-lg hover:bg-white/10 hover:border-white/50 transition-all duration-300 min-w-0 max-w-full"
             >
               {content.secondaryButtonText}
             </a>

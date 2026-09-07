@@ -129,6 +129,18 @@
   }
 }
 
+/* Text wrap balance for headings */
+.text-wrap-balance {
+  text-wrap: balance;
+}
+
+/* Ensure buttons don't overflow on mobile */
+@layer utilities {
+  .min-w-0 {
+    min-width: 0;
+  }
+}
+
 /* Toast animation */
 @keyframes slide-in {
   from {

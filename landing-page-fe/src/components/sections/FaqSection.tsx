@@ -40,7 +40,7 @@ export default function FaqSection({ content }: FaqSectionProps) {
             </p>
           )}
           {content.title && (
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">{content.title}</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 break-words text-wrap-balance">{content.title}</h2>
           )}
           {content.description && (
             <p className="text-muted-foreground">{content.description}</p>
@@ -60,8 +60,11 @@ export default function FaqSection({ content }: FaqSectionProps) {
               }}
             >
               <button
-                className="w-full flex items-center justify-between p-4 text-left hover:bg-muted/50 transition-colors"
+                className="w-full flex items-center justify-between p-4 text-left hover:bg-muted/50 transition-colors min-h-[44px]"
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                aria-expanded={openIndex === index}
+                aria-controls={`faq-answer-${index}`}
+                id={`faq-question-${index}`}
               >
                 <span className="font-medium pr-4">{item.question}</span>
                 <ChevronDown
@@ -72,6 +75,9 @@ export default function FaqSection({ content }: FaqSectionProps) {
                 />
               </button>
               <div
+                id={`faq-answer-${index}`}
+                role="region"
+                aria-labelledby={`faq-question-${index}`}
                 className={`overflow-hidden transition-all ${
                   openIndex === index ? "max-h-96" : "max-h-0"
                 }`}
