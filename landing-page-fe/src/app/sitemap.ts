@@ -18,20 +18,9 @@ interface ApiResponse<T> {
  * Google sẽ crawl file này định kỳ để discover pages.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const locales = ['vi', 'en'];
   const entries: MetadataRoute.Sitemap = [];
 
-  // Static routes
-  for (const locale of locales) {
-    entries.push({
-      url: `${SITE_URL}/${locale}`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    });
-  }
-
-  // Dynamic routes — published pages
+  // Dynamic routes — published pages (no locale prefix)
   try {
     const res = await fetch(`${API_URL}/pages?isPublished=true&sortBy=updatedAt&sortOrder=desc`, {
       next: { revalidate: 300 }, // revalidate mỗi 5 phút
@@ -42,14 +31,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const pages = json.data;
 
       for (const page of pages) {
-        for (const locale of locales) {
-          entries.push({
-            url: `${SITE_URL}/${locale}/${page.slug}`,
-            lastModified: new Date(page.updatedAt),
-            changeFrequency: 'weekly',
-            priority: 0.7,
-          });
-        }
+        entries.push({
+          url: `${SITE_URL}/${page.slug}`,
+          lastModified: new Date(page.updatedAt),
+          changeFrequency: 'weekly',
+          priority: 0.7,
+        });
       }
     }
   } catch {

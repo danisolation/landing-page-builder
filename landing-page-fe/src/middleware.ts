@@ -8,6 +8,9 @@ const intlMiddleware = createMiddleware(routing);
 const locales = ['vi', 'en'];
 const defaultLocale = 'vi';
 
+// Admin paths that require locale prefix
+const adminPaths = ['/login', '/dashboard', '/pages'];
+
 function getLocaleFromPathname(pathname: string): string {
   for (const locale of locales) {
     if (pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`) {
@@ -15,6 +18,10 @@ function getLocaleFromPathname(pathname: string): string {
     }
   }
   return defaultLocale;
+}
+
+function isAdminPath(pathname: string): boolean {
+  return adminPaths.some(p => pathname === p || pathname.startsWith(`${p}/`));
 }
 
 export function middleware(request: NextRequest) {
@@ -25,26 +32,31 @@ export function middleware(request: NextRequest) {
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
 
-  // If no locale prefix, redirect to the same URL with default locale
+  // Public pages (no locale prefix) — allow through without redirect
   if (!pathnameHasLocale) {
-    const url = request.nextUrl.clone();
-    url.pathname = `/${defaultLocale}${pathname}`;
-    return NextResponse.redirect(url);
+    if (isAdminPath(pathname)) {
+      // Admin routes without locale → redirect to locale-prefixed version
+      const url = request.nextUrl.clone();
+      url.pathname = `/${defaultLocale}${pathname}`;
+      return NextResponse.redirect(url);
+    }
+    // Public page — no locale needed
+    return NextResponse.next();
   }
 
-  // Get the locale from the URL
+  // From here: pathname has locale prefix (admin routes)
   const locale = getLocaleFromPathname(pathname);
 
   // Auth logic
   const token = request.cookies.get('token')?.value;
 
-  // Define known routes that need auth
+  // Define known routes
   const isLoginPage = pathname.match(/^\/(vi|en)\/login$/);
   const isRootPage = pathname.match(/^\/(vi|en)$/);
   const isDashboard = pathname.match(/^\/(vi|en)\/dashboard/);
   const isPagesRoute = pathname.match(/^\/(vi|en)\/pages/);
 
-  // Public routes: login page and [slug] pages (anything that's not dashboard/pages)
+  // Public routes: login page (anything that's not dashboard/pages)
   const isPublicRoute = isLoginPage || (!isDashboard && !isPagesRoute && !isRootPage);
 
   // If not authenticated and not a public route → redirect to login

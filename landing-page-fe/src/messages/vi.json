@@ -322,6 +322,7 @@
   "validation": {
     "required": "{field} là bắt buộc",
     "slugFormat": "Slug chỉ được chứa chữ thường, số và dấu gạch ngang",
+    "slugReserved": "Slug này được bảo lưu",
     "minOrder": "Thứ tự phải lớn hơn hoặc bằng 0",
     "sectionTypeRequired": "Loại section là bắt buộc"
   },

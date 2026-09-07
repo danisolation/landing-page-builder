@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useRef, useCallback } from "react";
 import { X, ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { sectionComponents } from '@/lib/section-components';
 import PublicFooter from "@/components/public/PublicFooter";
@@ -31,8 +30,6 @@ export default function FullPagePreview({
   onClose,
   showOpenLink = true,
 }: FullPagePreviewProps) {
-  const params = useParams();
-  const locale = params.locale as string;
   const t = useTranslations("fullPagePreview");
   const dialogRef = useRef<HTMLDivElement>(null);
 
@@ -101,7 +98,7 @@ export default function FullPagePreview({
               <div className="flex items-center gap-2">
                 {showOpenLink && (
                   <a
-                    href={`/${locale}/${page.slug}`}
+                    href={`/${page.slug}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-1.5 text-sm font-medium border border-border bg-card text-foreground hover:bg-accent px-3 py-1.5 rounded-md transition-colors"

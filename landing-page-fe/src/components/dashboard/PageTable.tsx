@@ -21,7 +21,7 @@ export default function PageTable({ pages, onDelete, onDuplicate }: PageTablePro
   const handleCopyLink = async (page: Page) => {
     try {
       await navigator.clipboard.writeText(
-        `${window.location.origin}/${locale}/${page.slug}`
+        `${window.location.origin}/${page.slug}`
       );
       toast.success(t('copySuccess'));
     } catch {
@@ -77,7 +77,7 @@ export default function PageTable({ pages, onDelete, onDuplicate }: PageTablePro
                     <div className="flex items-center justify-end gap-1">
                       {page.isPublished && (
                         <a
-                          href={`/${locale}/${page.slug}`}
+                          href={`/${page.slug}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >

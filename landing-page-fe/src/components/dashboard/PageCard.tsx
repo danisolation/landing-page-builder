@@ -23,7 +23,7 @@ export default function PageCard({ page, onDelete, onDuplicate }: PageCardProps)
   const uniqueTypes = [...new Set(sectionTypes)];
 
   const publicUrl = () =>
-    `${window.location.origin}/${locale}/${page.slug}`;
+    `${window.location.origin}/${page.slug}`;
 
   const handleCopyLink = async () => {
     try {
@@ -80,7 +80,7 @@ export default function PageCard({ page, onDelete, onDuplicate }: PageCardProps)
           <div className="flex flex-wrap items-center gap-1.5 sm:ml-4 sm:flex-shrink-0">
             {page.isPublished && (
               <a
-                href={`/${locale}/${page.slug}`}
+                href={`/${page.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >

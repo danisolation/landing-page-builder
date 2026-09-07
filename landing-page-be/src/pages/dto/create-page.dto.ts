@@ -8,9 +8,12 @@ import {
   ArrayMaxSize,
   ValidateNested,
   MaxLength,
+  Matches,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreateSectionDto } from '../../sections/dto/create-section.dto';
+
+const RESERVED_SLUGS = ['login', 'dashboard', 'pages', 'api', 'admin', 'sitemap', 'robots'];
 
 export class CreatePageDto {
   @IsString()
@@ -19,6 +22,10 @@ export class CreatePageDto {
 
   @IsString()
   @IsNotEmpty()
+  @Matches(/^[a-z0-9-]+$/, { message: 'Slug must contain only lowercase letters, numbers, and hyphens' })
+  @Matches(new RegExp(`^(?!(${RESERVED_SLUGS.join('|')})$)`), {
+    message: 'This slug is reserved',
+  })
   slug!: string;
 
   @IsString()

@@ -2,7 +2,6 @@ import type { Page } from '@/types';
 
 interface PageJsonLdProps {
   page: Page;
-  locale: string;
   siteUrl: string;
 }
 
@@ -10,8 +9,8 @@ interface PageJsonLdProps {
  * JSON-LD structured data cho landing page.
  * Giúp Google hiểu nội dung và hiển thị rich results.
  */
-export default function PageJsonLd({ page, locale, siteUrl }: PageJsonLdProps) {
-  const canonical = page.canonicalUrl || `${siteUrl}/${locale}/${page.slug}`;
+export default function PageJsonLd({ page, siteUrl }: PageJsonLdProps) {
+  const canonical = page.canonicalUrl || `${siteUrl}/${page.slug}`;
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -19,7 +18,6 @@ export default function PageJsonLd({ page, locale, siteUrl }: PageJsonLdProps) {
     name: page.metaTitle || page.title,
     description: page.metaDescription || page.description,
     url: canonical,
-    inLanguage: locale === 'vi' ? 'vi' : 'en',
     datePublished: page.createdAt,
     dateModified: page.updatedAt,
     publisher: {

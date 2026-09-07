@@ -38,6 +38,8 @@ export default function EditPagePage() {
   const [showSettings, setShowSettings] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
 
+  const RESERVED_SLUGS = ['login', 'dashboard', 'pages', 'api', 'admin', 'sitemap', 'robots'];
+
   const editPageSchema = z.object({
     title: z
       .string()
@@ -45,7 +47,10 @@ export default function EditPagePage() {
     slug: z
       .string()
       .min(1, tValidation("required", { field: t("slugLabel") }))
-      .regex(/^[a-z0-9-]+$/, tValidation("slugFormat")),
+      .regex(/^[a-z0-9-]+$/, tValidation("slugFormat"))
+      .refine((slug) => !RESERVED_SLUGS.includes(slug), {
+        message: tValidation("slugReserved"),
+      }),
     description: z.string().optional(),
     metaTitle: z.string().max(255).optional(),
     metaDescription: z.string().max(500).optional(),

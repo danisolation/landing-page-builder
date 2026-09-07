@@ -1,5 +1,7 @@
-import { IsString, IsOptional, IsBoolean, MaxLength, IsObject } from 'class-validator';
+import { IsString, IsOptional, IsBoolean, MaxLength, IsObject, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+
+const RESERVED_SLUGS = ['login', 'dashboard', 'pages', 'api', 'admin', 'sitemap', 'robots'];
 
 export class UpdatePageDto {
   @ApiProperty({ required: false })
@@ -10,6 +12,10 @@ export class UpdatePageDto {
   @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
+  @Matches(/^[a-z0-9-]+$/, { message: 'Slug must contain only lowercase letters, numbers, and hyphens' })
+  @Matches(new RegExp(`^(?!(${RESERVED_SLUGS.join('|')})$)`), {
+    message: 'This slug is reserved',
+  })
   slug?: string;
 
   @ApiProperty({ required: false })
