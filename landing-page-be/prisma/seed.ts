@@ -7,6 +7,14 @@ const connectionString = process.env.DATABASE_URL;
 const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
+// Brand style áp dụng cho mọi page demo — khớp với default của StylePanel
+const brandStyle = {
+  primaryColor: '#2563eb',
+  fontFamily: 'inter',
+  sectionSpacing: 80,
+  contentWidth: 1152,
+};
+
 async function main() {
   console.log('Seeding database...');
 
@@ -22,13 +30,16 @@ async function main() {
   });
   console.log('Admin created:', admin.username);
 
-  // 2. Xóa dữ liệu cũ
+  // 2. Xóa dữ liệu cũ (bao gồm cả page do user tạo — seed = full reset)
   await prisma.section.deleteMany();
   await prisma.page.deleteMany();
 
   // ============================================
   // PAGES - All about "Landing Page Builder" app
-  // A tool for creating landing pages from pre-built components
+  // Notes:
+  // - stats items: value PHẢI là số nguyên (CounterAnimation count-up),
+  //   đơn vị viết vào suffix (VD: 15 + "K+")
+  // - buttonLink chỉ trỏ tới các page seed có thật hoặc anchor (#)
   // ============================================
 
   // Page 1: Home - Giới thiệu sản phẩm
@@ -38,6 +49,7 @@ async function main() {
       slug: 'home',
       description: 'BuildFlow giúp bạn tạo landing page chuyên nghiệp từ các components có sẵn, không cần code.',
       isPublished: true,
+      globalStyle: brandStyle,
       metaTitle: 'BuildFlow - Landing Page Builder | Tạo Website trong 5 Phút',
       metaDescription: 'BuildFlow giúp bạn tạo landing page chuyên nghiệp với drag-drop components, templates đẹp, SEO ready. Không cần viết code!',
       ogImageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&h=630&fit=crop',
@@ -53,10 +65,10 @@ async function main() {
         content: {
           heading: 'Tạo Landing Page trong 5 Phút',
           subheading: 'Kéo thả components có sẵn, xuất bản ngay lập tức. Không cần code.',
-          buttonText: 'Bắt đầu miễn phí',
-          buttonLink: '/register',
-          secondaryButtonText: 'Xem demo',
-          secondaryButtonLink: '/templates',
+          buttonText: 'Xem templates',
+          buttonLink: '/templates',
+          secondaryButtonText: 'Xem bảng giá',
+          secondaryButtonLink: '/pricing',
         },
         order: 0,
         pageId: pageHome.id,
@@ -68,12 +80,12 @@ async function main() {
           title: 'Mọi thứ bạn cần để xây landing page hoàn hảo',
           description: 'BuildFlow cung cấp đầy đủ công cụ để tạo page chuyên nghiệp',
           items: [
-            { icon: '🧩', name: '50+ Components', description: 'Hero, Features, Pricing, FAQ, CTA và nhiều hơn' },
+            { icon: '🧩', name: '8 Loại Section', description: 'Hero, Features, Pricing, FAQ, CTA, Stats và nhiều hơn' },
             { icon: '🎨', name: '20+ Templates', description: 'Thiết kế sẵn cho mọi ngành nghề' },
             { icon: '📱', name: 'Mobile First', description: 'Tự động responsive trên mọi thiết bị' },
             { icon: '🔍', name: 'SEO Ready', description: 'Meta tags, Open Graph, JSON-LD tự động' },
-            { icon: '⚡', name: 'Tốc độ cao', description: 'Static export, CDN toàn cầu' },
-            { icon: '🔗', name: 'Custom Domain', description: 'Kết nối domain riêng dễ dàng' },
+            { icon: '✏️', name: 'Chỉnh sửa trực quan', description: 'Click vào chữ để sửa ngay trên canvas' },
+            { icon: '🌍', name: 'Đa ngôn ngữ', description: 'Xuất bản page tiếng Việt và tiếng Anh' },
           ],
         },
         order: 1,
@@ -84,10 +96,10 @@ async function main() {
         content: {
           title: 'Được tin dùng bởi hàng nghìn creator',
           items: [
-            { value: '15K+', label: 'Landing pages đã tạo' },
-            { value: '5K+', label: 'Users đang hoạt động' },
-            { value: '99.9%', label: 'Uptime' },
-            { value: '4.9★', label: 'Đánh giá trung bình' },
+            { value: 15, suffix: 'K+', label: 'Landing pages đã tạo' },
+            { value: 5, suffix: 'K+', label: 'Users đang hoạt động' },
+            { value: 99, suffix: '%', label: 'Uptime' },
+            { value: 24, suffix: '/7', label: 'Hỗ trợ khách hàng' },
           ],
         },
         order: 2,
@@ -128,10 +140,10 @@ async function main() {
         content: {
           heading: 'Sẵn sàng tạo landing page đầu tiên?',
           description: 'Dùng thử miễn phí 14 ngày, không cần thẻ tín dụng. Hủy bất cứ lúc nào.',
-          buttonText: 'Bắt đầu miễn phí',
-          buttonLink: '/register',
-          secondaryButtonText: 'Xem templates',
-          secondaryButtonLink: '/templates',
+          buttonText: 'Xem templates',
+          buttonLink: '/templates',
+          secondaryButtonText: 'Liên hệ tư vấn',
+          secondaryButtonLink: '/contact',
         },
         order: 4,
         pageId: pageHome.id,
@@ -147,6 +159,7 @@ async function main() {
       slug: 'templates',
       description: 'Khám phá bộ sưu tập templates landing page chuyên nghiệp, sẵn sàng tùy chỉnh.',
       isPublished: true,
+      globalStyle: brandStyle,
       metaTitle: 'Templates Landing Page | BuildFlow',
       metaDescription: '20+ templates landing page cho mọi ngành nghề: SaaS, Agency, E-commerce, Portfolio. Custom màu sắc, font chữ, nội dung dễ dàng.',
       ogImageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=630&fit=crop',
@@ -162,8 +175,8 @@ async function main() {
         content: {
           heading: '20+ Templates cho mọi ngành nghề',
           subheading: 'Chọn mẫu, tùy chỉnh nội dung, xuất bản. Dưới 10 phút.',
-          buttonText: 'Duyệt templates',
-          buttonLink: '#templates',
+          buttonText: 'Bắt đầu tạo page',
+          buttonLink: '/pricing',
         },
         order: 0,
         pageId: pageTemplates.id,
@@ -191,10 +204,10 @@ async function main() {
         content: {
           title: 'Mỗi template được thiết kế kỹ lưỡng',
           items: [
-            { value: '20+', label: 'Templates miễn phí' },
-            { value: '100%', label: 'Mobile responsive' },
-            { value: '50+', label: 'Components tùy biến' },
-            { value: 'Unlimited', label: 'Chỉnh sửa không giới hạn' },
+            { value: 20, suffix: '+', label: 'Templates miễn phí' },
+            { value: 100, suffix: '%', label: 'Mobile responsive' },
+            { value: 50, suffix: '+', label: 'Components tùy biến' },
+            { value: 10, suffix: ' phút', label: 'Để xuất bản page' },
           ],
         },
         order: 2,
@@ -204,9 +217,11 @@ async function main() {
         type: 'cta',
         content: {
           heading: 'Tìm template phù hợp với bạn',
-          description: 'Click vào template để xem trước, sau đó tùy chỉnh theo brand của bạn',
+          description: 'Chọn template khi tạo page mới, sau đó tùy chỉnh theo brand của bạn',
           buttonText: 'Bắt đầu tạo page',
-          buttonLink: '/register',
+          buttonLink: '/pricing',
+          secondaryButtonText: 'Liên hệ tư vấn',
+          secondaryButtonLink: '/contact',
         },
         order: 3,
         pageId: pageTemplates.id,
@@ -215,13 +230,14 @@ async function main() {
   });
   console.log('Page 2: Templates - Thư viện mẫu');
 
-  // Page 3: Pricing - Bảng giá
+  // Page 3: Pricing - Bảng giá (dùng section type "pricing" thật)
   const pagePricing = await prisma.page.create({
     data: {
       title: 'Bảng giá - Linh hoạt cho mọi nhu cầu',
       slug: 'pricing',
       description: 'Từ miễn phí đến Pro, BuildFlow có gói phù hợp cho freelancer đến doanh nghiệp.',
       isPublished: true,
+      globalStyle: brandStyle,
       metaTitle: 'Bảng giá BuildFlow | Từ miễn phí đến Pro',
       metaDescription: 'Gói Miễn phí với 3 pages, gói Pro $19/tháng unlimited pages. Custom domain, remove branding, analytics.',
       ogImageUrl: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&h=630&fit=crop',
@@ -237,23 +253,47 @@ async function main() {
         content: {
           heading: 'Giá minh bạch, không phí ẩn',
           subheading: 'Bắt đầu miễn phí, nâng cấp khi cần. Hủy bất cứ lúc nào.',
-          buttonText: 'Bắt đầu miễn phí',
-          buttonLink: '/register',
+          buttonText: 'Dùng thử ngay',
+          buttonLink: '/templates',
         },
         order: 0,
         pageId: pagePricing.id,
       },
       {
-        type: 'features',
+        type: 'pricing',
         content: {
-          subtitle: 'So sánh gói',
+          subtitle: 'Bảng giá',
           title: 'Chọn gói phù hợp',
           description: 'Tất cả gói đều bao gồm templates, components, hosting',
-          items: [
-            { icon: '🆓', name: 'Free - $0', description: '3 pages, 1 custom domain, BuildFlow branding' },
-            { icon: '⭐', name: 'Pro - $19/tháng', description: 'Unlimited pages, custom domain, no branding' },
-            { icon: '🏢', name: 'Team - $49/tháng', description: 'Mọi thứ trong Pro + 5 members, analytics' },
-            { icon: '🚀', name: 'Enterprise', description: 'Custom SLA, dedicated support, SSO' },
+          plans: [
+            {
+              name: 'Free',
+              price: '$0',
+              period: 'tháng',
+              description: 'Phù hợp để bắt đầu',
+              features: ['3 landing pages', 'Tất cả templates cơ bản', 'BuildFlow branding', 'Hỗ trợ cộng đồng'],
+              buttonText: 'Bắt đầu miễn phí',
+              buttonLink: '/contact',
+            },
+            {
+              name: 'Pro',
+              price: '$19',
+              period: 'tháng',
+              description: 'Cho freelancer chuyên nghiệp',
+              features: ['Unlimited pages', 'Custom domain', 'Không branding', 'Hỗ trợ ưu tiên'],
+              highlighted: true,
+              buttonText: 'Dùng thử Pro',
+              buttonLink: '/contact',
+            },
+            {
+              name: 'Team',
+              price: '$49',
+              period: 'tháng',
+              description: 'Cho đội nhóm đang lớn',
+              features: ['Mọi thứ trong Pro', '5 thành viên', 'Analytics tích hợp', 'API access'],
+              buttonText: 'Liên hệ tư vấn',
+              buttonLink: '/contact',
+            },
           ],
         },
         order: 1,
@@ -288,10 +328,10 @@ async function main() {
         content: {
           heading: 'Dùng thử miễn phí 14 ngày',
           description: 'Gói Pro đầy đủ tính năng. Không cần thẻ tín dụng.',
-          buttonText: 'Bắt đầu dùng thử',
-          buttonLink: '/register',
-          secondaryButtonText: 'So sánh gói',
-          secondaryButtonLink: '#pricing',
+          buttonText: 'Xem templates',
+          buttonLink: '/templates',
+          secondaryButtonText: 'Có câu hỏi?',
+          secondaryButtonLink: '/faq',
         },
         order: 3,
         pageId: pagePricing.id,
@@ -300,13 +340,14 @@ async function main() {
   });
   console.log('Page 3: Pricing - Bảng giá');
 
-  // Page 4: FAQ - Câu hỏi thường gặp
+  // Page 4: FAQ - Câu hỏi thường gặp (dùng section type "faq" thật)
   const pageFaq = await prisma.page.create({
     data: {
       title: 'FAQ - Câu hỏi thường gặp',
       slug: 'faq',
       description: 'Giải đáp các thắc mắc về BuildFlow landing page builder.',
       isPublished: true,
+      globalStyle: brandStyle,
       metaTitle: 'FAQ - Câu hỏi thường gặp về BuildFlow',
       metaDescription: 'Tìm câu trả lời cho các câu hỏi về BuildFlow: cách sử dụng, pricing, templates, custom domain, SEO.',
       ogImageUrl: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200&h=630&fit=crop',
@@ -329,18 +370,18 @@ async function main() {
         pageId: pageFaq.id,
       },
       {
-        type: 'features',
+        type: 'faq',
         content: {
           subtitle: 'FAQ',
           title: 'Giải đáp thắc mắc',
           description: 'Nếu không tìm thấy câu trả lời, hãy liên hệ chúng tôi',
           items: [
-            { icon: '❓', name: 'BuildFlow là gì?', description: 'BuildFlow là công cụ tạo landing page từ components có sẵn. Kéo thả, tùy chỉnh, xuất bản.' },
-            { icon: '🛠️', name: 'Có cần biết code không?', description: 'Không! BuildFlow dành cho mọi người, không cần kỹ năng lập trình.' },
-            { icon: '🌐', name: 'Có thể dùng domain riêng không?', description: 'Có! Kết nối domain cá nhân trong vài phút.' },
-            { icon: '📊', name: 'Có tích hợp analytics không?', description: 'Gói Team trở lên có analytics tích hợp. Các gói khác có thể embed Google Analytics.' },
-            { icon: '🔄', name: 'Có thể export code không?', description: 'Có! Export static HTML/CSS để host ở bất cứ đâu.' },
-            { icon: '💳', name: 'Chính sách hoàn tiền?', description: 'Dùng thử miễn phí 14 ngày. Đã thanh toán không hoàn tiền nhưng hủy bất cứ lúc nào.' },
+            { question: 'BuildFlow là gì?', answer: 'BuildFlow là công cụ tạo landing page từ components có sẵn. Kéo thả, tùy chỉnh, xuất bản — không cần code.' },
+            { question: 'Có cần biết code không?', answer: 'Không! BuildFlow dành cho mọi người, không cần kỹ năng lập trình.' },
+            { question: 'Có thể dùng domain riêng không?', answer: 'Có! Kết nối domain cá nhân trong vài phút.' },
+            { question: 'Có tích hợp analytics không?', answer: 'Gói Team trở lên có analytics tích hợp. Các gói khác có thể embed Google Analytics.' },
+            { question: 'Có thể export code không?', answer: 'Có! Export static HTML/CSS để host ở bất cứ đâu.' },
+            { question: 'Chính sách hoàn tiền?', answer: 'Dùng thử miễn phí 14 ngày. Đã thanh toán không hoàn tiền nhưng hủy bất cứ lúc nào.' },
           ],
         },
         order: 1,
@@ -368,6 +409,7 @@ async function main() {
       slug: 'contact',
       description: 'Liên hệ BuildFlow để được hỗ trợ hoặc tư vấn sử dụng.',
       isPublished: true,
+      globalStyle: brandStyle,
       metaTitle: 'Liên hệ BuildFlow | Hỗ trợ & Tư vấn',
       metaDescription: 'Liên hệ BuildFlow qua email hoặc form. Đội ngũ support phản hồi trong 24h.',
       ogImageUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&h=630&fit=crop',
@@ -399,7 +441,7 @@ async function main() {
             { icon: '📧', name: 'Email', description: 'hello@buildflow.app - Phản hồi trong 24h' },
             { icon: '💬', name: 'Live Chat', description: 'Thứ 2-6, 9h-18h (GMT+7)' },
             { icon: '📚', name: 'Documentation', description: 'docs.buildflow.app - Hướng dẫn chi tiết' },
-            { icon: '🐦', name: 'Twitter', description: '@buildflow - Cập nhật & hỗ trợ' },
+            { icon: '❓', name: 'FAQ', description: 'Xem câu hỏi thường gặp trước khi liên hệ' },
           ],
         },
         order: 1,
@@ -408,10 +450,12 @@ async function main() {
       {
         type: 'cta',
         content: {
-          heading: 'Bắt đầx hành trình của bạn',
+          heading: 'Bắt đầu hành trình của bạn',
           description: 'Tạo landing page đầu tiên miễn phí hôm nay',
-          buttonText: 'Đăng ký miễn phí',
-          buttonLink: '/register',
+          buttonText: 'Xem templates',
+          buttonLink: '/templates',
+          secondaryButtonText: 'Xem bảng giá',
+          secondaryButtonLink: '/pricing',
         },
         order: 2,
         pageId: pageContact.id,
@@ -424,13 +468,13 @@ async function main() {
   console.log('✅ Seeding completed!');
   console.log('');
   console.log('Pages created:');
-  console.log('  1. Home (/home) - Giới thiệu BuildFlow');
-  console.log('  2. Templates (/templates) - Thư viện mẫu');
-  console.log('  3. Pricing (/pricing) - Bảng giá');
-  console.log('  4. FAQ (/faq) - Câu hỏi thường gặp');
-  console.log('  5. Contact (/contact) - Liên hệ');
+  console.log('  1. Home (/home) - Giới thiệu BuildFlow — hero, features, stats, testimonials, cta');
+  console.log('  2. Templates (/templates) - Thư viện mẫu — hero, features, stats, cta');
+  console.log('  3. Pricing (/pricing) - Bảng giá — hero, pricing, testimonials, cta');
+  console.log('  4. FAQ (/faq) - Câu hỏi thường gặp — hero, faq, cta');
+  console.log('  5. Contact (/contact) - Liên hệ — hero, features, cta');
   console.log('');
-  console.log('All pages have SEO: metaTitle, metaDescription, ogImageUrl, keywords, canonicalUrl');
+  console.log('Every page: SEO fields + globalStyle (brand default) + sections linked với order 0..n');
 }
 
 main()
