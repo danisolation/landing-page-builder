@@ -141,13 +141,15 @@
   text-wrap: balance;
 }
 
-/* Scroll-reveal — content is visible by default; animations only run when
-   JS is available (html.js) and the user allows motion. Prevents the
-   "blank page" for no-JS visitors and respects prefers-reduced-motion. */
-html:not(.js) .reveal {
-  opacity: 1 !important;
-  transform: none !important;
-  transition: none !important;
+/* Scroll-reveal — content hides via inline styles only when JS runs.
+   Without JS, @media (scripting: none) forces it visible, so no-JS
+   visitors always see the full page. */
+@media (scripting: none) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

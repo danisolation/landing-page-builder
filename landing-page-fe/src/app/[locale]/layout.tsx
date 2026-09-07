@@ -3,6 +3,7 @@ import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { Toaster } from "sonner";
+import Script from "next/script";
 import { Inter, Poppins, Playfair_Display, Roboto } from "next/font/google";
 import { routing } from "@/i18n/routing";
 import AppLayout from "@/components/layout/AppLayout";
@@ -55,12 +56,6 @@ export default async function LocaleLayout({
       className={`${inter.variable} ${roboto.variable} ${poppins.variable} ${playfair.variable}`}
     >
       <body>
-        {/* Gate for scroll-reveal animations — content stays visible without JS */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: "document.documentElement.classList.add('js')",
-          }}
-        />
         <QueryProvider>
           <NextIntlClientProvider messages={messages}>
             <AppLayout>{children}</AppLayout>
