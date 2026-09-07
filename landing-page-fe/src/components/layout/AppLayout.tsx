@@ -30,8 +30,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
-  // Fullscreen editor mode — hide app sidebar, remove content constraints
+  // Fullscreen editor mode — the editor owns its entire chrome (single
+  // toolbar), so skip the admin header/sidebar entirely.
   const isEditorPage = /^\/pages\/[^/]+\/edit/.test(pathWithoutLocale);
+
+  if (isEditorPage) {
+    return <>{children}</>;
+  }
 
   const navItems = [
     { href: '/dashboard', label: t('nav.dashboard'), icon: Icons.dashboard },
@@ -43,22 +48,22 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-background border-b border-border shadow-[0_1px_3px_0_rgba(0,0,0,0.04)]">
         <div className="flex items-center justify-between h-full px-4 lg:px-6">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
-              className="p-2 -ml-2 hover:bg-accent rounded-lg transition-colors lg:hidden"
+              className="p-2 -ml-2 hover:bg-accent rounded-lg transition-colors shrink-0 lg:hidden"
               aria-label={tAria('toggleSidebar')}
             >
               {Icons.menu}
             </button>
-            <Link href="/dashboard" className="flex items-center gap-2">
-              <span className="text-lg lg:text-xl font-bold text-foreground tracking-tight">
+            <Link href="/dashboard" className="flex items-center gap-2 min-w-0">
+              <span className="text-lg lg:text-xl font-bold text-foreground tracking-tight truncate">
                 {t('common.appName')}
               </span>
             </Link>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 shrink-0">
             <span className="text-sm text-muted-foreground hidden sm:inline">{t('common.admin')}</span>
             <Button variant="outline" size="sm" onClick={logout} className="gap-2 min-w-[100px]">
               {Icons.logout}
@@ -78,10 +83,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           />
         )}
 
-        {/* Sidebar — hidden in fullscreen editor mode */}
+        {/* Sidebar */}
         <aside
           className={`fixed top-16 bottom-0 left-0 z-40 bg-card border-r border-border overflow-hidden transition-all duration-300 ease-in-out
-            w-0 ${isEditorPage ? '' : 'lg:w-64'}
+            w-0 lg:w-64
             ${mobileSidebarOpen ? '!w-64 z-50' : ''}
           `}
         >
@@ -112,14 +117,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         </aside>
 
         {/* Main Content */}
-        <main className={`flex-1 transition-sidebar ${isEditorPage ? '' : 'lg:ml-64'}`}>
-          {isEditorPage ? (
-            children
-          ) : (
-            <div className="p-4 lg:p-8 max-w-7xl mx-auto">
-              {children}
-            </div>
-          )}
+        <main className={`flex-1 transition-sidebar lg:ml-64`}>
+          <div className="p-4 lg:p-8 max-w-7xl mx-auto">
+            {children}
+          </div>
         </main>
       </div>
     </div>

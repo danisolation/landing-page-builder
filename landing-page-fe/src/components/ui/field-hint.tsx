@@ -1,48 +1,57 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useId, useRef, useState } from 'react';
 
 export interface FieldHintProps {
   text: string;
 }
 
+/**
+ * Help hint that works on hover, focus AND tap (mobile) — the tooltip
+ * wraps instead of clipping off-screen.
+ */
 export default function FieldHint({ text }: FieldHintProps) {
   const [show, setShow] = useState(false);
-  const [pos, setPos] = useState({ x: 0, y: 0 });
-  const ref = useRef<HTMLSpanElement>(null);
+  const id = useId();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleEnter = () => {
-    if (ref.current) {
-      const rect = ref.current.getBoundingClientRect();
-      setPos({
-        x: rect.left + rect.width / 2,
-        y: rect.top - 8,
-      });
-    }
+  const showHint = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
     setShow(true);
   };
 
+  const hideHint = () => {
+    timerRef.current = setTimeout(() => setShow(false), 120);
+  };
+
   return (
-    <>
-      <span
-        ref={ref}
-        className="inline-flex items-center ml-1.5 cursor-help"
-        onMouseEnter={handleEnter}
-        onMouseLeave={() => setShow(false)}
+    <span className="relative inline-flex items-center ml-1.5">
+      <button
+        type="button"
+        className="flex items-center justify-center w-5 h-5 rounded-full bg-muted text-muted-foreground text-[10px] font-bold select-none hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors cursor-help"
+        aria-label={text}
+        aria-describedby={show ? id : undefined}
+        onMouseEnter={showHint}
+        onMouseLeave={hideHint}
+        onFocus={showHint}
+        onBlur={hideHint}
+        onClick={(e) => {
+          e.preventDefault();
+          setShow((s) => !s);
+        }}
       >
-        <span className="flex items-center justify-center w-4 h-4 rounded-full bg-muted text-muted-foreground text-[10px] font-bold select-none hover:bg-muted/80 transition-colors">
-          ?
-        </span>
-      </span>
+        ?
+      </button>
       {show && (
-        <div
-          className="fixed z-[9999] px-3 py-2 text-xs text-popover-foreground bg-popover border border-border rounded-lg shadow-lg whitespace-nowrap pointer-events-none -translate-x-full -translate-y-full"
-          style={{ left: pos.x, top: pos.y }}
+        <span
+          id={id}
+          role="tooltip"
+          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-[9999] w-max max-w-[240px] px-3 py-2 text-xs text-popover-foreground bg-popover border border-border rounded-lg shadow-lg text-left normal-case"
         >
           {text}
           <span className="absolute top-full left-1/2 -translate-x-1/2 -mt-px border-4 border-transparent border-t-border" />
-        </div>
+        </span>
       )}
-    </>
+    </span>
   );
 }

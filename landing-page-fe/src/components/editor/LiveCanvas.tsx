@@ -1,14 +1,24 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useEditorState } from "./hooks/useEditorState";
 import SectionBlock from "./SectionBlock";
 import AddSectionDropZone from "./AddSectionDropZone";
 import EditableSection from "./EditableSection";
+import DragOverlay from "@/components/sections/DragOverlay";
 import PublicFooter from "@/components/public/PublicFooter";
-import type { Section } from "@/types";
+import { fontStacks, pageStyleVars } from "@/lib/global-style";
+import type { Section, SectionContent } from "@/types";
 
 type ViewMode = "desktop" | "tablet" | "mobile";
+
+interface DragOverlayData {
+  sectionId: string;
+  sectionType: Section["type"];
+  sectionContent: SectionContent;
+  sectionOrder: number;
+}
 
 interface LiveCanvasProps {
   viewMode: ViewMode;
@@ -17,10 +27,21 @@ interface LiveCanvasProps {
 export default function LiveCanvas({ viewMode }: LiveCanvasProps) {
   const t = useTranslations("editor");
   const { state } = useEditorState();
+  const [dragOverlay, setDragOverlay] = useState<DragOverlayData | null>(null);
+
+  const handleDragOverlayChange = (data: DragOverlayData | null) => {
+    setDragOverlay(data);
+  };
 
   const renderSection = (section: Section, index: number) => {
     return (
-      <SectionBlock key={section.id} section={section} index={index} viewMode={viewMode}>
+      <SectionBlock
+        key={section.id}
+        section={section}
+        index={index}
+        viewMode={viewMode}
+        onDragOverlayChange={handleDragOverlayChange}
+      >
         <EditableSection section={section} />
       </SectionBlock>
     );
@@ -28,7 +49,14 @@ export default function LiveCanvas({ viewMode }: LiveCanvasProps) {
 
   return (
     <div className="flex-1 overflow-auto bg-muted/30 p-4">
-      <div className="min-h-full bg-background rounded-lg shadow-sm overflow-hidden">
+      {/* Apply the page's global style (StylePanel) to the whole canvas */}
+      <div
+        className="min-h-full bg-background rounded-lg shadow-sm"
+        style={{
+          fontFamily: fontStacks[state.globalStyle.fontFamily] ?? undefined,
+          ...pageStyleVars(state.globalStyle),
+        }}
+      >
         {state.sections.length === 0 ? (
           <div className="flex flex-col items-center justify-center min-h-[60vh] text-muted-foreground">
             <div className="text-6xl mb-4">📄</div>
@@ -49,6 +77,9 @@ export default function LiveCanvas({ viewMode }: LiveCanvasProps) {
           </>
         )}
       </div>
+
+      {/* Floating drag overlay */}
+      {dragOverlay && <DragOverlay data={dragOverlay} />}
     </div>
   );
 }

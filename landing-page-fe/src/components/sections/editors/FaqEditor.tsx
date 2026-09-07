@@ -40,24 +40,27 @@ export default function FaqEditor({ content, onChange }: FaqEditorProps) {
       {/* Section Header */}
       <div className="space-y-3">
         <div className="space-y-2">
-          <Label>{t("subtitle")}</Label>
+          <Label htmlFor="faq-subtitle">{t("subtitle")}</Label>
           <Input
+            id="faq-subtitle"
             value={content.subtitle || ""}
             onChange={(e) => updateField("subtitle", e.target.value)}
             placeholder={t("subtitlePlaceholder")}
           />
         </div>
         <div className="space-y-2">
-          <Label>{t("title")}</Label>
+          <Label htmlFor="faq-title">{t("title")}</Label>
           <Input
+            id="faq-title"
             value={content.title || ""}
             onChange={(e) => updateField("title", e.target.value)}
             placeholder={t("titlePlaceholder")}
           />
         </div>
         <div className="space-y-2">
-          <Label>{t("description")}</Label>
+          <Label htmlFor="faq-description">{t("description")}</Label>
           <Textarea
+            id="faq-description"
             value={content.description || ""}
             onChange={(e) => updateField("description", e.target.value)}
             rows={2}
@@ -90,8 +93,9 @@ export default function FaqEditor({ content, onChange }: FaqEditorProps) {
             </div>
 
             <div className="space-y-2">
-              <Label>{t("question")}</Label>
+              <Label htmlFor={`faq-question-${index}`}>{t("question")}</Label>
               <Input
+                id={`faq-question-${index}`}
                 value={item.question}
                 onChange={(e) => updateItem(index, "question", e.target.value)}
                 placeholder={t("questionPlaceholder")}
@@ -99,8 +103,9 @@ export default function FaqEditor({ content, onChange }: FaqEditorProps) {
             </div>
 
             <div className="space-y-2">
-              <Label>{t("answer")}</Label>
+              <Label htmlFor={`faq-answer-${index}`}>{t("answer")}</Label>
               <Textarea
+                id={`faq-answer-${index}`}
                 value={item.answer}
                 onChange={(e) => updateItem(index, "answer", e.target.value)}
                 rows={3}

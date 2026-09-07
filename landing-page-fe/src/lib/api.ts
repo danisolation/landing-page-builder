@@ -41,12 +41,17 @@ async function fetchAPI<T>(
   });
 
   if (!res.ok) {
-    // 401 → token hết hạn, redirect về login
+    // 401 → token hết hạn, redirect về login (đúng locale hiện tại)
     if (res.status === 401 && typeof window !== "undefined") {
       localStorage.removeItem("token");
       document.cookie = "token=; path=/; max-age=0";
-      window.location.href = "/vi/login";
-      throw new Error("Phiên đăng nhập đã hết hạn");
+      const locale = window.location.pathname.split("/")[1] || "vi";
+      window.location.href = `/${locale}/login`;
+      throw new Error(
+        locale === "en"
+          ? "Your session has expired. Please log in again."
+          : "Phiên đăng nhập đã hết hạn",
+      );
     }
 
     // Handle non-JSON error responses (e.g. 502 from proxy)
@@ -62,6 +67,43 @@ async function fetchAPI<T>(
 
   const json: ApiResponse<T> = await res.json();
   return json.data;
+}
+
+// Media upload (multipart) — returns the public URL of the stored image
+export async function uploadMedia(file: File): Promise<{ url: string }> {
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+  const body = new FormData();
+  body.append("file", file);
+
+  const res = await fetch(`${API_URL}/media`, {
+    method: "POST",
+    ...(token ? { headers: { Authorization: `Bearer ${token}` } } : {}),
+    body,
+  });
+
+  if (!res.ok) {
+    let errorMessage = "Upload failed";
+    try {
+      const error = await res.json();
+      errorMessage = error.message || errorMessage;
+    } catch {
+      errorMessage = `HTTP ${res.status}: ${res.statusText}`;
+    }
+    throw new Error(errorMessage);
+  }
+
+  const json: ApiResponse<{ url: string }> = await res.json();
+  return json.data;
+}
+
+// Fire-and-forget view counter for published pages
+export function incrementPageView(pageId: string): void {
+  if (typeof window === "undefined") return;
+  fetch(`${API_URL}/pages/${pageId}/view`, { method: "POST" }).catch(() => {
+    // View counting must never break the page
+  });
 }
 
 // Auth

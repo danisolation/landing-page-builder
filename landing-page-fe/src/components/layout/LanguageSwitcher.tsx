@@ -20,6 +20,7 @@ export default function LanguageSwitcher() {
         size="sm"
         onClick={() => switchLocale('vi')}
         className="h-8 px-2 text-xs"
+        aria-pressed={locale === 'vi'}
       >
         VI
       </Button>
@@ -28,6 +29,7 @@ export default function LanguageSwitcher() {
         size="sm"
         onClick={() => switchLocale('en')}
         className="h-8 px-2 text-xs"
+        aria-pressed={locale === 'en'}
       >
         EN
       </Button>

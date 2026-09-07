@@ -4,6 +4,7 @@ import {
   IsOptional,
   IsBoolean,
   IsArray,
+  IsObject,
   ArrayMaxSize,
   ValidateNested,
   MaxLength,
@@ -53,6 +54,11 @@ export class CreatePageDto {
   @IsBoolean()
   @IsOptional()
   isPublished?: boolean;
+
+  // Editor global styles (StylePanel) — persisted as-is, FE defines the shape
+  @IsObject()
+  @IsOptional()
+  globalStyle?: Record<string, unknown>;
 
   // Sections khởi tạo cùng page (dùng cho tạo page từ template) — tùy chọn
   @IsOptional()

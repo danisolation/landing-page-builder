@@ -52,11 +52,21 @@ export default function EditableSection({ section }: EditableSectionProps) {
     );
   }
 
+  // In the canvas, links are content — clicking a CTA must never jump the
+  // page (href="#") or navigate the editor away (external URLs).
+  const handleAnchorClick = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest("a")) {
+      e.preventDefault();
+    }
+  };
+
   return (
-    <SectionComponent
-      content={localContent}
-      isEditing={true}
-      onContentChange={handleContentChange}
-    />
+    <div onClickCapture={handleAnchorClick}>
+      <SectionComponent
+        content={localContent}
+        isEditing={true}
+        onContentChange={handleContentChange}
+      />
+    </div>
   );
 }

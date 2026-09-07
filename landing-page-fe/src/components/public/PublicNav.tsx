@@ -50,8 +50,8 @@ export default function PublicNav({ pageTitle }: PublicNavProps) {
           : 'bg-transparent'
       } ${hidden ? '-translate-y-full' : 'translate-y-0'}`}
     >
-      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-        <span className={`font-bold text-lg transition-colors ${
+      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
+        <span className={`font-bold text-lg min-w-0 truncate transition-colors ${
           scrolled ? 'text-foreground' : 'text-white'
         }`}>
           {pageTitle}

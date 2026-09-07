@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
@@ -25,6 +25,18 @@ interface SelectedTemplate {
   sections: TemplateSectionDef[];
 }
 
+// "Sản phẩm Mới 2026!" → "san-pham-moi-2026" (diacritics stripped, đ→d)
+function slugify(input: string): string {
+  return input
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "D")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export default function NewPagePage() {
   const t = useTranslations("newPage");
   const tValidation = useTranslations("validation");
@@ -35,6 +47,8 @@ export default function NewPagePage() {
     sections: [],
   });
   const [seoOpen, setSeoOpen] = useState(false);
+  // Auto-generate the slug from the title until the user edits it manually
+  const [slugTouched, setSlugTouched] = useState(false);
 
   const tSeo = useTranslations("editPage");
 
@@ -60,6 +74,7 @@ export default function NewPagePage() {
     handleSubmit,
     watch,
     control,
+    setValue,
     formState: { errors },
   } = useForm<NewPageFormData>({
     resolver: zodResolver(newPageSchema),
@@ -75,6 +90,12 @@ export default function NewPagePage() {
   });
 
   const slugValue = watch("slug");
+  const titleValue = watch("title");
+
+  useEffect(() => {
+    if (slugTouched) return;
+    setValue("slug", slugify(titleValue || ""));
+  }, [titleValue, slugTouched, setValue]);
 
   const onSubmit = (data: NewPageFormData) => {
     const hasSections = template.sections.length > 0;
@@ -137,7 +158,7 @@ export default function NewPagePage() {
                 </div>
                 <Input
                   id="slug"
-                  {...register("slug")}
+                  {...register("slug", { onChange: () => setSlugTouched(true) })}
                   placeholder="san-pham-moi"
                 />
                 {errors.slug && (

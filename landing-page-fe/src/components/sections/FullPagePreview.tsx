@@ -9,7 +9,8 @@ import { sectionComponents } from '@/lib/section-components';
 import PublicFooter from "@/components/public/PublicFooter";
 import AnimatedSection from "@/components/public/AnimatedSection";
 import { Button } from "@/components/ui/button";
-import type { Section } from "@/types";
+import { fontStacks, pageStyleVars } from "@/lib/global-style";
+import type { PageGlobalStyle, Section } from "@/types";
 
 export interface FullPagePreviewProps {
   page: {
@@ -17,6 +18,7 @@ export interface FullPagePreviewProps {
     slug: string;
     sections?: Section[];
   };
+  globalStyle?: PageGlobalStyle;
   isOpen: boolean;
   onClose: () => void;
   showOpenLink?: boolean;
@@ -24,6 +26,7 @@ export interface FullPagePreviewProps {
 
 export default function FullPagePreview({
   page,
+  globalStyle,
   isOpen,
   onClose,
   showOpenLink = true,
@@ -86,11 +89,11 @@ export default function FullPagePreview({
             className="absolute inset-4 md:inset-6 lg:inset-10 bg-background rounded-2xl shadow-2xl overflow-hidden flex flex-col outline-none"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between px-6 py-3 border-b border-border bg-card shrink-0 z-30">
-              <div className="flex items-center gap-3">
-                <h2 className="font-semibold text-foreground">{page.title}</h2>
+            <div className="flex items-center justify-between px-6 py-3 border-b border-border bg-card shrink-0 z-30 min-w-0">
+              <div className="flex items-center gap-3 min-w-0">
+                <h2 className="font-semibold text-foreground truncate">{page.title}</h2>
                 {showOpenLink && (
-                  <span className="text-xs text-muted-foreground font-mono bg-muted px-2 py-0.5 rounded">
+                  <span className="hidden sm:inline text-xs text-muted-foreground font-mono bg-muted px-2 py-0.5 rounded truncate max-w-[160px]">
                     /{page.slug}
                   </span>
                 )}
@@ -118,7 +121,16 @@ export default function FullPagePreview({
               </div>
             </div>
 
-            <div className="flex-1 overflow-auto min-h-full bg-background scroll-smooth">
+            <div
+              className="flex-1 overflow-auto min-h-full bg-background scroll-smooth"
+              style={{
+                fontFamily:
+                  globalStyle?.fontFamily
+                    ? fontStacks[globalStyle.fontFamily]
+                    : undefined,
+                ...pageStyleVars(globalStyle),
+              }}
+            >
               {sortedSections.length === 0 ? (
                 <div className="flex items-center justify-center h-full text-muted-foreground">
                   <p>{t("noSections")}</p>

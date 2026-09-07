@@ -12,23 +12,8 @@ import {
 } from "@/components/ui/dialog";
 import { useEditorState } from "./hooks/useEditorState";
 import { sectionTypes } from "@/components/sections/section-constants";
+import { sectionIcons } from "@/lib/section-icons";
 import type { SectionType } from "@/types";
-
-const sectionIcons: Record<SectionType, string> = {
-  hero: "🏠",
-  features: "✨",
-  stats: "📊",
-  testimonials: "💬",
-  cta: "🎯",
-  pricing: "💰",
-  faq: "❓",
-  logoCloud: "🏢",
-  team: "👥",
-  gallery: "🖼️",
-  contact: "📧",
-  compare: "⚖️",
-  banner: "📢",
-};
 
 interface AddSectionDropZoneProps {
   index: number;
@@ -36,6 +21,7 @@ interface AddSectionDropZoneProps {
 
 export default function AddSectionDropZone({ index }: AddSectionDropZoneProps) {
   const t = useTranslations("editor");
+  const tTypes = useTranslations("sectionTypes");
   const { addSection } = useEditorState();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -58,21 +44,24 @@ export default function AddSectionDropZone({ index }: AddSectionDropZoneProps) {
           <Plus size={16} className="mr-2" />
           {t("addSection")}
         </Button>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>{t("chooseSectionType")}</DialogTitle>
           </DialogHeader>
           <div className="grid grid-cols-3 gap-3 pt-4">
-            {sectionTypes.map((type) => (
-              <button
-                key={type}
-                onClick={() => handleAddSection(type)}
-                className="flex flex-col items-center p-3 border rounded-lg hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-950/50 transition-colors"
-              >
-                <span className="text-xl mb-1">{sectionIcons[type]}</span>
-                <span className="text-xs font-medium capitalize">{type}</span>
-              </button>
-            ))}
+            {sectionTypes.map((type) => {
+              const Icon = sectionIcons[type];
+              return (
+                <button
+                  key={type}
+                  onClick={() => handleAddSection(type)}
+                  className="flex flex-col items-center p-3 border rounded-lg hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-950/50 transition-colors"
+                >
+                  <Icon size={20} className="mb-1.5 text-(--lp-primary)" aria-hidden="true" />
+                  <span className="text-xs font-medium text-center">{tTypes(type)}</span>
+                </button>
+              );
+            })}
           </div>
         </DialogContent>
       </Dialog>

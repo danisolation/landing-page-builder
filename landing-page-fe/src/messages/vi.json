@@ -13,7 +13,9 @@
     "appName": "Landing Page Builder",
     "close": "Đóng",
     "draft": "Nháp",
-    "published": "Đã xuất bản"
+    "published": "Đã xuất bản",
+    "upload": "Tải ảnh",
+    "uploading": "Đang tải lên..."
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -35,7 +37,9 @@
     "deleteConfirmTitle": "Xóa page?",
     "deleteConfirmMsg": "Bạn có chắc muốn xóa \"{title}\"? Hành động này không thể hoàn tác.",
     "cardView": "Hiển thị dạng thẻ",
-    "tableView": "Hiển thị dạng bảng"
+    "tableView": "Hiển thị dạng bảng",
+    "duplicateSuccess": "Đã nhân bản page!",
+    "duplicateFailed": "Nhân bản page thất bại"
   },
   "login": {
     "title": "Đăng nhập",
@@ -64,7 +68,12 @@
     "slugLabel": "Slug",
     "statusLabel": "Trạng thái",
     "sectionsLabel": "Sections",
-    "dateLabel": "Ngày tạo"
+    "dateLabel": "Ngày tạo",
+    "view": "Xem trang live",
+    "copyLink": "Copy link",
+    "copySuccess": "Đã copy link!",
+    "copyFailed": "Không thể copy link",
+    "duplicate": "Nhân bản page"
   },
   "searchFilter": {
     "searchPlaceholder": "Tìm kiếm pages...",
@@ -81,7 +90,8 @@
     "totalPages": "Tổng pages",
     "published": "Đã xuất bản",
     "draft": "Nháp",
-    "totalSections": "Tổng sections"
+    "totalSections": "Tổng sections",
+    "totalViews": "Tổng lượt xem"
   },
   "newPage": {
     "title": "Tạo page mới",
@@ -143,7 +153,9 @@
     "pageSettings": "Cài đặt trang",
     "publishFailed": "Xuất bản thất bại",
     "published": "Đã xuất bản!",
-    "unpublished": "Đã gỡ xuất bản"
+    "unpublished": "Đã gỡ xuất bản",
+    "keywordsLabel": "Từ khóa",
+    "canonicalUrlLabel": "Canonical URL"
   },
   "sectionList": {
     "title": "Sections",
@@ -288,7 +300,10 @@
     "title": "Đã xảy ra lỗi",
     "message": "Không thể tải dữ liệu. Vui lòng thử lại.",
     "loginMessage": "Không thể đăng nhập. Vui lòng thử lại.",
-    "retry": "Thử lại"
+    "retry": "Thử lại",
+    "notFoundTitle": "Không tìm thấy trang",
+    "notFoundDesc": "Trang bạn tìm không tồn tại hoặc đã bị xóa.",
+    "backHome": "Về trang chủ"
   },
   "fullPagePreview": {
     "openInNewTab": "Mở trong tab mới",
@@ -409,7 +424,10 @@
     "styleComingSoon": "Giao diện tổng sắp ra mắt",
     "styleComingSoonHint": "Hiện tại, hãy chỉnh từng section trong panel bên phải.",
     "backToSections": "Quay lại",
-    "dragToReorder": "Kéo để sắp xếp"
+    "dragToReorder": "Kéo để sắp xếp",
+    "pageSettings": "Cài đặt trang",
+    "deleteSectionTitle": "Xóa section?",
+    "deleteSectionMsg": "Section này sẽ bị xóa khỏi page. Bạn có thể hoàn tác ngay sau đó, trước khi thay đổi tiếp theo được lưu."
   },
   "pricingEditor": {
     "subtitle": "Phụ đề",

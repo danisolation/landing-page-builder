@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import FieldHint from '@/components/ui/field-hint';
+import ImageUploadField from '@/components/ui/image-upload-field';
 import type { TestimonialsContent } from '@/types';
 
 export interface TestimonialsEditorProps {
@@ -43,10 +44,11 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
     <div className="space-y-4">
       <div className="space-y-2">
         <div className="flex items-center">
-          <Label>{t('subtitle')}</Label>
+          <Label htmlFor="testimonials-subtitle">{t('subtitle')}</Label>
           <FieldHint text={t('subtitleHint')} />
         </div>
         <Input
+          id="testimonials-subtitle"
           value={content.subtitle || ''}
           onChange={(e) => handleFieldChange('subtitle', e.target.value)}
           placeholder={t('subtitlePlaceholder')}
@@ -55,10 +57,11 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
 
       <div className="space-y-2">
         <div className="flex items-center">
-          <Label>{t('sectionTitle')}</Label>
+          <Label htmlFor="testimonials-sectionTitle">{t('sectionTitle')}</Label>
           <FieldHint text={t('titleHint')} />
         </div>
         <Input
+          id="testimonials-sectionTitle"
           value={content.title || ''}
           onChange={(e) => handleFieldChange('title', e.target.value)}
           placeholder={t('titlePlaceholder')}
@@ -67,10 +70,11 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
 
       <div className="space-y-2">
         <div className="flex items-center">
-          <Label>{t('description')}</Label>
+          <Label htmlFor="testimonials-description">{t('description')}</Label>
           <FieldHint text={t('descriptionHint')} />
         </div>
         <Input
+          id="testimonials-description"
           value={content.description || ''}
           onChange={(e) => handleFieldChange('description', e.target.value)}
           placeholder={t('descriptionPlaceholder')}
@@ -102,10 +106,11 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
 
             <div className="space-y-2">
               <div className="flex items-center">
-                <Label>{t('quote')}</Label>
+                <Label htmlFor={`testimonials-quote-${index}`}>{t('quote')}</Label>
                 <FieldHint text={t('quoteHint')} />
               </div>
               <Textarea
+                id={`testimonials-quote-${index}`}
                 value={item.quote || ''}
                 onChange={(e) => handleItemChange(index, 'quote', e.target.value)}
                 placeholder={t('quotePlaceholder')}
@@ -116,10 +121,11 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
             <div className="grid grid-cols-1 gap-3">
               <div className="space-y-2">
                 <div className="flex items-center">
-                  <Label>{t('name')}</Label>
+                  <Label htmlFor={`testimonials-name-${index}`}>{t('name')}</Label>
                   <FieldHint text={t('nameHint')} />
                 </div>
                 <Input
+                  id={`testimonials-name-${index}`}
                   value={item.name || ''}
                   onChange={(e) => handleItemChange(index, 'name', e.target.value)}
                   placeholder={t('namePlaceholder')}
@@ -128,10 +134,11 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
 
               <div className="space-y-2">
                 <div className="flex items-center">
-                  <Label>{t('role')}</Label>
+                  <Label htmlFor={`testimonials-role-${index}`}>{t('role')}</Label>
                   <FieldHint text={t('roleHint')} />
                 </div>
                 <Input
+                  id={`testimonials-role-${index}`}
                   value={item.role || ''}
                   onChange={(e) => handleItemChange(index, 'role', e.target.value)}
                   placeholder={t('rolePlaceholder')}
@@ -140,13 +147,11 @@ export default function TestimonialsEditor({ content, onChange }: TestimonialsEd
             </div>
 
             <div className="space-y-2">
-              <div className="flex items-center">
-                <Label>{t('avatar')}</Label>
-                <FieldHint text={t('avatarHint')} />
-              </div>
-              <Input
+              <ImageUploadField
+                id={`testimonials-avatar-${index}`}
+                label={t('avatar')}
                 value={item.avatar || ''}
-                onChange={(e) => handleItemChange(index, 'avatar', e.target.value)}
+                onChange={(url) => handleItemChange(index, 'avatar', url)}
                 placeholder={t('avatarPlaceholder')}
               />
             </div>

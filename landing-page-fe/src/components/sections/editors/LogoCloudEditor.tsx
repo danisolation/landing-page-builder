@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import ImageUploadField from "@/components/ui/image-upload-field";
 import type { LogoCloudContent } from "@/types";
 
 interface LogoCloudEditorProps {
@@ -39,16 +40,18 @@ export default function LogoCloudEditor({ content, onChange }: LogoCloudEditorPr
       {/* Section Header */}
       <div className="space-y-3">
         <div className="space-y-2">
-          <Label>{t("subtitle")}</Label>
+          <Label htmlFor="logocloud-subtitle">{t("subtitle")}</Label>
           <Input
+            id="logocloud-subtitle"
             value={content.subtitle || ""}
             onChange={(e) => updateField("subtitle", e.target.value)}
             placeholder={t("subtitlePlaceholder")}
           />
         </div>
         <div className="space-y-2">
-          <Label>{t("title")}</Label>
+          <Label htmlFor="logocloud-title">{t("title")}</Label>
           <Input
+            id="logocloud-title"
             value={content.title || ""}
             onChange={(e) => updateField("title", e.target.value)}
             placeholder={t("titlePlaceholder")}
@@ -81,22 +84,22 @@ export default function LogoCloudEditor({ content, onChange }: LogoCloudEditorPr
             </div>
 
             <div className="space-y-2">
-              <Label>{t("name")}</Label>
+              <Label htmlFor={`logocloud-name-${index}`}>{t("name")}</Label>
               <Input
+                id={`logocloud-name-${index}`}
                 value={item.name}
                 onChange={(e) => updateItem(index, "name", e.target.value)}
                 placeholder={t("namePlaceholder")}
               />
             </div>
 
-            <div className="space-y-2">
-              <Label>{t("imageUrl")}</Label>
-              <Input
-                value={item.imageUrl || ""}
-                onChange={(e) => updateItem(index, "imageUrl", e.target.value)}
-                placeholder="https://example.com/logo.png"
-              />
-            </div>
+            <ImageUploadField
+              id={`logocloud-imageUrl-${index}`}
+              label={t("imageUrl")}
+              value={item.imageUrl || ""}
+              onChange={(url) => updateItem(index, "imageUrl", url)}
+              placeholder="https://example.com/logo.png"
+            />
           </div>
         ))}
       </div>

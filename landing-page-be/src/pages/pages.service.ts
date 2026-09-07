@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePageDto } from './dto/create-page.dto';
 import { UpdatePageDto } from './dto/update-page.dto';
@@ -11,11 +12,14 @@ export class PagesService {
 
   async create(dto: CreatePageDto) {
     this.logger.debug(`Creating page: ${dto.title}`);
-    const { sections, ...pageData } = dto;
+    const { sections, globalStyle, ...pageData } = dto;
     // Nested write — page + sections tạo trong cùng 1 query (atomic)
     const page = await this.prisma.page.create({
       data: {
         ...pageData,
+        ...(globalStyle
+          ? { globalStyle: globalStyle as Prisma.InputJsonValue }
+          : {}),
         ...(sections?.length
           ? {
               sections: {
@@ -62,9 +66,15 @@ export class PagesService {
     this.logger.debug(`Updating page: ${id}`);
     await this.findOne(id);
 
+    const { globalStyle, ...rest } = dto;
     const page = await this.prisma.page.update({
       where: { id },
-      data: dto,
+      data: {
+        ...rest,
+        ...(globalStyle !== undefined
+          ? { globalStyle: globalStyle as Prisma.InputJsonValue }
+          : {}),
+      },
     });
     this.logger.log(`Page updated: ${id}`);
     return page;
@@ -93,5 +103,14 @@ export class PagesService {
     }
 
     return page;
+  }
+
+  async incrementView(id: string) {
+    await this.prisma.page.update({
+      where: { id },
+      data: { viewCount: { increment: 1 } },
+      select: { id: true, viewCount: true },
+    });
+    return { ok: true };
   }
 }

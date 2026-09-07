@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import InlineTextEditor from "@/components/editor/InlineTextEditor";
 import { useInView } from "@/hooks/useInView";
 import { ChevronDown } from "lucide-react";
 
@@ -16,18 +17,20 @@ export interface FaqContent {
 
 export interface FaqSectionProps {
   content: FaqContent;
+  isEditing?: boolean;
+  onContentChange?: (content: FaqSectionProps['content']) => void;
 }
 
-export default function FaqSection({ content }: FaqSectionProps) {
+export default function FaqSection({ content, isEditing, onContentChange }: FaqSectionProps) {
   const { ref, isInView } = useInView();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="@container py-20 px-4" ref={ref}>
+    <section className="@container py-(--lp-spacing) px-4" ref={ref}>
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div
-          className="text-center mb-12"
+          className="reveal text-center mb-12"
           style={{
             opacity: isInView ? 1 : 0,
             transform: isInView ? "translateY(0)" : "translateY(20px)",
@@ -35,20 +38,34 @@ export default function FaqSection({ content }: FaqSectionProps) {
           }}
         >
           {content.subtitle && (
-            <p className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-2">
+            <p className="text-sm font-medium text-(--lp-primary) mb-2">
               {content.subtitle}
             </p>
           )}
           {content.title && (
-            <h2 className="text-2xl @2xl:text-3xl @3xl:text-4xl font-bold mb-4 break-words text-wrap-balance">{content.title}</h2>
+            <InlineTextEditor
+              tag="h2"
+              editing={isEditing}
+              value={content.title}
+              onChange={(v) => onContentChange?.({ ...content, title: v })}
+              placeholder="Section title"
+              className="text-2xl @2xl:text-3xl @3xl:text-4xl font-bold mb-4 break-words text-balance"
+            />
           )}
           {content.description && (
-            <p className="text-muted-foreground">{content.description}</p>
+            <InlineTextEditor
+              tag="p"
+              editing={isEditing}
+              value={content.description}
+              onChange={(v) => onContentChange?.({ ...content, description: v })}
+              placeholder="Description"
+              className="text-muted-foreground"
+            />
           )}
         </div>
 
         {/* FAQ Items */}
-        <div className="space-y-3">
+        <div className="reveal space-y-3">
           {content.items?.map((item, index) => (
             <div
               key={index}
@@ -66,7 +83,7 @@ export default function FaqSection({ content }: FaqSectionProps) {
                 aria-controls={`faq-answer-${index}`}
                 id={`faq-question-${index}`}
               >
-                <span className="font-medium pr-4">{item.question}</span>
+                <span className="font-medium pr-4 min-w-0 break-words">{item.question}</span>
                 <ChevronDown
                   size={20}
                   className={`shrink-0 transition-transform ${
@@ -79,10 +96,10 @@ export default function FaqSection({ content }: FaqSectionProps) {
                 role="region"
                 aria-labelledby={`faq-question-${index}`}
                 className={`overflow-hidden transition-all ${
-                  openIndex === index ? "max-h-96" : "max-h-0"
+                  openIndex === index ? "max-h-[60rem]" : "max-h-0"
                 }`}
               >
-                <p className="px-4 pb-4 text-muted-foreground">{item.answer}</p>
+                <p className="px-4 pb-4 text-muted-foreground break-words">{item.answer}</p>
               </div>
             </div>
           ))}

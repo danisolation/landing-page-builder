@@ -10,6 +10,11 @@ interface InlineTextEditorProps {
   className?: string;
   multiline?: boolean;
   tag?: "span" | "div" | "h1" | "h2" | "h3" | "h4" | "p";
+  /**
+   * false → renders the plain tag (public pages, previews).
+   * true → click-to-edit in the visual canvas.
+   */
+  editing?: boolean;
 }
 
 export default function InlineTextEditor({
@@ -19,6 +24,7 @@ export default function InlineTextEditor({
   className,
   multiline = false,
   tag = "span",
+  editing = false,
 }: InlineTextEditorProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(value);
@@ -61,23 +67,27 @@ export default function InlineTextEditor({
     setEditValue(e.target.value);
   };
 
+  if (!editing) {
+    const TagComponent = tag;
+    return <TagComponent className={className}>{value}</TagComponent>;
+  }
+
   if (isEditing) {
     const InputComponent = multiline ? "textarea" : "input";
 
     return (
       <InputComponent
-        ref={inputRef as any}
+        ref={inputRef as never}
         value={editValue}
         onChange={handleChange}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         className={cn(
-          "bg-transparent border-b-2 border-blue-500 outline-none focus:bg-blue-50/50 dark:focus:bg-blue-950/50 rounded px-1 -mx-1",
+          "bg-transparent border-b-2 border-blue-500 outline-none focus:bg-blue-50/50 dark:focus:bg-blue-950/50 rounded px-1 -mx-1 w-full",
           multiline && "resize-none min-h-[60px]",
           className
         )}
-        style={{ width: "100%" }}
       />
     );
   }

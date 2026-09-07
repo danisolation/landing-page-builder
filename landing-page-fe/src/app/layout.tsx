@@ -1,27 +1,12 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-import QueryProvider from "@/providers/QueryProvider";
 
-const inter = Inter({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "Landing Page Builder",
-  description: "Build landing pages easily",
-};
-
+// Pass-through root layout — <html> lives in [locale]/layout.tsx so `lang`
+// matches the active locale. All routes sit under [locale] (middleware
+// redirects bare `/` to the default locale).
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="vi">
-      <body className={inter.className}>
-        <QueryProvider>
-          {children}
-        </QueryProvider>
-      </body>
-    </html>
-  );
+  return children;
 }

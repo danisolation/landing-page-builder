@@ -23,6 +23,8 @@ model Page {
   keywords        String?  // SEO: <meta name="keywords"> (comma-separated)
   canonicalUrl    String?  // SEO: canonical URL override
   isPublished     Boolean  @default(false)
+  globalStyle     Json? // { primaryColor, fontFamily, sectionSpacing, contentWidth } — editor StylePanel
+  viewCount       Int      @default(0) // incremented on public page view
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 

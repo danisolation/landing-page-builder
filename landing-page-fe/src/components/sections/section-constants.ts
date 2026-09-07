@@ -95,37 +95,6 @@ export const defaultContent: Record<SectionType, SectionContent> = {
       { name: 'Umbrella' },
     ],
   } as LogoCloudContent,
-  team: {
-    subtitle: 'Team',
-    title: 'Meet our team',
-    description: '',
-    members: [],
-  },
-  gallery: {
-    subtitle: 'Gallery',
-    title: 'Our work',
-    description: '',
-    images: [],
-    columns: 3,
-  },
-  contact: {
-    subtitle: 'Contact',
-    title: 'Get in touch',
-    description: 'Have a question? Send us a message.',
-    fields: ['name', 'email', 'message'],
-    submitText: 'Send Message',
-  },
-  compare: {
-    title: 'Compare plans',
-    columns: ['Free', 'Pro', 'Enterprise'],
-    features: [],
-  },
-  banner: {
-    text: 'Announcement: New features available!',
-    link: '#',
-    linkText: 'Learn more',
-    dismissible: true,
-  },
 };
 
 export const implementedSectionTypes = [

@@ -33,6 +33,7 @@ type EditorAction =
   | { type: "REORDER_SECTIONS"; payload: { fromIndex: number; toIndex: number } }
   | { type: "DUPLICATE_SECTION"; payload: string }
   | { type: "UPDATE_GLOBAL_STYLE"; payload: Partial<GlobalStyle> }
+  | { type: "SET_GLOBAL_STYLE"; payload: Partial<GlobalStyle> }
   | { type: "UNDO" }
   | { type: "REDO" }
   | { type: "MARK_DIRTY" }
@@ -159,6 +160,13 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
         isDirty: true,
       };
 
+    // Hydrate from the saved page without marking the editor dirty
+    case "SET_GLOBAL_STYLE":
+      return {
+        ...state,
+        globalStyle: { ...state.globalStyle, ...action.payload },
+      };
+
     case "UNDO": {
       if (state.past.length === 0) return state;
       const previous = state.past[state.past.length - 1];
@@ -189,7 +197,9 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
       return { ...state, isDirty: true };
 
     case "MARK_CLEAN":
-      return { ...state, isDirty: false, past: [], future: [] };
+      // Keep undo/redo history — clearing it on save would make Cmd+Z
+      // silently dead after every autosave.
+      return { ...state, isDirty: false };
 
     case "SET_SAVING":
       return { ...state, isSaving: action.payload };
@@ -212,6 +222,7 @@ interface EditorContextType {
   reorderSections: (fromIndex: number, toIndex: number) => void;
   duplicateSection: (id: string) => void;
   updateGlobalStyle: (style: Partial<GlobalStyle>) => void;
+  setGlobalStyle: (style: Partial<GlobalStyle>) => void;
   undo: () => void;
   redo: () => void;
   canUndo: boolean;
@@ -255,6 +266,10 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "UPDATE_GLOBAL_STYLE", payload: style });
   }, []);
 
+  const setGlobalStyle = useCallback((style: Partial<GlobalStyle>) => {
+    dispatch({ type: "SET_GLOBAL_STYLE", payload: style });
+  }, []);
+
   const undo = useCallback(() => dispatch({ type: "UNDO" }), []);
   const redo = useCallback(() => dispatch({ type: "REDO" }), []);
 
@@ -271,6 +286,7 @@ export function EditorProvider({ children }: { children: ReactNode }) {
         reorderSections,
         duplicateSection,
         updateGlobalStyle,
+        setGlobalStyle,
         undo,
         redo,
         canUndo: state.past.length > 0,

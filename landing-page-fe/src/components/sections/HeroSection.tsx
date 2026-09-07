@@ -1,5 +1,6 @@
 'use client';
 
+import InlineTextEditor from '@/components/editor/InlineTextEditor';
 import { useInView } from '@/hooks/useInView';
 
 export interface HeroSectionProps {
@@ -11,15 +12,20 @@ export interface HeroSectionProps {
     secondaryButtonText?: string;
     secondaryButtonLink?: string;
   };
+  isEditing?: boolean;
+  onContentChange?: (content: HeroSectionProps['content']) => void;
 }
 
-export default function HeroSection({ content }: HeroSectionProps) {
+export default function HeroSection({ content, isEditing, onContentChange }: HeroSectionProps) {
   const { ref: titleRef, isInView: titleVisible } = useInView();
   const { ref: subRef, isInView: subVisible } = useInView();
   const { ref: btnRef, isInView: btnVisible } = useInView();
 
+  const change = (patch: Partial<HeroSectionProps['content']>) =>
+    onContentChange?.({ ...content, ...patch });
+
   return (
-    <section className="@container relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-pink-500 dark:from-blue-900 dark:via-purple-900 dark:to-pink-900">
+    <section className="@container relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-(--lp-primary) via-purple-600 to-pink-500 dark:from-blue-900 dark:via-purple-900 dark:to-pink-900">
       {/* Animated gradient orbs */}
       <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-400/20 rounded-full blur-[100px] animate-[float_8s_ease-in-out_infinite]" />
       <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-400/20 rounded-full blur-[100px] animate-[float_10s_ease-in-out_infinite_2s]" />
@@ -39,45 +45,63 @@ export default function HeroSection({ content }: HeroSectionProps) {
       <div className="relative z-10 text-center px-4 max-w-5xl mx-auto pt-16">
         <div
           ref={titleRef}
+          className="reveal"
           style={{
             opacity: titleVisible ? 1 : 0,
             transform: titleVisible ? 'translateY(0)' : 'translateY(20px)',
             transition: 'opacity 0.8s ease-out, transform 0.8s ease-out',
           }}
         >
-          <h1 className="text-4xl @2xl:text-5xl @3xl:text-7xl font-bold text-white mb-6 leading-[1.1] tracking-tight break-words text-wrap-balance">
-            {content.heading || 'Welcome'}
-          </h1>
+          <InlineTextEditor
+            tag="h1"
+            editing={isEditing}
+            value={content.heading || 'Welcome'}
+            onChange={(v) => change({ heading: v })}
+            placeholder="Heading"
+            className="text-4xl @2xl:text-5xl @3xl:text-7xl font-bold text-white mb-6 leading-[1.1] tracking-tight break-words text-balance"
+          />
         </div>
 
         <div
           ref={subRef}
+          className="reveal"
           style={{
             opacity: subVisible ? 1 : 0,
             transform: subVisible ? 'translateY(0)' : 'translateY(20px)',
             transition: 'opacity 0.8s ease-out 0.15s, transform 0.8s ease-out 0.15s',
           }}
         >
-          <p className="text-base @2xl:text-lg @3xl:text-xl text-blue-50 mb-8 @2xl:mb-10 max-w-2xl mx-auto leading-relaxed">
-            {content.subheading}
-          </p>
+          <InlineTextEditor
+            tag="p"
+            editing={isEditing}
+            value={content.subheading || ''}
+            onChange={(v) => change({ subheading: v })}
+            placeholder="Subheading"
+            multiline
+            className="text-base @2xl:text-lg @3xl:text-xl text-blue-50 mb-8 @2xl:mb-10 max-w-2xl mx-auto leading-relaxed"
+          />
         </div>
 
         <div
           ref={btnRef}
+          className="reveal flex flex-col @2xl:flex-row gap-3 @2xl:gap-4 justify-center"
           style={{
             opacity: btnVisible ? 1 : 0,
             transform: btnVisible ? 'translateY(0)' : 'translateY(20px)',
             transition: 'opacity 0.8s ease-out 0.3s, transform 0.8s ease-out 0.3s',
           }}
-          className="flex flex-col @2xl:flex-row gap-3 @2xl:gap-4 justify-center"
         >
           {content.buttonText && (
             <a
               href={content.buttonLink || '#'}
               className="inline-flex items-center justify-center bg-white dark:bg-gray-900 text-blue-600 dark:text-blue-400 px-6 py-3 @2xl:px-8 @2xl:py-4 rounded-full font-semibold text-base @2xl:text-lg hover:scale-105 hover:shadow-2xl transition-all duration-300 shadow-lg min-w-0 max-w-full"
             >
-              {content.buttonText}
+              <InlineTextEditor
+                editing={isEditing}
+                value={content.buttonText}
+                onChange={(v) => change({ buttonText: v })}
+                placeholder="Button text"
+              />
             </a>
           )}
           {content.secondaryButtonText && (
@@ -85,7 +109,12 @@ export default function HeroSection({ content }: HeroSectionProps) {
               href={content.secondaryButtonLink || '#'}
               className="inline-flex items-center justify-center border-2 border-white/30 text-white px-6 py-3 @2xl:px-8 @2xl:py-4 rounded-full font-semibold text-base @2xl:text-lg hover:bg-white/10 hover:border-white/50 transition-all duration-300 min-w-0 max-w-full"
             >
-              {content.secondaryButtonText}
+              <InlineTextEditor
+                editing={isEditing}
+                value={content.secondaryButtonText}
+                onChange={(v) => change({ secondaryButtonText: v })}
+                placeholder="Button text"
+              />
             </a>
           )}
         </div>

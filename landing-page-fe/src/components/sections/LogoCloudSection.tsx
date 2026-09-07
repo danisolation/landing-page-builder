@@ -1,6 +1,7 @@
-"use client";
+'use client';
 
-import { useInView } from "@/hooks/useInView";
+import InlineTextEditor from '@/components/editor/InlineTextEditor';
+import { useInView } from '@/hooks/useInView';
 
 export interface LogoCloudContent {
   subtitle?: string;
@@ -14,17 +15,25 @@ export interface LogoCloudContent {
 
 export interface LogoCloudSectionProps {
   content: LogoCloudContent;
+  isEditing?: boolean;
+  onContentChange?: (content: LogoCloudSectionProps['content']) => void;
 }
 
-export default function LogoCloudSection({ content }: LogoCloudSectionProps) {
+export default function LogoCloudSection({ content, isEditing, onContentChange }: LogoCloudSectionProps) {
   const { ref, isInView } = useInView();
 
+  const updateItem = (index: number, patch: Partial<LogoCloudContent['items'][number]>) =>
+    onContentChange?.({
+      ...content,
+      items: (content.items || []).map((it, i) => (i === index ? { ...it, ...patch } : it)),
+    });
+
   return (
-    <section className="@container py-16 px-4 bg-muted/30" ref={ref}>
+    <section className="@container py-(--lp-spacing) px-4 bg-muted/30" ref={ref}>
       <div className="max-w-5xl mx-auto text-center">
         {/* Header */}
         <div
-          className="mb-10"
+          className="reveal mb-10"
           style={{
             opacity: isInView ? 1 : 0,
             transform: isInView ? "translateY(0)" : "translateY(20px)",
@@ -32,17 +41,22 @@ export default function LogoCloudSection({ content }: LogoCloudSectionProps) {
           }}
         >
           {content.subtitle && (
-            <p className="text-sm font-medium text-blue-600 dark:text-blue-400 mb-2">
+            <p className="text-sm font-medium text-(--lp-primary) mb-2">
               {content.subtitle}
             </p>
           )}
-          {content.title && (
-            <h2 className="text-2xl @3xl:text-3xl font-bold">{content.title}</h2>
-          )}
+          <InlineTextEditor
+            tag="h2"
+            editing={isEditing}
+            value={content.title || ''}
+            onChange={(v) => onContentChange?.({ ...content, title: v })}
+            placeholder="Section title"
+            className="text-2xl @3xl:text-3xl font-bold break-words text-balance"
+          />
         </div>
 
         {/* Logos */}
-        <div className="flex flex-wrap items-center justify-center gap-8 @3xl:gap-12">
+        <div className="reveal flex flex-wrap items-center justify-center gap-8 @3xl:gap-12">
           {content.items?.map((item, index) => (
             <div
               key={index}
@@ -60,9 +74,13 @@ export default function LogoCloudSection({ content }: LogoCloudSectionProps) {
                   className="h-8 @3xl:h-10 w-auto object-contain"
                 />
               ) : (
-                <span className="text-lg @3xl:text-xl font-semibold text-muted-foreground">
-                  {item.name}
-                </span>
+                <InlineTextEditor
+                  editing={isEditing}
+                  value={item.name || ''}
+                  onChange={(v) => updateItem(index, { name: v })}
+                  placeholder="Logo name"
+                  className="text-lg @3xl:text-xl font-semibold text-muted-foreground"
+                />
               )}
             </div>
           ))}

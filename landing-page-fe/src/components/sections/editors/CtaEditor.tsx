@@ -25,10 +25,11 @@ export default function CtaEditor({ content, onChange }: CtaEditorProps) {
     <div className="space-y-4">
       <div className="space-y-2">
         <div className="flex items-center">
-          <Label>{t('heading')}</Label>
+          <Label htmlFor="cta-heading">{t('heading')}</Label>
           <FieldHint text={t('headingHint')} />
         </div>
         <Input
+          id="cta-heading"
           value={content.heading || ''}
           onChange={(e) => handleChange('heading', e.target.value)}
           placeholder={t('headingPlaceholder')}
@@ -37,10 +38,11 @@ export default function CtaEditor({ content, onChange }: CtaEditorProps) {
 
       <div className="space-y-2">
         <div className="flex items-center">
-          <Label>{t('description')}</Label>
+          <Label htmlFor="cta-description">{t('description')}</Label>
           <FieldHint text={t('descriptionHint')} />
         </div>
         <Input
+          id="cta-description"
           value={content.description || ''}
           onChange={(e) => handleChange('description', e.target.value)}
           placeholder={t('descriptionPlaceholder')}
@@ -50,10 +52,11 @@ export default function CtaEditor({ content, onChange }: CtaEditorProps) {
       <div className="grid grid-cols-1 gap-4">
         <div className="space-y-2">
           <div className="flex items-center">
-            <Label>{t('buttonText')}</Label>
+            <Label htmlFor="cta-buttonText">{t('buttonText')}</Label>
             <FieldHint text={t('buttonTextHint')} />
           </div>
           <Input
+            id="cta-buttonText"
             value={content.buttonText || ''}
             onChange={(e) => handleChange('buttonText', e.target.value)}
             placeholder={t('buttonPlaceholder')}
@@ -62,10 +65,11 @@ export default function CtaEditor({ content, onChange }: CtaEditorProps) {
 
         <div className="space-y-2">
           <div className="flex items-center">
-            <Label>{t('buttonLink')}</Label>
+            <Label htmlFor="cta-buttonLink">{t('buttonLink')}</Label>
             <FieldHint text={t('buttonLinkHint')} />
           </div>
           <Input
+            id="cta-buttonLink"
             value={content.buttonLink || ''}
             onChange={(e) => handleChange('buttonLink', e.target.value)}
             placeholder={t('buttonLinkPlaceholder')}
@@ -76,10 +80,11 @@ export default function CtaEditor({ content, onChange }: CtaEditorProps) {
       <div className="grid grid-cols-1 gap-4">
         <div className="space-y-2">
           <div className="flex items-center">
-            <Label>{t('secondaryButtonText')}</Label>
+            <Label htmlFor="cta-secondaryButtonText">{t('secondaryButtonText')}</Label>
             <FieldHint text={t('secondaryButtonTextHint')} />
           </div>
           <Input
+            id="cta-secondaryButtonText"
             value={content.secondaryButtonText || ''}
             onChange={(e) => handleChange('secondaryButtonText', e.target.value)}
             placeholder={t('secondaryButtonPlaceholder')}
@@ -88,10 +93,11 @@ export default function CtaEditor({ content, onChange }: CtaEditorProps) {
 
         <div className="space-y-2">
           <div className="flex items-center">
-            <Label>{t('secondaryButtonLink')}</Label>
+            <Label htmlFor="cta-secondaryButtonLink">{t('secondaryButtonLink')}</Label>
             <FieldHint text={t('secondaryButtonLinkHint')} />
           </div>
           <Input
+            id="cta-secondaryButtonLink"
             value={content.secondaryButtonLink || ''}
             onChange={(e) => handleChange('secondaryButtonLink', e.target.value)}
             placeholder={t('secondaryButtonLinkPlaceholder')}

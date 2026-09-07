@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsBoolean, MaxLength } from 'class-validator';
+import { IsString, IsOptional, IsBoolean, MaxLength, IsObject } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdatePageDto {
@@ -52,4 +52,10 @@ export class UpdatePageDto {
   @IsBoolean()
   @IsOptional()
   isPublished?: boolean;
+
+  // Editor global styles (StylePanel) — persisted as-is, FE defines the shape
+  @ApiProperty({ required: false })
+  @IsObject()
+  @IsOptional()
+  globalStyle?: Record<string, unknown>;
 }

@@ -4,11 +4,15 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { EditorProvider, useEditorState } from "./hooks/useEditorState";
 import EditorToolbar from "./EditorToolbar";
 import EditorSidebar from "./EditorSidebar";
 import LiveCanvas from "./LiveCanvas";
 import { createSection, updateSection, deleteSection } from "@/lib/api";
+import { usePages } from "@/hooks/usePages";
+import { defaultGlobalStyle } from "@/lib/global-style";
+import type { GlobalStyle } from "./hooks/useEditorState";
 import type { Page, Section } from "@/types";
 
 type ViewMode = "desktop" | "tablet" | "mobile";
@@ -16,34 +20,44 @@ type ViewMode = "desktop" | "tablet" | "mobile";
 interface VisualEditorProps {
   page: Page;
   onPublish: (isPublished: boolean) => Promise<void>;
+  isPublishing?: boolean;
+  onOpenSettings: () => void;
+  onOpenPreview: () => void;
 }
 
-function VisualEditorContent({ page, onPublish }: VisualEditorProps) {
+function VisualEditorContent({
+  page,
+  onPublish,
+  isPublishing,
+  onOpenSettings,
+  onOpenPreview,
+}: VisualEditorProps) {
   const t = useTranslations("editor");
   const router = useRouter();
-  const { state, setSections, dispatch } = useEditorState();
+  const { state, setSections, dispatch, setGlobalStyle } = useEditorState();
 
   const [viewMode, setViewMode] = useState<ViewMode>("desktop");
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
-
-  // Initialize sections from page
-  useEffect(() => {
-    if (page.sections) {
-      setSections(page.sections);
-    }
-  }, [page.sections, setSections]);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.innerWidth < 1024;
+  });
+  // Re-run the debounce chain after a failed save
+  const [retryTick, setRetryTick] = useState(0);
 
   const pageId = page.id;
   const baselineRef = useRef<Section[]>([]);
+  const styleBaselineRef = useRef<string>(
+    JSON.stringify({ ...defaultGlobalStyle, ...page.globalStyle }),
+  );
 
-  // Initialize baseline for comparison
+  // Initialize sections + global style from the saved page
   useEffect(() => {
     if (page.sections) {
       baselineRef.current = page.sections;
       setSections(page.sections);
     }
-  }, [page.sections, setSections]);
+    setGlobalStyle({ ...defaultGlobalStyle, ...page.globalStyle });
+  }, [page.sections, page.globalStyle, setSections, setGlobalStyle]);
 
   // Sync sections to backend via sections API
   const syncSections = useCallback(
@@ -96,6 +110,18 @@ function VisualEditorContent({ page, onPublish }: VisualEditorProps) {
     [pageId, setSections]
   );
 
+  // Persist StylePanel changes to the Page itself
+  const { updatePageAsync } = usePages();
+  const syncGlobalStyle = useCallback(
+    async (style: GlobalStyle) => {
+      const serialized = JSON.stringify(style);
+      if (serialized === styleBaselineRef.current) return;
+      await updatePageAsync({ id: pageId, data: { globalStyle: style } });
+      styleBaselineRef.current = serialized;
+    },
+    [pageId, updatePageAsync]
+  );
+
   const handleAutoSave = useCallback(async () => {
     if (!state.isDirty || state.isSaving) return;
 
@@ -103,32 +129,50 @@ function VisualEditorContent({ page, onPublish }: VisualEditorProps) {
 
     try {
       await syncSections(state.sections);
+      await syncGlobalStyle(state.globalStyle);
       dispatch({ type: "MARK_CLEAN" });
     } catch (error) {
       console.error("Auto-save failed:", error);
+      // Surface the failure — silent data loss is unacceptable
+      toast.error(t("saveFailed"));
+      // Schedule a retry through the debounce effect
+      setRetryTick((tick) => tick + 1);
     } finally {
       dispatch({ type: "SET_SAVING", payload: false });
     }
-  }, [state.sections, state.isDirty, state.isSaving, dispatch, syncSections]);
+  }, [state.sections, state.globalStyle, state.isDirty, state.isSaving, dispatch, syncSections, syncGlobalStyle, t]);
 
   // Auto-save with debounce
   useEffect(() => {
-    if (!state.isDirty) return;
+    if (!state.isDirty || state.isSaving) return;
 
     const timer = setTimeout(() => {
       handleAutoSave();
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, [handleAutoSave]);
+  }, [handleAutoSave, state.isDirty, state.isSaving, retryTick]);
+
+  // Warn before leaving with unsaved changes (refresh/close)
+  useEffect(() => {
+    if (!state.isDirty) return;
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [state.isDirty]);
 
   const handleSave = async () => {
     dispatch({ type: "SET_SAVING", payload: true });
     try {
       await syncSections(state.sections);
+      await syncGlobalStyle(state.globalStyle);
       dispatch({ type: "MARK_CLEAN" });
       toast.success(t("saveSuccess"));
     } catch (error) {
+      console.error("Save failed:", error);
       toast.error(t("saveFailed"));
     } finally {
       dispatch({ type: "SET_SAVING", payload: false });
@@ -139,39 +183,56 @@ function VisualEditorContent({ page, onPublish }: VisualEditorProps) {
     try {
       await onPublish(!page.isPublished);
       toast.success(page.isPublished ? t("unpublished") : t("published"));
-    } catch (error) {
+    } catch {
       toast.error(t("publishFailed"));
     }
   };
 
-  const handlePreview = () => {
-    window.open(`/${page.slug}`, "_blank");
-  };
-
-  // Keyboard shortcuts
+  // Drag-and-drop reorder monitor — sections drag via the handle on each
+  // SectionBlock; drop target index determines the new position.
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "s") {
-        e.preventDefault();
-        handleSave();
-      }
-    };
+    return monitorForElements({
+      canMonitor: ({ source }) =>
+        (source.data as Record<string, unknown>)?.type === "section-card",
+      onDrop: ({ source, location }) => {
+        const dropTarget = location.current.dropTargets[0];
+        if (!dropTarget) return;
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleSave]);
+        const startIndex = (source.data as Record<string, unknown>)?.index as number;
+        const finishIndex = (dropTarget.data as Record<string, unknown>)?.index as number;
+        if (startIndex === undefined || finishIndex === undefined) return;
+        if (startIndex === finishIndex) return;
+
+        dispatch({
+          type: "REORDER_SECTIONS",
+          payload: { fromIndex: startIndex, toIndex: finishIndex },
+        });
+      },
+    });
+  }, [state.sections, dispatch]);
 
   return (
     <div className="h-screen flex flex-col">
       <EditorToolbar
         viewMode={viewMode}
         onViewModeChange={setViewMode}
-        onPreview={handlePreview}
+        onPreview={onOpenPreview}
         onSave={handleSave}
         onPublish={handlePublish}
+        isPublishing={isPublishing}
         isPublished={page.isPublished}
+        pageTitle={page.title}
+        onBack={() => router.push("/pages")}
+        onOpenSettings={onOpenSettings}
       />
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden relative">
+        {/* Backdrop for the mobile overlay sidebar */}
+        {!sidebarCollapsed && (
+          <div
+            className="fixed inset-0 bg-black/40 z-30 lg:hidden"
+            onClick={() => setSidebarCollapsed(true)}
+          />
+        )}
         <EditorSidebar
           collapsed={sidebarCollapsed}
           onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}

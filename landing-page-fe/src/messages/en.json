@@ -13,7 +13,9 @@
     "appName": "Landing Page Builder",
     "close": "Close",
     "draft": "Draft",
-    "published": "Published"
+    "published": "Published",
+    "upload": "Upload",
+    "uploading": "Uploading..."
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -35,7 +37,9 @@
     "deleteConfirmTitle": "Delete page?",
     "deleteConfirmMsg": "Are you sure you want to delete \"{title}\"? This action cannot be undone.",
     "cardView": "Card view",
-    "tableView": "Table view"
+    "tableView": "Table view",
+    "duplicateSuccess": "Page duplicated!",
+    "duplicateFailed": "Failed to duplicate page"
   },
   "login": {
     "title": "Login",
@@ -64,7 +68,12 @@
     "slugLabel": "Slug",
     "statusLabel": "Status",
     "sectionsLabel": "Sections",
-    "dateLabel": "Created"
+    "dateLabel": "Created",
+    "view": "View live page",
+    "copyLink": "Copy link",
+    "copySuccess": "Link copied!",
+    "copyFailed": "Could not copy link",
+    "duplicate": "Duplicate page"
   },
   "searchFilter": {
     "searchPlaceholder": "Search pages...",
@@ -81,7 +90,8 @@
     "totalPages": "Total Pages",
     "published": "Published",
     "draft": "Drafts",
-    "totalSections": "Total Sections"
+    "totalSections": "Total Sections",
+    "totalViews": "Total views"
   },
   "newPage": {
     "title": "Create New Page",
@@ -143,7 +153,9 @@
     "pageSettings": "Page Settings",
     "publishFailed": "Failed to publish",
     "published": "Published!",
-    "unpublished": "Unpublished"
+    "unpublished": "Unpublished",
+    "keywordsLabel": "Keywords",
+    "canonicalUrlLabel": "Canonical URL"
   },
   "sectionList": {
     "title": "Sections",
@@ -288,7 +300,10 @@
     "title": "Something went wrong",
     "message": "Could not load data. Please try again.",
     "loginMessage": "Could not login. Please try again.",
-    "retry": "Try again"
+    "retry": "Try again",
+    "notFoundTitle": "Page not found",
+    "notFoundDesc": "The page you are looking for does not exist or has been removed.",
+    "backHome": "Go to homepage"
   },
   "fullPagePreview": {
     "openInNewTab": "Open in new tab",
@@ -409,7 +424,10 @@
     "styleComingSoon": "Global styles coming soon",
     "styleComingSoonHint": "For now, edit styles per section in the editor panel on the right.",
     "backToSections": "Back",
-    "dragToReorder": "Drag to reorder"
+    "dragToReorder": "Drag to reorder",
+    "pageSettings": "Page settings",
+    "deleteSectionTitle": "Delete section?",
+    "deleteSectionMsg": "This section will be removed from the page. You can undo right after, until the next change is saved."
   },
   "pricingEditor": {
     "subtitle": "Subtitle",

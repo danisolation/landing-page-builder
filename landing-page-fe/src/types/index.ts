@@ -10,9 +10,19 @@ export interface Page {
   keywords?: string;
   canonicalUrl?: string;
   isPublished: boolean;
+  globalStyle?: PageGlobalStyle;
+  viewCount?: number;
   createdAt: string;
   updatedAt: string;
   sections?: Section[];
+}
+
+// Editor global styles (StylePanel) — persisted on Page, applied via CSS vars
+export interface PageGlobalStyle {
+  primaryColor?: string;
+  fontFamily?: string;
+  sectionSpacing?: number;
+  contentWidth?: number;
 }
 
 export interface CreatePageInput {
@@ -38,6 +48,7 @@ export interface UpdatePageInput {
   keywords?: string;
   canonicalUrl?: string;
   isPublished?: boolean;
+  globalStyle?: PageGlobalStyle;
 }
 
 export interface PageFilters {
@@ -47,7 +58,7 @@ export interface PageFilters {
   sortOrder?: "asc" | "desc";
 }
 
-// Section types
+// Section types — only types with a real renderer + editor (no fake entries)
 export type SectionType =
   | "hero"
   | "features"
@@ -56,12 +67,7 @@ export type SectionType =
   | "testimonials"
   | "pricing"
   | "faq"
-  | "logoCloud"
-  | "team"
-  | "gallery"
-  | "contact"
-  | "compare"
-  | "banner";
+  | "logoCloud";
 
 export interface Section {
   id: string;
@@ -185,60 +191,6 @@ export interface LogoCloudContent {
   items: LogoItem[];
 }
 
-export interface TeamMember {
-  name: string;
-  role?: string;
-  avatar?: string;
-  bio?: string;
-}
-
-export interface TeamContent {
-  subtitle?: string;
-  title?: string;
-  description?: string;
-  members: TeamMember[];
-}
-
-export interface GalleryImage {
-  url: string;
-  alt?: string;
-  caption?: string;
-}
-
-export interface GalleryContent {
-  subtitle?: string;
-  title?: string;
-  description?: string;
-  images: GalleryImage[];
-  columns?: number;
-}
-
-export interface ContactContent {
-  subtitle?: string;
-  title?: string;
-  description?: string;
-  fields?: string[];
-  submitText?: string;
-}
-
-export interface CompareFeature {
-  name: string;
-  values: string[];
-}
-
-export interface CompareContent {
-  title?: string;
-  columns: string[];
-  features: CompareFeature[];
-}
-
-export interface BannerContent {
-  text: string;
-  link?: string;
-  linkText?: string;
-  dismissible?: boolean;
-}
-
 export type SectionContent =
   | HeroContent
   | FeaturesContent
@@ -247,12 +199,7 @@ export type SectionContent =
   | TestimonialsContent
   | PricingContent
   | FaqContent
-  | LogoCloudContent
-  | TeamContent
-  | GalleryContent
-  | ContactContent
-  | CompareContent
-  | BannerContent;
+  | LogoCloudContent;
 
 // Template types
 export interface TemplateSectionDef {

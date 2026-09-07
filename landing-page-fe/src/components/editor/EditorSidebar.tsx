@@ -31,8 +31,8 @@ export default function EditorSidebar({ collapsed, onToggle }: EditorSidebarProp
 
   if (collapsed) {
     return (
-      <div className="w-14 border-r bg-background flex flex-col items-center py-4 gap-2">
-        <Button variant="ghost" size="icon" onClick={onToggle}>
+      <div className="w-14 shrink-0 border-r bg-background flex flex-col items-center py-4 gap-2">
+        <Button variant="ghost" size="icon" onClick={onToggle} aria-label={t("sections")}>
           <ChevronRight size={18} />
         </Button>
         <div className="w-8 h-px bg-border my-2" />
@@ -44,6 +44,7 @@ export default function EditorSidebar({ collapsed, onToggle }: EditorSidebarProp
             onToggle();
           }}
           title={t("sections")}
+          aria-label={t("sections")}
         >
           <Layers size={18} />
         </Button>
@@ -55,6 +56,7 @@ export default function EditorSidebar({ collapsed, onToggle }: EditorSidebarProp
             onToggle();
           }}
           title={t("style")}
+          aria-label={t("style")}
         >
           <Settings size={18} />
         </Button>
@@ -63,7 +65,7 @@ export default function EditorSidebar({ collapsed, onToggle }: EditorSidebarProp
   }
 
   return (
-    <div className="w-72 border-r bg-background flex flex-col">
+    <div className="w-72 shrink-0 border-r bg-background flex flex-col max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:z-40 max-lg:shadow-xl">
       {/* Header */}
       <div className="h-14 border-b flex items-center justify-between px-4">
         <div className="flex items-center gap-1">

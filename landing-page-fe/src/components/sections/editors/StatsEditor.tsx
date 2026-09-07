@@ -42,10 +42,11 @@ export default function StatsEditor({ content, onChange }: StatsEditorProps) {
     <div className="space-y-4">
       <div className="space-y-2">
         <div className="flex items-center">
-          <Label>{t('sectionTitle')}</Label>
+          <Label htmlFor="stats-sectionTitle">{t('sectionTitle')}</Label>
           <FieldHint text={t('titleHint')} />
         </div>
         <Input
+          id="stats-sectionTitle"
           value={content.title || ''}
           onChange={(e) => handleTitleChange(e.target.value)}
           placeholder={t('titlePlaceholder')}
@@ -78,10 +79,11 @@ export default function StatsEditor({ content, onChange }: StatsEditorProps) {
             <div className="grid grid-cols-1 gap-3">
               <div className="space-y-2">
                 <div className="flex items-center">
-                  <Label>{t('value')}</Label>
+                  <Label htmlFor={`stats-value-${index}`}>{t('value')}</Label>
                   <FieldHint text={t('valueHint')} />
                 </div>
                 <Input
+                  id={`stats-value-${index}`}
                   type="number"
                   value={item.value || ''}
                   onChange={(e) => handleItemChange(index, 'value', parseInt(e.target.value) || 0)}
@@ -91,10 +93,11 @@ export default function StatsEditor({ content, onChange }: StatsEditorProps) {
 
               <div className="space-y-2">
                 <div className="flex items-center">
-                  <Label>{t('suffix')}</Label>
+                  <Label htmlFor={`stats-suffix-${index}`}>{t('suffix')}</Label>
                   <FieldHint text={t('suffixHint')} />
                 </div>
                 <Input
+                  id={`stats-suffix-${index}`}
                   value={item.suffix || ''}
                   onChange={(e) => handleItemChange(index, 'suffix', e.target.value)}
                   placeholder="+"
@@ -103,10 +106,11 @@ export default function StatsEditor({ content, onChange }: StatsEditorProps) {
 
               <div className="space-y-2">
                 <div className="flex items-center">
-                  <Label>{t('label')}</Label>
+                  <Label htmlFor={`stats-label-${index}`}>{t('label')}</Label>
                   <FieldHint text={t('labelHint')} />
                 </div>
                 <Input
+                  id={`stats-label-${index}`}
                   value={item.label || ''}
                   onChange={(e) => handleItemChange(index, 'label', e.target.value)}
                   placeholder={t('labelPlaceholder')}

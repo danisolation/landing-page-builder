@@ -71,6 +71,7 @@ export function usePages() {
     createPage: createMutation.mutate,
     isCreating: createMutation.isPending,
     updatePage: updateMutation.mutate,
+    updatePageAsync: updateMutation.mutateAsync,
     isUpdating: updateMutation.isPending,
     deletePage: deleteMutation.mutate,
     isDeleting: deleteMutation.isPending,

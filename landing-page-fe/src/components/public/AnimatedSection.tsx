@@ -15,7 +15,7 @@ export default function AnimatedSection({ children, className = '', delay = 0 }:
   return (
     <div
       ref={ref}
-      className={className}
+      className={`reveal ${className}`}
       style={{
         opacity: isInView ? 1 : 0,
         transform: isInView ? 'translateY(0)' : 'translateY(30px)',

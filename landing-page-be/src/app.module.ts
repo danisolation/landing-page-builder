@@ -10,6 +10,7 @@ import { SectionsModule } from './sections/sections.module';
 import { TemplatesModule } from './templates/templates.module';
 import { AuthModule } from './auth/auth.module';
 import { HealthModule } from './health/health.module';
+import { MediaModule } from './media/media.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { validate } from './config/env.validation';
 
@@ -31,6 +32,7 @@ import { validate } from './config/env.validation';
     TemplatesModule,
     AuthModule,
     HealthModule,
+    MediaModule,
   ],
   controllers: [AppController],
   providers: [

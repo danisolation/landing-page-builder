@@ -72,24 +72,27 @@ export default function PricingEditor({ content, onChange }: PricingEditorProps)
       {/* Section Header */}
       <div className="space-y-3">
         <div className="space-y-2">
-          <Label>{t("subtitle")}</Label>
+          <Label htmlFor="pricing-subtitle">{t("subtitle")}</Label>
           <Input
+            id="pricing-subtitle"
             value={content.subtitle || ""}
             onChange={(e) => updateField("subtitle", e.target.value)}
             placeholder={t("subtitlePlaceholder")}
           />
         </div>
         <div className="space-y-2">
-          <Label>{t("title")}</Label>
+          <Label htmlFor="pricing-title">{t("title")}</Label>
           <Input
+            id="pricing-title"
             value={content.title || ""}
             onChange={(e) => updateField("title", e.target.value)}
             placeholder={t("titlePlaceholder")}
           />
         </div>
         <div className="space-y-2">
-          <Label>{t("description")}</Label>
+          <Label htmlFor="pricing-description">{t("description")}</Label>
           <Textarea
+            id="pricing-description"
             value={content.description || ""}
             onChange={(e) => updateField("description", e.target.value)}
             rows={2}
@@ -123,15 +126,17 @@ export default function PricingEditor({ content, onChange }: PricingEditorProps)
 
             <div className="grid grid-cols-1 gap-3">
               <div className="space-y-2">
-                <Label>{t("planName")}</Label>
+                <Label htmlFor={`pricing-planName-${planIndex}`}>{t("planName")}</Label>
                 <Input
+                  id={`pricing-planName-${planIndex}`}
                   value={plan.name}
                   onChange={(e) => updatePlan(planIndex, "name", e.target.value)}
                 />
               </div>
               <div className="space-y-2">
-                <Label>{t("price")}</Label>
+                <Label htmlFor={`pricing-price-${planIndex}`}>{t("price")}</Label>
                 <Input
+                  id={`pricing-price-${planIndex}`}
                   value={plan.price}
                   onChange={(e) => updatePlan(planIndex, "price", e.target.value)}
                   placeholder="$29"
@@ -140,8 +145,9 @@ export default function PricingEditor({ content, onChange }: PricingEditorProps)
             </div>
 
             <div className="space-y-2">
-              <Label>{t("period")}</Label>
+              <Label htmlFor={`pricing-period-${planIndex}`}>{t("period")}</Label>
               <Input
+                id={`pricing-period-${planIndex}`}
                 value={plan.period || ""}
                 onChange={(e) => updatePlan(planIndex, "period", e.target.value)}
                 placeholder="month"

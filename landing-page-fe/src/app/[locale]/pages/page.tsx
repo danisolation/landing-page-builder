@@ -19,7 +19,7 @@ type ViewMode = 'card' | 'table';
 export default function PagesListPage() {
   const t = useTranslations('pages');
   const router = useRouter();
-  const { pages, isLoading, deletePage } = usePages();
+  const { pages, isLoading, deletePage, createPage } = usePages();
 
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('all');
@@ -86,6 +86,28 @@ export default function PagesListPage() {
         },
       });
     }
+  };
+
+  const handleDuplicate = (page: NonNullable<typeof pages>[number]) => {
+    const suffix = Math.random().toString(36).slice(2, 6);
+    createPage(
+      {
+        title: `${page.title} (copy)`,
+        slug: `${page.slug}-copy-${suffix}`.slice(0, 80),
+        description: page.description,
+        isPublished: false,
+        sections: (page.sections || []).map((s) => ({
+          type: s.type,
+          content: s.content,
+          order: s.order,
+        })),
+      },
+      {
+        onSuccess: () => toast.success(t('duplicateSuccess')),
+        onError: (error: Error) =>
+          toast.error(error.message || t('duplicateFailed')),
+      },
+    );
   };
 
   if (isLoading) {
@@ -177,11 +199,11 @@ export default function PagesListPage() {
       ) : viewMode === 'card' ? (
         <div className="grid gap-3">
           {filteredPages.map((page) => (
-            <PageCard key={page.id} page={page} onDelete={handleDelete} />
+            <PageCard key={page.id} page={page} onDelete={handleDelete} onDuplicate={handleDuplicate} />
           ))}
         </div>
       ) : (
-        <PageTable pages={filteredPages} onDelete={handleDelete} />
+        <PageTable pages={filteredPages} onDelete={handleDelete} onDuplicate={handleDuplicate} />
       )}
     </div>
   );

@@ -32,6 +32,12 @@ export class PagesController {
     return this.pagesService.findBySlug(slug);
   }
 
+  @Public() // Public — view counter fires from the published page
+  @Post(':id/view')
+  incrementView(@Param('id') id: string) {
+    return this.pagesService.incrementView(id);
+  }
+
   @Get(':id') // GET /pages/:id — requires auth
   findOne(@Param('id') id: string) {
     return this.pagesService.findOne(id);

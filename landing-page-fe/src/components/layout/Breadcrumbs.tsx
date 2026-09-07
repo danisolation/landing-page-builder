@@ -28,7 +28,7 @@ export default function Breadcrumbs({ pageTitle }: BreadcrumbsProps) {
   if (!crumbs) return null;
 
   return (
-    <nav className="flex items-center gap-1.5 text-sm text-muted-foreground mb-6" aria-label={tAria('breadcrumb')}>
+    <nav className="flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground mb-6" aria-label={tAria('breadcrumb')}>
       {crumbs.map((crumb, i) => {
         const isLast = i === crumbs.length - 1;
         return (

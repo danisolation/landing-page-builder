@@ -58,10 +58,11 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
     <div className="space-y-4">
       <div className="space-y-2">
         <div className="flex items-center">
-          <Label>{t('sectionTitle')}</Label>
+          <Label htmlFor="features-sectionTitle">{t('sectionTitle')}</Label>
           <FieldHint text={t('titleHint')} />
         </div>
         <Input
+          id="features-sectionTitle"
           value={content.title || ''}
           onChange={(e) => handleTitleChange(e.target.value)}
           placeholder={t('titlePlaceholder')}
@@ -94,10 +95,11 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
             <div className="grid grid-cols-1 gap-3">
               <div className="space-y-2">
                 <div className="flex items-center">
-                  <Label>{t('icon')}</Label>
+                  <Label htmlFor={`features-icon-${index}`}>{t('icon')}</Label>
                   <FieldHint text={t('iconHint')} />
                 </div>
                 <Input
+                  id={`features-icon-${index}`}
                   value={item.icon || ''}
                   onChange={(e) => handleItemChange(index, 'icon', e.target.value)}
                   placeholder="⚡"
@@ -106,10 +108,11 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
 
               <div className="space-y-2">
                 <div className="flex items-center">
-                  <Label>{t('name')}</Label>
+                  <Label htmlFor={`features-name-${index}`}>{t('name')}</Label>
                   <FieldHint text={t('nameHint')} />
                 </div>
                 <Input
+                  id={`features-name-${index}`}
                   value={item.name || ''}
                   onChange={(e) => handleItemChange(index, 'name', e.target.value)}
                   placeholder={t('namePlaceholder')}
@@ -118,10 +121,11 @@ export default function FeaturesEditor({ content, onChange }: FeaturesEditorProp
 
               <div className="space-y-2">
                 <div className="flex items-center">
-                  <Label>{t('description')}</Label>
+                  <Label htmlFor={`features-description-${index}`}>{t('description')}</Label>
                   <FieldHint text={t('descriptionHint')} />
                 </div>
                 <Input
+                  id={`features-description-${index}`}
                   value={item.description || ''}
                   onChange={(e) => handleItemChange(index, 'description', e.target.value)}
                   placeholder={t('descriptionPlaceholder')}

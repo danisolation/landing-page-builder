@@ -26,10 +26,11 @@ export default function HeroEditor({ content, onChange }: HeroEditorProps) {
     <div className="space-y-4">
       <div className="space-y-2">
         <div className="flex items-center">
-          <Label>{t('heading')}</Label>
+          <Label htmlFor="hero-heading">{t('heading')}</Label>
           <FieldHint text={t('headingHint')} />
         </div>
         <Input
+          id="hero-heading"
           value={content.heading || ''}
           onChange={(e) => handleChange('heading', e.target.value)}
           placeholder={t('headingPlaceholder')}
@@ -38,10 +39,11 @@ export default function HeroEditor({ content, onChange }: HeroEditorProps) {
 
       <div className="space-y-2">
         <div className="flex items-center">
-          <Label>{t('subheading')}</Label>
+          <Label htmlFor="hero-subheading">{t('subheading')}</Label>
           <FieldHint text={t('subheadingHint')} />
         </div>
         <Textarea
+          id="hero-subheading"
           value={content.subheading || ''}
           onChange={(e) => handleChange('subheading', e.target.value)}
           placeholder={t('subheadingPlaceholder')}
@@ -52,10 +54,11 @@ export default function HeroEditor({ content, onChange }: HeroEditorProps) {
       <div className="grid grid-cols-1 gap-4">
         <div className="space-y-2">
           <div className="flex items-center">
-            <Label>{t('buttonText')}</Label>
+            <Label htmlFor="hero-buttonText">{t('buttonText')}</Label>
             <FieldHint text={t('buttonTextHint')} />
           </div>
           <Input
+            id="hero-buttonText"
             value={content.buttonText || ''}
             onChange={(e) => handleChange('buttonText', e.target.value)}
             placeholder={t('buttonPlaceholder')}
@@ -64,10 +67,11 @@ export default function HeroEditor({ content, onChange }: HeroEditorProps) {
 
         <div className="space-y-2">
           <div className="flex items-center">
-            <Label>{t('buttonLink')}</Label>
+            <Label htmlFor="hero-buttonLink">{t('buttonLink')}</Label>
             <FieldHint text={t('buttonLinkHint')} />
           </div>
           <Input
+            id="hero-buttonLink"
             value={content.buttonLink || ''}
             onChange={(e) => handleChange('buttonLink', e.target.value)}
             placeholder={t('buttonLinkPlaceholder')}
@@ -78,10 +82,11 @@ export default function HeroEditor({ content, onChange }: HeroEditorProps) {
       <div className="grid grid-cols-1 gap-4">
         <div className="space-y-2">
           <div className="flex items-center">
-            <Label>{t('secondaryButtonText')}</Label>
+            <Label htmlFor="hero-secondaryButtonText">{t('secondaryButtonText')}</Label>
             <FieldHint text={t('secondaryButtonTextHint')} />
           </div>
           <Input
+            id="hero-secondaryButtonText"
             value={content.secondaryButtonText || ''}
             onChange={(e) => handleChange('secondaryButtonText', e.target.value)}
             placeholder={t('secondaryButtonPlaceholder')}
@@ -90,10 +95,11 @@ export default function HeroEditor({ content, onChange }: HeroEditorProps) {
 
         <div className="space-y-2">
           <div className="flex items-center">
-            <Label>{t('secondaryButtonLink')}</Label>
+            <Label htmlFor="hero-secondaryButtonLink">{t('secondaryButtonLink')}</Label>
             <FieldHint text={t('secondaryButtonLinkHint')} />
           </div>
           <Input
+            id="hero-secondaryButtonLink"
             value={content.secondaryButtonLink || ''}
             onChange={(e) => handleChange('secondaryButtonLink', e.target.value)}
             placeholder={t('secondaryButtonLinkPlaceholder')}
