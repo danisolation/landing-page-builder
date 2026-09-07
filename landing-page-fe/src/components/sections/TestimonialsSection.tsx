@@ -25,7 +25,7 @@ export default function TestimonialsSection({ content }: TestimonialsSectionProp
   const { ref: gridRef, isInView: gridVisible } = useInView();
 
   return (
-    <section className="py-16 sm:py-20 md:py-24 bg-muted">
+    <section className="@container py-16 @2xl:py-20 @3xl:py-24 bg-muted">
       <div className="max-w-6xl mx-auto px-4">
         {/* Section Header */}
         <div
@@ -42,7 +42,7 @@ export default function TestimonialsSection({ content }: TestimonialsSectionProp
               {content.subtitle}
             </p>
           )}
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-2xl @2xl:text-3xl @3xl:text-4xl font-bold text-foreground mb-4">
             {content.title || 'Testimonials'}
           </h2>
           {content.description && (
@@ -55,7 +55,7 @@ export default function TestimonialsSection({ content }: TestimonialsSectionProp
         {/* Testimonial Cards */}
         <div
           ref={gridRef}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          className="grid grid-cols-1 @3xl:grid-cols-3 gap-8"
           style={{
             opacity: gridVisible ? 1 : 0,
             transition: 'opacity 0.6s ease-out',

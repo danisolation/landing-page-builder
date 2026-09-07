@@ -27,7 +27,7 @@ export default function PricingSection({ content }: PricingSectionProps) {
   const { ref, isInView } = useInView();
 
   return (
-    <section className="py-20 px-4 bg-muted/30" ref={ref}>
+    <section className="@container py-20 px-4 bg-muted/30" ref={ref}>
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div
@@ -44,7 +44,7 @@ export default function PricingSection({ content }: PricingSectionProps) {
             </p>
           )}
           {content.title && (
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 break-words text-wrap-balance">{content.title}</h2>
+            <h2 className="text-2xl @2xl:text-3xl @3xl:text-4xl font-bold mb-4 break-words text-wrap-balance">{content.title}</h2>
           )}
           {content.description && (
             <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -54,7 +54,7 @@ export default function PricingSection({ content }: PricingSectionProps) {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 @3xl:grid-cols-3 gap-4 @2xl:gap-6">
           {content.plans?.map((plan, index) => (
             <div
               key={index}

@@ -18,7 +18,7 @@ export default function CtaSection({ content }: CtaSectionProps) {
   const { ref: btnRef, isInView: btnVisible } = useInView();
 
   return (
-    <section className="relative py-16 sm:py-20 md:py-24 overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-900 dark:via-indigo-900 dark:to-purple-900">
+    <section className="@container relative py-16 @2xl:py-20 @3xl:py-24 overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-900 dark:via-indigo-900 dark:to-purple-900">
       {/* Decorative orbs */}
       <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-blue-400/15 rounded-full blur-[100px]" />
       <div className="absolute bottom-0 right-1/4 w-[350px] h-[350px] bg-purple-400/15 rounded-full blur-[100px]" />
@@ -42,11 +42,11 @@ export default function CtaSection({ content }: CtaSectionProps) {
             transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
           }}
         >
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 break-words text-wrap-balance">
+          <h2 className="text-2xl @2xl:text-3xl @3xl:text-4xl font-bold text-white mb-4 break-words text-wrap-balance">
             {content.heading || 'Ready to get started?'}
           </h2>
           {content.description && (
-            <p className="text-blue-50 text-base sm:text-lg mb-6 sm:mb-8 max-w-xl mx-auto">
+            <p className="text-blue-50 text-base @2xl:text-lg mb-6 @2xl:mb-8 max-w-xl mx-auto">
               {content.description}
             </p>
           )}
@@ -59,12 +59,12 @@ export default function CtaSection({ content }: CtaSectionProps) {
             transform: btnVisible ? 'translateY(0)' : 'translateY(20px)',
             transition: 'opacity 0.6s ease-out 0.15s, transform 0.6s ease-out 0.15s',
           }}
-          className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center"
+          className="flex flex-col @2xl:flex-row gap-3 @2xl:gap-4 justify-center"
         >
           {content.buttonText && (
             <a
               href={content.buttonLink || '#'}
-              className="inline-flex items-center justify-center bg-white dark:bg-gray-900 text-indigo-600 dark:text-indigo-400 px-6 py-3 sm:px-8 sm:py-4 rounded-full font-semibold text-base sm:text-lg hover:scale-105 hover:shadow-2xl transition-all duration-300 shadow-lg min-w-0 max-w-full"
+              className="inline-flex items-center justify-center bg-white dark:bg-gray-900 text-indigo-600 dark:text-indigo-400 px-6 py-3 @2xl:px-8 @2xl:py-4 rounded-full font-semibold text-base @2xl:text-lg hover:scale-105 hover:shadow-2xl transition-all duration-300 shadow-lg min-w-0 max-w-full"
             >
               {content.buttonText}
             </a>
@@ -72,7 +72,7 @@ export default function CtaSection({ content }: CtaSectionProps) {
           {content.secondaryButtonText && (
             <a
               href={content.secondaryButtonLink || '#'}
-              className="inline-flex items-center justify-center border-2 border-white/30 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-full font-semibold text-base sm:text-lg hover:bg-white/10 hover:border-white/50 transition-all duration-300 min-w-0 max-w-full"
+              className="inline-flex items-center justify-center border-2 border-white/30 text-white px-6 py-3 @2xl:px-8 @2xl:py-4 rounded-full font-semibold text-base @2xl:text-lg hover:bg-white/10 hover:border-white/50 transition-all duration-300 min-w-0 max-w-full"
             >
               {content.secondaryButtonText}
             </a>

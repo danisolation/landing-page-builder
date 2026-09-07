@@ -20,7 +20,7 @@ export default function LogoCloudSection({ content }: LogoCloudSectionProps) {
   const { ref, isInView } = useInView();
 
   return (
-    <section className="py-16 px-4 bg-muted/30" ref={ref}>
+    <section className="@container py-16 px-4 bg-muted/30" ref={ref}>
       <div className="max-w-5xl mx-auto text-center">
         {/* Header */}
         <div
@@ -37,12 +37,12 @@ export default function LogoCloudSection({ content }: LogoCloudSectionProps) {
             </p>
           )}
           {content.title && (
-            <h2 className="text-2xl md:text-3xl font-bold">{content.title}</h2>
+            <h2 className="text-2xl @3xl:text-3xl font-bold">{content.title}</h2>
           )}
         </div>
 
         {/* Logos */}
-        <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+        <div className="flex flex-wrap items-center justify-center gap-8 @3xl:gap-12">
           {content.items?.map((item, index) => (
             <div
               key={index}
@@ -57,10 +57,10 @@ export default function LogoCloudSection({ content }: LogoCloudSectionProps) {
                 <img
                   src={item.imageUrl}
                   alt={item.name}
-                  className="h-8 md:h-10 w-auto object-contain"
+                  className="h-8 @3xl:h-10 w-auto object-contain"
                 />
               ) : (
-                <span className="text-lg md:text-xl font-semibold text-muted-foreground">
+                <span className="text-lg @3xl:text-xl font-semibold text-muted-foreground">
                   {item.name}
                 </span>
               )}

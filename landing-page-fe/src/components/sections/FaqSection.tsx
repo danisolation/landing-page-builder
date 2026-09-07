@@ -23,7 +23,7 @@ export default function FaqSection({ content }: FaqSectionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="py-20 px-4" ref={ref}>
+    <section className="@container py-20 px-4" ref={ref}>
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div
@@ -40,7 +40,7 @@ export default function FaqSection({ content }: FaqSectionProps) {
             </p>
           )}
           {content.title && (
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 break-words text-wrap-balance">{content.title}</h2>
+            <h2 className="text-2xl @2xl:text-3xl @3xl:text-4xl font-bold mb-4 break-words text-wrap-balance">{content.title}</h2>
           )}
           {content.description && (
             <p className="text-muted-foreground">{content.description}</p>
