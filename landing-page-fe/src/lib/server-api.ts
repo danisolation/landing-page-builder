@@ -13,16 +13,23 @@ interface ApiResponse<T> {
  * Used by Server Components to fetch public page data.
  */
 export async function getPublicPageBySlug(slug: string): Promise<Page | null> {
+  const url = `${API_URL}/pages/slug/${slug}`;
   try {
-    const res = await fetch(`${API_URL}/pages/slug/${slug}`, {
+    const res = await fetch(url, {
       next: { revalidate: 60 }, // ISR: revalidate every 60 seconds
     });
 
-    if (!res.ok) return null;
+    if (!res.ok) {
+      console.error(
+        `[server-api] ${res.status} ${res.statusText} for ${url} — check BACKEND_URL`,
+      );
+      return null;
+    }
 
     const json: ApiResponse<Page> = await res.json();
     return json.data;
-  } catch {
+  } catch (err) {
+    console.error(`[server-api] fetch failed for ${url}:`, err);
     return null;
   }
 }
