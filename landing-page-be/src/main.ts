@@ -52,12 +52,51 @@ async function bootstrap() {
   if (process.env.NODE_ENV !== 'production') {
     const swaggerConfig = new DocumentBuilder()
       .setTitle('Landing Page Builder API')
-      .setDescription('API for managing landing pages and sections')
+      .setDescription(
+        '## Overview\n\n' +
+          'Backend for the Landing Page Builder — a NestJS API for managing\n' +
+          'published landing pages, their sections, media uploads, and templates.\n\n' +
+          '## Response format\n\n' +
+          'Every endpoint wraps its payload in a uniform envelope:\n' +
+          '```json\n{ "success": true, "data": <payload>, "timestamp": "ISO-8601" }\n```\n' +
+          'Errors use the standard NestJS shape: `{ "statusCode", "message", "error" }`.\n\n' +
+          '## Authentication\n\n' +
+          'Most endpoints require a JWT. Call `POST /auth/login` to obtain a token,\n' +
+          'then pass it as `Authorization: Bearer <token>`. Public endpoints are\n' +
+          'marked with a 🌐 globe and need no token.\n\n' +
+          '## Rate limiting\n\n' +
+          'Global: **30 requests / 60 s** per IP. Public page routes (`/pages/slug/*`,\n' +
+          '`/pages/:id/view`) are exempt. Auth routes (`/auth/*`) are stricter:\n' +
+          '**5 requests / 60 s** to deter brute force.',
+      )
       .setVersion('1.0')
-      .addBearerAuth()
+      .addServer('http://localhost:3000', 'Local development')
+      .addServer('https://landing-page-be-qjsg.onrender.com', 'Production (Render)')
+      .addBearerAuth(
+        {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'Enter the JWT returned by POST /auth/login',
+        },
+        'bearer',
+      )
+      .addTag('Auth', 'Authentication — login, registration, profile')
+      .addTag('Pages', 'Landing pages — CRUD, publish, view tracking')
+      .addTag('Sections', 'Page sections — the building blocks of a page')
+      .addTag('Templates', 'Reusable page templates')
+      .addTag('Media', 'Image upload and static serving')
+      .addTag('System', 'Health and readiness checks')
       .build();
     const document = SwaggerModule.createDocument(app, swaggerConfig);
-    SwaggerModule.setup('api/docs', app, document);
+    SwaggerModule.setup('api/docs', app, document, {
+      swaggerOptions: {
+        persistAuthorization: true,
+        tagsSorter: 'alpha',
+        operationsSorter: 'alpha',
+      },
+      customSiteTitle: 'Landing Page Builder API',
+    });
   }
 
   // Serve uploaded media (public uploads dir → /uploads/*)
