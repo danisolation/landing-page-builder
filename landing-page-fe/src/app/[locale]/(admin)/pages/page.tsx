@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 import { usePages } from '@/hooks/usePages';
+import { getPage } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { SkeletonList } from '@/components/ui/loading';
 import EmptyState from '@/components/ui/empty-state';
@@ -88,15 +89,21 @@ export default function PagesListPage() {
     }
   };
 
-  const handleDuplicate = (page: NonNullable<typeof pages>[number]) => {
+  const handleDuplicate = async (page: NonNullable<typeof pages>[number]) => {
+    // The list view strips section content (perf), so fetch the full page first.
+    const full = await getPage(page.id);
+    if (!full) {
+      toast.error(t('duplicateFailed'));
+      return;
+    }
     const suffix = Math.random().toString(36).slice(2, 6);
     createPage(
       {
-        title: `${page.title} (copy)`,
-        slug: `${page.slug}-copy-${suffix}`.slice(0, 80),
-        description: page.description,
+        title: `${full.title} (copy)`,
+        slug: `${full.slug}-copy-${suffix}`.slice(0, 80),
+        description: full.description,
         isPublished: false,
-        sections: (page.sections || []).map((s) => ({
+        sections: (full.sections || []).map((s) => ({
           type: s.type,
           content: s.content,
           order: s.order,
