@@ -11,13 +11,17 @@ const TOOLTIP_MAX_W = 240;
 const GAP = 8;
 
 /**
- * Help hint that works on hover, focus AND tap (mobile).
+ * Help hint that works on hover and tap (mobile).
  *
  * Renders through a Portal to document.body so it escapes any parent
  * stacking context (overflow, transform, z-index) that would otherwise
  * clip or cover it. Position is measured synchronously in the trigger
  * handler (no flash) and clamped to the viewport so it never overflows
  * the screen edges. Flips below the button if there's no room above.
+ *
+ * Note: intentionally NOT shown on focus — dialogs auto-focus their
+ * first focusable element on open, which would otherwise pop an
+ * unwanted tooltip. Hover (desktop) and tap (mobile) cover all use cases.
  */
 export default function FieldHint({ text }: FieldHintProps) {
   const [show, setShow] = useState(false);
@@ -55,13 +59,12 @@ export default function FieldHint({ text }: FieldHintProps) {
       <button
         ref={btnRef}
         type="button"
+        tabIndex={-1}
         className="flex items-center justify-center w-5 h-5 rounded-full bg-muted text-muted-foreground text-[10px] font-bold select-none hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors cursor-help"
         aria-label={text}
         aria-describedby={show && pos ? id : undefined}
         onMouseEnter={open}
         onMouseLeave={close}
-        onFocus={open}
-        onBlur={close}
         onClick={(e) => {
           e.preventDefault();
           if (show) close();
