@@ -1,39 +1,54 @@
 'use client';
 
-import { useId, useState, useRef, useLayoutEffect } from 'react';
+import { useId, useState, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 
 export interface FieldHintProps {
   text: string;
 }
 
+const TOOLTIP_MAX_W = 240;
+const GAP = 8;
+
 /**
  * Help hint that works on hover, focus AND tap (mobile).
  *
  * Renders through a Portal to document.body so it escapes any parent
  * stacking context (overflow, transform, z-index) that would otherwise
- * clip or cover it. Position is computed from the trigger button's
- * bounding rect (in a layout effect, before paint) so it always sits
- * cleanly above the trigger — no flash of mispositioned content.
+ * clip or cover it. Position is measured synchronously in the trigger
+ * handler (no flash) and clamped to the viewport so it never overflows
+ * the screen edges. Flips below the button if there's no room above.
  */
 export default function FieldHint({ text }: FieldHintProps) {
   const [show, setShow] = useState(false);
-  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+  const [pos, setPos] = useState<{
+    top: number;
+    left: number;
+    below: boolean;
+  } | null>(null);
   const id = useId();
   const btnRef = useRef<HTMLButtonElement>(null);
 
-  // Measure before the browser paints so the tooltip never flashes at (0,0).
-  useLayoutEffect(() => {
-    if (!show || !btnRef.current) {
-      setPos(null);
-      return;
-    }
-    const rect = btnRef.current.getBoundingClientRect();
-    setPos({
-      top: rect.top - 8, // 8px gap above the button
-      left: rect.left + rect.width / 2,
-    });
-  }, [show]);
+  const open = useCallback(() => {
+    const el = btnRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+
+    // Center horizontally on the button.
+    let left = rect.left + rect.width / 2;
+    const halfW = TOOLTIP_MAX_W / 2;
+    left = Math.max(halfW + 4, Math.min(left, window.innerWidth - halfW - 4));
+
+    // Prefer above; flip below if not enough room.
+    const spaceAbove = rect.top;
+    const below = spaceAbove < 60;
+    const top = below ? rect.bottom + GAP : rect.top - GAP;
+
+    setPos({ top, left, below });
+    setShow(true);
+  }, []);
+
+  const close = useCallback(() => setShow(false), []);
 
   return (
     <span className="inline-flex items-center ml-1.5">
@@ -43,13 +58,14 @@ export default function FieldHint({ text }: FieldHintProps) {
         className="flex items-center justify-center w-5 h-5 rounded-full bg-muted text-muted-foreground text-[10px] font-bold select-none hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors cursor-help"
         aria-label={text}
         aria-describedby={show && pos ? id : undefined}
-        onMouseEnter={() => setShow(true)}
-        onMouseLeave={() => setShow(false)}
-        onFocus={() => setShow(true)}
-        onBlur={() => setShow(false)}
+        onMouseEnter={open}
+        onMouseLeave={close}
+        onFocus={open}
+        onBlur={close}
         onClick={(e) => {
           e.preventDefault();
-          setShow((s) => !s);
+          if (show) close();
+          else open();
         }}
       >
         ?
@@ -60,15 +76,15 @@ export default function FieldHint({ text }: FieldHintProps) {
           <span
             id={id}
             role="tooltip"
-            className="fixed z-[9999] w-max max-w-[240px] px-3 py-2 text-xs text-popover-foreground bg-popover border border-border rounded-lg shadow-lg text-left normal-case pointer-events-none"
+            className="fixed z-[9999] w-max px-3 py-2 text-xs text-popover-foreground bg-popover border border-border rounded-lg shadow-lg text-left normal-case pointer-events-none"
             style={{
+              maxWidth: TOOLTIP_MAX_W,
               top: pos.top,
               left: pos.left,
-              transform: 'translate(-50%, -100%)',
+              transform: pos.below ? 'translate(-50%, 0)' : 'translate(-50%, -100%)',
             }}
           >
             {text}
-            <span className="absolute top-full left-1/2 -translate-x-1/2 -mt-px border-4 border-transparent border-t-border" />
           </span>,
           document.body,
         )}
