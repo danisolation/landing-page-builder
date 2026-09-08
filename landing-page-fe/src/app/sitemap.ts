@@ -3,7 +3,7 @@ import type { MetadataRoute } from 'next';
 const API_URL = process.env.BACKEND_URL || 'http://localhost:3000';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001';
 
-interface PageListItem {
+interface SitemapItem {
   slug: string;
   updatedAt: string;
 }
@@ -14,23 +14,23 @@ interface ApiResponse<T> {
 }
 
 /**
- * Dynamic sitemap — tự động list tất cả published pages từ BE.
- * Google sẽ crawl file này định kỳ để discover pages.
+ * Dynamic sitemap — lists all published pages from the BE.
+ * Google crawls this file periodically to discover pages.
+ *
+ * Uses the dedicated public GET /pages/sitemap endpoint (no auth,
+ * minimal payload: slug + updatedAt only).
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
-  // Dynamic routes — published pages (no locale prefix)
   try {
-    const res = await fetch(`${API_URL}/pages?isPublished=true&sortBy=updatedAt&sortOrder=desc`, {
-      next: { revalidate: 300 }, // revalidate mỗi 5 phút
+    const res = await fetch(`${API_URL}/pages/sitemap`, {
+      next: { revalidate: 300 }, // revalidate every 5 minutes
     });
 
     if (res.ok) {
-      const json: ApiResponse<PageListItem[]> = await res.json();
-      const pages = json.data;
-
-      for (const page of pages) {
+      const json: ApiResponse<SitemapItem[]> = await res.json();
+      for (const page of json.data) {
         entries.push({
           url: `${SITE_URL}/${page.slug}`,
           lastModified: new Date(page.updatedAt),
@@ -40,7 +40,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }
     }
   } catch {
-    // Nếu BE down, sitemap vẫn trả về static routes
+    // If BE is down, sitemap still returns static routes
   }
 
   return entries;

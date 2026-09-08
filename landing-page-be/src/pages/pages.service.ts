@@ -97,6 +97,18 @@ export class PagesService {
     this.logger.log(`Page deleted: ${id}`);
   }
 
+  /**
+   * Minimal public listing for sitemap.xml — published pages only,
+   * slug + updatedAt. No auth, no admin data (viewCount, etc).
+   */
+  async findSitemap() {
+    return this.prisma.page.findMany({
+      where: { isPublished: true },
+      orderBy: { updatedAt: 'desc' },
+      select: { slug: true, updatedAt: true },
+    });
+  }
+
   async findBySlug(slug: string) {
     this.logger.debug(`Fetching published page by slug: ${slug}`);
     const page = await this.prisma.page.findUnique({

@@ -44,6 +44,18 @@ export class PagesController {
     return this.pagesService.findAll();
   }
 
+  // Must precede @Get(':id') so "sitemap" isn't captured as an id.
+  @Public()
+  @Get('sitemap')
+  @ApiOperation({
+    summary: '🌐 List published pages for sitemap.xml',
+    description: 'Public endpoint — returns slug + updatedAt for every published page, newest first. Used by the Next.js sitemap generator.',
+  })
+  @ApiResponse({ status: 200, description: 'Array of { slug, updatedAt } for published pages' })
+  findSitemap() {
+    return this.pagesService.findSitemap();
+  }
+
   // Public landing-page traffic: shared IPs (CGNAT/office NAT) would hit the
   // 30 req/min global limit and published pages would render as 404s.
   @SkipThrottle()
