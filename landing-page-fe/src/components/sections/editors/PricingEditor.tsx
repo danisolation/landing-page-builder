@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import type { PricingContent } from "@/types";
+import type { PricingContent, PricingPlan } from "@/types";
 
 interface PricingEditorProps {
   content: PricingContent;
@@ -15,11 +15,11 @@ interface PricingEditorProps {
 export default function PricingEditor({ content, onChange }: PricingEditorProps) {
   const t = useTranslations("pricingEditor");
 
-  const updateField = (field: keyof PricingContent, value: any) => {
+  const updateField = (field: keyof PricingContent, value: string | PricingPlan[]) => {
     onChange({ ...content, [field]: value });
   };
 
-  const updatePlan = (index: number, field: string, value: any) => {
+  const updatePlan = (index: number, field: keyof PricingPlan, value: string | boolean | string[]) => {
     const newPlans = [...(content.plans || [])];
     newPlans[index] = { ...newPlans[index], [field]: value };
     updateField("plans", newPlans);

@@ -31,10 +31,6 @@ export default function InlineTextEditor({
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    setEditValue(value);
-  }, [value]);
-
-  useEffect(() => {
     if (isEditing && inputRef.current) {
       inputRef.current.focus();
       inputRef.current.select();
@@ -42,6 +38,7 @@ export default function InlineTextEditor({
   }, [isEditing]);
 
   const handleClick = () => {
+    setEditValue(value);
     setIsEditing(true);
   };
 

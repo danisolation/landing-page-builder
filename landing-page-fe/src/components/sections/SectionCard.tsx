@@ -14,7 +14,7 @@ import { sectionComponents } from '@/lib/section-components';
 
 
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 
 interface DragOverlayData {
   sectionId: string;

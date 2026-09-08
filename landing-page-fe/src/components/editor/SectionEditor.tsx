@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useEditorState } from "./hooks/useEditorState";
 import { sectionEditors } from "@/components/sections/section-constants";
+import type { SectionContent } from "@/types";
 
 export default function SectionEditor() {
   const t = useTranslations("editor");
@@ -20,7 +21,7 @@ export default function SectionEditor() {
 
   const EditorComponent = sectionEditors[selectedSection.type];
 
-  const handleContentChange = (content: any) => {
+  const handleContentChange = (content: SectionContent) => {
     updateSection(selectedSection.id, content);
   };
 

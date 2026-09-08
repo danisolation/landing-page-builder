@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Layers, Settings, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,11 +24,10 @@ export default function EditorSidebar({ collapsed, onToggle }: EditorSidebarProp
   const [activeTab, setActiveTab] = React.useState<SidebarTab>("sections");
 
   // Switch to edit tab when a section is selected
-  React.useEffect(() => {
-    if (state.selectedSectionId) {
-      setActiveTab("edit");
-    }
-  }, [state.selectedSectionId]);
+  const effectiveTab = useMemo(() => {
+    if (state.selectedSectionId) return "edit" as const;
+    return activeTab;
+  }, [state.selectedSectionId, activeTab]);
 
   if (collapsed) {
     return (
@@ -93,12 +93,11 @@ export default function EditorSidebar({ collapsed, onToggle }: EditorSidebarProp
 
       {/* Content */}
       <div className="flex-1 overflow-auto">
-        {activeTab === "sections" && <SectionPicker />}
-        {activeTab === "style" && <StylePanel />}
-        {activeTab === "edit" && <SectionEditor />}
+        {effectiveTab === "sections" && <SectionPicker />}
+        {effectiveTab === "style" && <StylePanel />}
+        {effectiveTab === "edit" && <SectionEditor />}
       </div>
     </div>
   );
 }
 
-import React from "react";

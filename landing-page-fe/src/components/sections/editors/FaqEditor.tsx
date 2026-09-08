@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import type { FaqContent } from "@/types";
+import type { FaqContent, FaqItem } from "@/types";
 
 interface FaqEditorProps {
   content: FaqContent;
@@ -15,7 +15,7 @@ interface FaqEditorProps {
 export default function FaqEditor({ content, onChange }: FaqEditorProps) {
   const t = useTranslations("faqEditor");
 
-  const updateField = (field: keyof FaqContent, value: any) => {
+  const updateField = (field: keyof FaqContent, value: string | FaqItem[]) => {
     onChange({ ...content, [field]: value });
   };
 

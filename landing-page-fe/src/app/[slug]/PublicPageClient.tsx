@@ -16,8 +16,9 @@ import { incrementPageView } from '@/lib/api';
 import { fontStacks, pageStyleVars } from '@/lib/global-style';
 import type { Page, SectionType } from '@/types';
 
-const sectionComponents: Record<SectionType, React.ComponentType<{ content: any }>> = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const sectionComponents: Record<SectionType, React.ComponentType<any>> = {
+   
   hero: HeroSection,
   features: FeaturesSection,
   cta: CtaSection,

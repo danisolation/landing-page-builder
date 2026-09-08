@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ImageUploadField from "@/components/ui/image-upload-field";
-import type { LogoCloudContent } from "@/types";
+import type { LogoCloudContent, LogoItem } from "@/types";
 
 interface LogoCloudEditorProps {
   content: LogoCloudContent;
@@ -15,7 +15,7 @@ interface LogoCloudEditorProps {
 export default function LogoCloudEditor({ content, onChange }: LogoCloudEditorProps) {
   const t = useTranslations("logoCloudEditor");
 
-  const updateField = (field: keyof LogoCloudContent, value: any) => {
+  const updateField = (field: keyof LogoCloudContent, value: string | LogoItem[]) => {
     onChange({ ...content, [field]: value });
   };
 
