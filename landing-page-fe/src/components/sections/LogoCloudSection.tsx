@@ -2,6 +2,7 @@
 
 import InlineTextEditor from '@/components/editor/InlineTextEditor';
 import Image from 'next/image';
+import { useInView } from '@/hooks/useInView';
 
 export interface LogoCloudContent {
   subtitle?: string;
@@ -20,6 +21,8 @@ export interface LogoCloudSectionProps {
 }
 
 export default function LogoCloudSection({ content, isEditing, onContentChange }: LogoCloudSectionProps) {
+  const { ref, isInView } = useInView();
+
   const updateItem = (index: number, patch: Partial<LogoCloudContent['items'][number]>) =>
     onContentChange?.({
       ...content,
@@ -27,10 +30,17 @@ export default function LogoCloudSection({ content, isEditing, onContentChange }
     });
 
   return (
-    <section className="@container py-(--lp-spacing) px-4 bg-muted/30">
+    <section className="@container py-(--lp-spacing) px-4 bg-muted/30" ref={ref}>
       <div className="max-w-5xl mx-auto text-center">
         {/* Header */}
-        <div className="reveal mb-10">
+        <div
+          className="reveal mb-10"
+          style={{
+            opacity: isInView ? 1 : 0,
+            transform: isInView ? "translateY(0)" : "translateY(20px)",
+            transition: "opacity 0.6s ease-out, transform 0.6s ease-out",
+          }}
+        >
           {content.subtitle && (
             <p className="text-sm font-medium text-(--lp-primary) mb-2">
               {content.subtitle}
@@ -52,6 +62,11 @@ export default function LogoCloudSection({ content, isEditing, onContentChange }
             <div
               key={index}
               className="grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all"
+              style={{
+                opacity: isInView ? 0.6 : 0,
+                transform: isInView ? "scale(1)" : "scale(0.9)",
+                transition: `opacity 0.4s ease-out ${index * 0.05}s, transform 0.4s ease-out ${index * 0.05}s`,
+              }}
             >
               {item.imageUrl ? (
                 <Image

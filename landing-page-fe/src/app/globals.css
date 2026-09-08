@@ -141,22 +141,23 @@
   text-wrap: balance;
 }
 
-/* Scroll-reveal — CSS-only via scroll-driven animations. Content is visible
-   by default in the SSR HTML (no opacity:0 gating on hydration), and the
-   animation only applies in browsers that support animation-timeline: view().
-   Unsupported browsers simply show static content. */
-@supports (animation-timeline: view()) {
+/* Scroll-reveal — JS-driven via useInView (IntersectionObserver). Sections
+   render visible in the SSR HTML; elements below the viewport are hidden
+   right after hydration and revealed with a transition on scroll. */
+@media (prefers-reduced-motion: reduce) {
   .reveal {
-    animation: reveal-view linear both;
-    animation-timeline: view();
-    animation-range: entry 5% cover 25%;
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
   }
 }
 
-@keyframes reveal-view {
+/* Hero entrance — pure CSS load animation with stagger, no JS needed.
+   The heading has no delay so the LCP element paints immediately. */
+@keyframes hero-fade-up {
   from {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -164,9 +165,13 @@
   }
 }
 
+.hero-enter {
+  animation: hero-fade-up 0.8s ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
-    animation: none !important;
+  .hero-enter {
+    animation: none;
   }
 }
 

@@ -66,7 +66,7 @@ function VisualEditorContent({
 
       // Deleted: in baseline but not in current
       const currentIds = new Set(
-        sections.filter((s) => !s.id.startsWith("temp-")).map((s) => s.id)
+        sections.filter((s) => !s.id.startsWith("temp-")).map((s) => s.id),
       );
       const toDelete = baseline.filter((s) => !currentIds.has(s.id));
       for (const s of toDelete) {
@@ -107,7 +107,7 @@ function VisualEditorContent({
       baselineRef.current = synced;
       setSections(synced);
     },
-    [pageId, setSections]
+    [pageId, setSections],
   );
 
   // Persist StylePanel changes to the Page itself
@@ -119,7 +119,7 @@ function VisualEditorContent({
       await updatePageAsync({ id: pageId, data: { globalStyle: style } });
       styleBaselineRef.current = serialized;
     },
-    [pageId, updatePageAsync]
+    [pageId, updatePageAsync],
   );
 
   const handleAutoSave = useCallback(async () => {
@@ -140,7 +140,16 @@ function VisualEditorContent({
     } finally {
       dispatch({ type: "SET_SAVING", payload: false });
     }
-  }, [state.sections, state.globalStyle, state.isDirty, state.isSaving, dispatch, syncSections, syncGlobalStyle, t]);
+  }, [
+    state.sections,
+    state.globalStyle,
+    state.isDirty,
+    state.isSaving,
+    dispatch,
+    syncSections,
+    syncGlobalStyle,
+    t,
+  ]);
 
   // Auto-save with debounce
   useEffect(() => {
@@ -198,8 +207,10 @@ function VisualEditorContent({
         const dropTarget = location.current.dropTargets[0];
         if (!dropTarget) return;
 
-        const startIndex = (source.data as Record<string, unknown>)?.index as number;
-        const finishIndex = (dropTarget.data as Record<string, unknown>)?.index as number;
+        const startIndex = (source.data as Record<string, unknown>)
+          ?.index as number;
+        const finishIndex = (dropTarget.data as Record<string, unknown>)
+          ?.index as number;
         if (startIndex === undefined || finishIndex === undefined) return;
         if (startIndex === finishIndex) return;
 

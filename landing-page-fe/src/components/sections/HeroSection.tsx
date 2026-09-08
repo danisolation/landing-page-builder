@@ -36,9 +36,9 @@ export default function HeroSection({ content, isEditing, onContentChange }: Her
         }}
       />
 
-      {/* Content */}
+      {/* Content — entrance is a pure CSS load animation (visible without JS) */}
       <div className="relative z-10 text-center px-4 max-w-5xl mx-auto pt-16">
-        <div className="reveal">
+        <div className="hero-enter">
           <InlineTextEditor
             tag="h1"
             editing={isEditing}
@@ -49,7 +49,7 @@ export default function HeroSection({ content, isEditing, onContentChange }: Her
           />
         </div>
 
-        <div className="reveal">
+        <div className="hero-enter" style={{ animationDelay: '0.15s' }}>
           <InlineTextEditor
             tag="p"
             editing={isEditing}
@@ -61,7 +61,10 @@ export default function HeroSection({ content, isEditing, onContentChange }: Her
           />
         </div>
 
-        <div className="reveal flex flex-col @2xl:flex-row gap-3 @2xl:gap-4 justify-center">
+        <div
+          className="hero-enter flex flex-col @2xl:flex-row gap-3 @2xl:gap-4 justify-center"
+          style={{ animationDelay: '0.3s' }}
+        >
           {content.buttonText && (
             <a
               href={content.buttonLink || '#'}

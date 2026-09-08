@@ -1,6 +1,7 @@
 "use client";
 
 import InlineTextEditor from "@/components/editor/InlineTextEditor";
+import { useInView } from "@/hooks/useInView";
 import { cn } from "@/lib/utils";
 
 export interface PricingContent {
@@ -26,6 +27,8 @@ export interface PricingSectionProps {
 }
 
 export default function PricingSection({ content, isEditing, onContentChange }: PricingSectionProps) {
+  const { ref, isInView } = useInView();
+
   const updatePlan = (index: number, patch: Partial<PricingContent['plans'][number]>) =>
     onContentChange?.({
       ...content,
@@ -33,10 +36,17 @@ export default function PricingSection({ content, isEditing, onContentChange }: 
     });
 
   return (
-    <section className="@container py-(--lp-spacing) px-4 bg-muted/30">
+    <section className="@container py-(--lp-spacing) px-4 bg-muted/30" ref={ref}>
       <div className="max-w-(--lp-width) mx-auto">
         {/* Header */}
-        <div className="reveal text-center mb-12">
+        <div
+          className="reveal text-center mb-12"
+          style={{
+            opacity: isInView ? 1 : 0,
+            transform: isInView ? "translateY(0)" : "translateY(20px)",
+            transition: "opacity 0.6s ease-out, transform 0.6s ease-out",
+          }}
+        >
           {content.subtitle && (
             <p className="text-sm font-medium text-(--lp-primary) mb-2">
               {content.subtitle}
@@ -70,6 +80,11 @@ export default function PricingSection({ content, isEditing, onContentChange }: 
                   ? "bg-(--lp-primary) text-white scale-105 shadow-xl shadow-blue-500/25"
                   : "bg-background border hover:shadow-lg"
               )}
+              style={{
+                opacity: isInView ? 1 : 0,
+                transform: isInView ? "translateY(0)" : "translateY(20px)",
+                transition: `opacity 0.6s ease-out ${index * 0.1}s, transform 0.6s ease-out ${index * 0.1}s`,
+              }}
             >
               {plan.highlighted && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full">

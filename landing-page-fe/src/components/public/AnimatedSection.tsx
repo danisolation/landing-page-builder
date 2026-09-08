@@ -1,11 +1,28 @@
+'use client';
+
+import { ReactNode } from 'react';
+import { useInView } from '@/hooks/useInView';
+
 export interface AnimatedSectionProps {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   delay?: number;
 }
 
-// Reveal-on-scroll is handled purely in CSS (animation-timeline: view()) on the
-// .reveal class — content renders visible in the SSR HTML, no JS involved.
-export default function AnimatedSection({ children, className = '' }: AnimatedSectionProps) {
-  return <div className={`reveal ${className}`}>{children}</div>;
+export default function AnimatedSection({ children, className = '', delay = 0 }: AnimatedSectionProps) {
+  const { ref, isInView } = useInView();
+
+  return (
+    <div
+      ref={ref}
+      className={`reveal ${className}`}
+      style={{
+        opacity: isInView ? 1 : 0,
+        transform: isInView ? 'translateY(0)' : 'translateY(30px)',
+        transition: `opacity 0.6s ease-out ${delay}s, transform 0.6s ease-out ${delay}s`,
+      }}
+    >
+      {children}
+    </div>
+  );
 }
