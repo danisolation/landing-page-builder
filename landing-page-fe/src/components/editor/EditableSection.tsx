@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useEditorState } from "./hooks/useEditorState";
 import HeroSection from "@/components/sections/HeroSection";
 import FeaturesSection from "@/components/sections/FeaturesSection";
@@ -31,6 +31,12 @@ interface EditableSectionProps {
 export default function EditableSection({ section }: EditableSectionProps) {
   const { updateSection } = useEditorState();
   const [localContent, setLocalContent] = useState(section.content);
+
+  // The sidebar editor updates global state independently — keep local
+  // canvas content in sync so edits made in the sidebar show live.
+  useEffect(() => {
+    setLocalContent(section.content);
+  }, [section.content]);
 
   const handleContentChange = (newContent: SectionContent) => {
     setLocalContent(newContent);
