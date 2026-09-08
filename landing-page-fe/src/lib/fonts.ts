@@ -1,8 +1,8 @@
 import { Inter, Poppins, Playfair_Display, Roboto } from "next/font/google";
 
-// Shared next/font declarations — used by the admin ([locale]) layout and the
-// public ([slug]) layout so both expose the same CSS variables the font
-// picker's fontStacks reference.
+// Shared next/font declarations — used by the admin [(admin)] and public
+// [(public)] route groups via the [locale] layout, so both expose the same
+// CSS variables the font picker's fontStacks reference.
 //
 // Only Inter (the UI font) preloads. The other families exist solely for the
 // per-page font picker; preloading them would ship every family to every

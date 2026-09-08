@@ -9,9 +9,9 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001';
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { locale: slug } = await params;
   const page = await getPublicPageBySlug(slug);
 
   if (!page) return {};
@@ -59,9 +59,9 @@ export async function generateMetadata({
 export default async function PublicPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string }>;
 }) {
-  const { slug } = await params;
+  const { locale: slug } = await params;
 
   const page = await getPublicPageBySlug(slug);
 
