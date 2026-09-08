@@ -1,6 +1,6 @@
 'use client';
 
-import { useId, useState, useRef, useEffect } from 'react';
+import { useId, useState, useRef, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 
 export interface FieldHintProps {
@@ -13,18 +13,21 @@ export interface FieldHintProps {
  * Renders through a Portal to document.body so it escapes any parent
  * stacking context (overflow, transform, z-index) that would otherwise
  * clip or cover it. Position is computed from the trigger button's
- * bounding rect so it always sits above the trigger, viewport-aware.
+ * bounding rect (in a layout effect, before paint) so it always sits
+ * cleanly above the trigger — no flash of mispositioned content.
  */
 export default function FieldHint({ text }: FieldHintProps) {
   const [show, setShow] = useState(false);
-  const [pos, setPos] = useState({ top: 0, left: 0 });
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
   const id = useId();
   const btnRef = useRef<HTMLButtonElement>(null);
 
-  // Recompute position whenever the hint becomes visible (handles
-  // scroll / layout shift between open and the portal paint).
-  useEffect(() => {
-    if (!show || !btnRef.current) return;
+  // Measure before the browser paints so the tooltip never flashes at (0,0).
+  useLayoutEffect(() => {
+    if (!show || !btnRef.current) {
+      setPos(null);
+      return;
+    }
     const rect = btnRef.current.getBoundingClientRect();
     setPos({
       top: rect.top - 8, // 8px gap above the button
@@ -39,7 +42,7 @@ export default function FieldHint({ text }: FieldHintProps) {
         type="button"
         className="flex items-center justify-center w-5 h-5 rounded-full bg-muted text-muted-foreground text-[10px] font-bold select-none hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors cursor-help"
         aria-label={text}
-        aria-describedby={show ? id : undefined}
+        aria-describedby={show && pos ? id : undefined}
         onMouseEnter={() => setShow(true)}
         onMouseLeave={() => setShow(false)}
         onFocus={() => setShow(true)}
@@ -52,6 +55,7 @@ export default function FieldHint({ text }: FieldHintProps) {
         ?
       </button>
       {show &&
+        pos &&
         createPortal(
           <span
             id={id}
