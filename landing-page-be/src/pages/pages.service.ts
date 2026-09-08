@@ -50,6 +50,7 @@ export class PagesService {
         description: true,
         isPublished: true,
         viewCount: true,
+        createdAt: true,
         updatedAt: true,
         sections: { orderBy: { order: 'asc' }, select: { id: true, type: true, order: true } },
       },

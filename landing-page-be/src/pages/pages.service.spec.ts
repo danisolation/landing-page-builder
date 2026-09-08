@@ -136,6 +136,7 @@ describe('PagesService', () => {
           description: true,
           isPublished: true,
           viewCount: true,
+          createdAt: true,
           updatedAt: true,
           sections: {
             orderBy: { order: 'asc' },
