@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PagesService } from './pages.service';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -128,7 +129,19 @@ describe('PagesService', () => {
 
       expect(result).toEqual([mockPage]);
       expect(prisma.page.findMany).toHaveBeenCalledWith({
-        include: { sections: { orderBy: { order: 'asc' } } },
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          description: true,
+          isPublished: true,
+          viewCount: true,
+          updatedAt: true,
+          sections: {
+            orderBy: { order: 'asc' },
+            select: { id: true, type: true, order: true },
+          },
+        },
       });
     });
   });
@@ -153,7 +166,6 @@ describe('PagesService', () => {
 
   describe('update', () => {
     it('should update a page', async () => {
-      prisma.page.findUnique.mockResolvedValue(mockPage);
       prisma.page.update.mockResolvedValue({
         ...mockPage,
         title: 'Updated',
@@ -168,16 +180,19 @@ describe('PagesService', () => {
       expect(result.title).toBe('Updated');
     });
 
-    it('should throw NotFoundException for non-existent page', async () => {
-      prisma.page.findUnique.mockResolvedValue(null);
+    it('propagates P2025 for non-existent page (mapped to 404 by the exception filter)', async () => {
+      const error = new Prisma.PrismaClientKnownRequestError(
+        'Record not found',
+        { code: 'P2025', clientVersion: '7' },
+      );
+      prisma.page.update.mockRejectedValue(error);
 
       await expect(
         service.update('nonexistent', { title: 'Test' }),
-      ).rejects.toThrow(NotFoundException);
+      ).rejects.toThrow(error);
     });
 
     it('should update page SEO fields', async () => {
-      prisma.page.findUnique.mockResolvedValue(mockPage);
       prisma.page.update.mockResolvedValue({
         ...mockPage,
         metaTitle: 'Updated SEO Title',
@@ -205,7 +220,6 @@ describe('PagesService', () => {
 
   describe('remove', () => {
     it('should delete a page', async () => {
-      prisma.page.findUnique.mockResolvedValue(mockPage);
       prisma.page.delete.mockResolvedValue(mockPage);
 
       await service.remove('page-1');
@@ -215,12 +229,14 @@ describe('PagesService', () => {
       });
     });
 
-    it('should throw NotFoundException for non-existent page', async () => {
-      prisma.page.findUnique.mockResolvedValue(null);
-
-      await expect(service.remove('nonexistent')).rejects.toThrow(
-        NotFoundException,
+    it('propagates P2025 for non-existent page (mapped to 404 by the exception filter)', async () => {
+      const error = new Prisma.PrismaClientKnownRequestError(
+        'Record not found',
+        { code: 'P2025', clientVersion: '7' },
       );
+      prisma.page.delete.mockRejectedValue(error);
+
+      await expect(service.remove('nonexistent')).rejects.toThrow(error);
     });
   });
 
@@ -233,7 +249,22 @@ describe('PagesService', () => {
       expect(result).toEqual(mockPage);
       expect(prisma.page.findUnique).toHaveBeenCalledWith({
         where: { slug: 'test-page', isPublished: true },
-        include: { sections: { orderBy: { order: 'asc' } } },
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          description: true,
+          metaTitle: true,
+          metaDescription: true,
+          ogImageUrl: true,
+          keywords: true,
+          canonicalUrl: true,
+          globalStyle: true,
+          sections: {
+            orderBy: { order: 'asc' },
+            select: { id: true, type: true, content: true, order: true },
+          },
+        },
       });
     });
 

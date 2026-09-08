@@ -1,7 +1,6 @@
 'use client';
 
 import InlineTextEditor from '@/components/editor/InlineTextEditor';
-import { useInView } from '@/hooks/useInView';
 import Image from 'next/image';
 import { Quote } from 'lucide-react';
 
@@ -24,9 +23,6 @@ export interface TestimonialsSectionProps {
 }
 
 export default function TestimonialsSection({ content, isEditing, onContentChange }: TestimonialsSectionProps) {
-  const { ref: headerRef, isInView: headerVisible } = useInView();
-  const { ref: gridRef, isInView: gridVisible } = useInView();
-
   const change = (patch: Partial<TestimonialsSectionProps['content']>) =>
     onContentChange?.({ ...content, ...patch });
 
@@ -37,15 +33,7 @@ export default function TestimonialsSection({ content, isEditing, onContentChang
     <section className="@container py-(--lp-spacing) bg-muted">
       <div className="max-w-(--lp-width) mx-auto px-4">
         {/* Section Header */}
-        <div
-          ref={headerRef}
-          className="reveal text-center mb-16"
-          style={{
-            opacity: headerVisible ? 1 : 0,
-            transform: headerVisible ? 'translateY(0)' : 'translateY(20px)',
-            transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
-          }}
-        >
+        <div className="reveal text-center mb-16">
           {content.subtitle && (
             <p className="text-sm font-semibold uppercase tracking-wider text-(--lp-primary) mb-3">
               {content.subtitle}
@@ -72,23 +60,11 @@ export default function TestimonialsSection({ content, isEditing, onContentChang
         </div>
 
         {/* Testimonial Cards */}
-        <div
-          ref={gridRef}
-          className="reveal grid grid-cols-1 @3xl:grid-cols-3 gap-8"
-          style={{
-            opacity: gridVisible ? 1 : 0,
-            transition: 'opacity 0.6s ease-out',
-          }}
-        >
+        <div className="reveal grid grid-cols-1 @3xl:grid-cols-3 gap-8">
           {content.items?.map((item, index) => (
             <div
               key={index}
               className="relative bg-card rounded-2xl p-8 shadow-sm hover:shadow-lg transition-shadow duration-300 border border-border"
-              style={{
-                opacity: gridVisible ? 1 : 0,
-                transform: gridVisible ? 'translateY(0)' : 'translateY(24px)',
-                transition: `opacity 0.5s ease-out ${index * 0.12}s, transform 0.5s ease-out ${index * 0.12}s`,
-              }}
             >
               {/* Quote icon */}
               <div className="absolute top-6 right-6 text-blue-100 dark:text-blue-900/50">
@@ -114,7 +90,6 @@ export default function TestimonialsSection({ content, isEditing, onContentChang
                     alt={item.name || ''}
                     width={40}
                     height={40}
-                    unoptimized
                     className="w-10 h-10 rounded-full object-cover shrink-0"
                   />
                 ) : (

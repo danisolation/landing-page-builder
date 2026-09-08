@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import InlineTextEditor from "@/components/editor/InlineTextEditor";
-import { useInView } from "@/hooks/useInView";
 import { ChevronDown } from "lucide-react";
 
 export interface FaqContent {
@@ -22,21 +21,13 @@ export interface FaqSectionProps {
 }
 
 export default function FaqSection({ content, isEditing, onContentChange }: FaqSectionProps) {
-  const { ref, isInView } = useInView();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="@container py-(--lp-spacing) px-4" ref={ref}>
+    <section className="@container py-(--lp-spacing) px-4">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
-        <div
-          className="reveal text-center mb-12"
-          style={{
-            opacity: isInView ? 1 : 0,
-            transform: isInView ? "translateY(0)" : "translateY(20px)",
-            transition: "opacity 0.6s ease-out, transform 0.6s ease-out",
-          }}
-        >
+        <div className="reveal text-center mb-12">
           {content.subtitle && (
             <p className="text-sm font-medium text-(--lp-primary) mb-2">
               {content.subtitle}
@@ -70,11 +61,6 @@ export default function FaqSection({ content, isEditing, onContentChange }: FaqS
             <div
               key={index}
               className="border rounded-lg overflow-hidden"
-              style={{
-                opacity: isInView ? 1 : 0,
-                transform: isInView ? "translateY(0)" : "translateY(10px)",
-                transition: `opacity 0.4s ease-out ${index * 0.05}s, transform 0.4s ease-out ${index * 0.05}s`,
-              }}
             >
               <button
                 className="w-full flex items-center justify-between p-4 text-left hover:bg-muted/50 transition-colors min-h-[44px]"

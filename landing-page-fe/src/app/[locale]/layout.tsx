@@ -3,29 +3,12 @@ import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { hasLocale } from "next-intl";
 import { Toaster } from "sonner";
-import Script from "next/script";
-import { Inter, Poppins, Playfair_Display, Roboto } from "next/font/google";
 import { routing } from "@/i18n/routing";
 import AppLayout from "@/components/layout/AppLayout";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import QueryProvider from "@/providers/QueryProvider";
+import { fontVariables } from "@/lib/fonts";
 import "../globals.css";
-
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const roboto = Roboto({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-roboto",
-});
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-poppins",
-});
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
-});
 
 export const metadata = {
   title: "Landing Page Builder",
@@ -50,11 +33,7 @@ export default async function LocaleLayout({
   return (
     // Font variables live on <html> so the font-sans token resolves there
     // (body-level variables would leave html's font-sans unresolvable).
-    <html
-      lang={locale}
-      suppressHydrationWarning
-      className={`${inter.variable} ${roboto.variable} ${poppins.variable} ${playfair.variable}`}
-    >
+    <html lang={locale} suppressHydrationWarning className={fontVariables}>
       <body>
         <QueryProvider>
           <NextIntlClientProvider messages={messages}>

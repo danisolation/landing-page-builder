@@ -1,7 +1,6 @@
 'use client';
 
 import InlineTextEditor from '@/components/editor/InlineTextEditor';
-import { useInView } from '@/hooks/useInView';
 
 export interface CtaSectionProps {
   content: {
@@ -17,9 +16,6 @@ export interface CtaSectionProps {
 }
 
 export default function CtaSection({ content, isEditing, onContentChange }: CtaSectionProps) {
-  const { ref: textRef, isInView: textVisible } = useInView();
-  const { ref: btnRef, isInView: btnVisible } = useInView();
-
   const change = (patch: Partial<CtaSectionProps['content']>) =>
     onContentChange?.({ ...content, ...patch });
 
@@ -40,15 +36,7 @@ export default function CtaSection({ content, isEditing, onContentChange }: CtaS
       />
 
       <div className="relative z-10 max-w-3xl mx-auto px-4 text-center">
-        <div
-          ref={textRef}
-          className="reveal"
-          style={{
-            opacity: textVisible ? 1 : 0,
-            transform: textVisible ? 'translateY(0)' : 'translateY(20px)',
-            transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
-          }}
-        >
+        <div className="reveal">
           <InlineTextEditor
             tag="h2"
             editing={isEditing}
@@ -69,15 +57,7 @@ export default function CtaSection({ content, isEditing, onContentChange }: CtaS
           )}
         </div>
 
-        <div
-          ref={btnRef}
-          className="reveal flex flex-col @2xl:flex-row gap-3 @2xl:gap-4 justify-center"
-          style={{
-            opacity: btnVisible ? 1 : 0,
-            transform: btnVisible ? 'translateY(0)' : 'translateY(20px)',
-            transition: 'opacity 0.6s ease-out 0.15s, transform 0.6s ease-out 0.15s',
-          }}
-        >
+        <div className="reveal flex flex-col @2xl:flex-row gap-3 @2xl:gap-4 justify-center">
           {content.buttonText && (
             <a
               href={content.buttonLink || '#'}

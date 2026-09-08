@@ -1,7 +1,6 @@
 'use client';
 
 import InlineTextEditor from '@/components/editor/InlineTextEditor';
-import { useInView } from '@/hooks/useInView';
 import CounterAnimation from '@/components/public/CounterAnimation';
 
 interface StatItem {
@@ -20,9 +19,6 @@ export interface StatsSectionProps {
 }
 
 export default function StatsSection({ content, isEditing, onContentChange }: StatsSectionProps) {
-  const { ref: titleRef, isInView: titleVisible } = useInView();
-  const { ref: gridRef, isInView: gridVisible } = useInView();
-
   const updateItem = (index: number, patch: Partial<StatItem>) =>
     onContentChange?.({
       ...content,
@@ -33,15 +29,7 @@ export default function StatsSection({ content, isEditing, onContentChange }: St
     <section className="@container py-(--lp-spacing) bg-background">
       <div className="max-w-(--lp-width) mx-auto px-4">
         {content.title && (
-          <h2
-            ref={titleRef}
-            className="reveal text-center mb-8 @2xl:mb-10 @3xl:mb-16"
-            style={{
-              opacity: titleVisible ? 1 : 0,
-              transform: titleVisible ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
-            }}
-          >
+          <h2 className="reveal text-center mb-8 @2xl:mb-10 @3xl:mb-16">
             <InlineTextEditor
               tag="span"
               editing={isEditing}
@@ -53,24 +41,9 @@ export default function StatsSection({ content, isEditing, onContentChange }: St
           </h2>
         )}
 
-        <div
-          ref={gridRef}
-          className="reveal grid grid-cols-2 @3xl:grid-cols-4 gap-4 @2xl:gap-6 @3xl:gap-8"
-          style={{
-            opacity: gridVisible ? 1 : 0,
-            transition: 'opacity 0.6s ease-out',
-          }}
-        >
+        <div className="reveal grid grid-cols-2 @3xl:grid-cols-4 gap-4 @2xl:gap-6 @3xl:gap-8">
           {content.items?.map((item, index) => (
-            <div
-              key={index}
-              className="text-center min-w-0"
-              style={{
-                opacity: gridVisible ? 1 : 0,
-                transform: gridVisible ? 'scale(1)' : 'scale(0.9)',
-                transition: `opacity 0.5s ease-out ${index * 0.15}s, transform 0.5s ease-out ${index * 0.15}s`,
-              }}
-            >
+            <div key={index} className="text-center min-w-0">
               <div className="text-3xl @2xl:text-4xl @3xl:text-5xl font-bold bg-gradient-to-r from-(--lp-primary) to-purple-600 bg-clip-text text-transparent mb-2">
                 <CounterAnimation
                   target={item.value || 0}

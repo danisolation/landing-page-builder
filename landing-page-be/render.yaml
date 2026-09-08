@@ -3,6 +3,7 @@ services:
     name: landing-page-be
     runtime: node
     plan: free
+    region: singapore
     buildCommand: cd landing-page-be && npm install --legacy-peer-deps --include=dev && npx prisma generate && npx nest build
     startCommand: cd landing-page-be && npx prisma migrate deploy && node dist/src/main
     envVars:

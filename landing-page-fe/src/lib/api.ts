@@ -98,9 +98,18 @@ export async function uploadMedia(file: File): Promise<{ url: string }> {
   return json.data;
 }
 
-// Fire-and-forget view counter for published pages
+// Fire-and-forget view counter for published pages.
+// Deduped per browser session so remounts (StrictMode, back-nav) and
+// repeat visits within one session don't inflate the count.
 export function incrementPageView(pageId: string): void {
   if (typeof window === "undefined") return;
+  const key = `viewed:${pageId}`;
+  try {
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+  } catch {
+    // Storage unavailable (private mode) — count anyway
+  }
   fetch(`${API_URL}/pages/${pageId}/view`, { method: "POST" }).catch(() => {
     // View counting must never break the page
   });

@@ -43,7 +43,16 @@ export class PagesService {
   async findAll() {
     this.logger.debug('Fetching all pages');
     return this.prisma.page.findMany({
-      include: { sections: { orderBy: { order: 'asc' } } },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        description: true,
+        isPublished: true,
+        viewCount: true,
+        updatedAt: true,
+        sections: { orderBy: { order: 'asc' }, select: { id: true, type: true, order: true } },
+      },
     });
   }
 
@@ -64,7 +73,6 @@ export class PagesService {
 
   async update(id: string, dto: UpdatePageDto) {
     this.logger.debug(`Updating page: ${id}`);
-    await this.findOne(id);
 
     const { globalStyle, ...rest } = dto;
     const page = await this.prisma.page.update({
@@ -82,7 +90,6 @@ export class PagesService {
 
   async remove(id: string) {
     this.logger.debug(`Deleting page: ${id}`);
-    await this.findOne(id);
 
     await this.prisma.page.delete({
       where: { id },
@@ -94,7 +101,22 @@ export class PagesService {
     this.logger.debug(`Fetching published page by slug: ${slug}`);
     const page = await this.prisma.page.findUnique({
       where: { slug, isPublished: true },
-      include: { sections: { orderBy: { order: 'asc' } } },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        description: true,
+        metaTitle: true,
+        metaDescription: true,
+        ogImageUrl: true,
+        keywords: true,
+        canonicalUrl: true,
+        globalStyle: true,
+        sections: {
+          orderBy: { order: 'asc' },
+          select: { id: true, type: true, content: true, order: true },
+        },
+      },
     });
 
     if (!page) {

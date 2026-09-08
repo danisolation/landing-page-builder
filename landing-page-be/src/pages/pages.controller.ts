@@ -7,6 +7,7 @@ import {
   Param,
   Body,
 } from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 import { PagesService } from './pages.service';
 import { CreatePageDto } from './dto/create-page.dto';
 import { UpdatePageDto } from './dto/update-page.dto';
@@ -26,12 +27,16 @@ export class PagesController {
     return this.pagesService.findAll();
   }
 
+  // Public landing-page traffic: shared IPs (CGNAT/office NAT) would hit the
+  // 30 req/min global limit and published pages would render as 404s.
+  @SkipThrottle()
   @Public() // Public for landing page FE
   @Get('slug/:slug')
   findBySlug(@Param('slug') slug: string) {
     return this.pagesService.findBySlug(slug);
   }
 
+  @SkipThrottle()
   @Public() // Public — view counter fires from the published page
   @Post(':id/view')
   incrementView(@Param('id') id: string) {

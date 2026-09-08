@@ -1,7 +1,6 @@
 'use client';
 
 import InlineTextEditor from '@/components/editor/InlineTextEditor';
-import { useInView } from '@/hooks/useInView';
 
 export interface HeroSectionProps {
   content: {
@@ -17,10 +16,6 @@ export interface HeroSectionProps {
 }
 
 export default function HeroSection({ content, isEditing, onContentChange }: HeroSectionProps) {
-  const { ref: titleRef, isInView: titleVisible } = useInView();
-  const { ref: subRef, isInView: subVisible } = useInView();
-  const { ref: btnRef, isInView: btnVisible } = useInView();
-
   const change = (patch: Partial<HeroSectionProps['content']>) =>
     onContentChange?.({ ...content, ...patch });
 
@@ -43,15 +38,7 @@ export default function HeroSection({ content, isEditing, onContentChange }: Her
 
       {/* Content */}
       <div className="relative z-10 text-center px-4 max-w-5xl mx-auto pt-16">
-        <div
-          ref={titleRef}
-          className="reveal"
-          style={{
-            opacity: titleVisible ? 1 : 0,
-            transform: titleVisible ? 'translateY(0)' : 'translateY(20px)',
-            transition: 'opacity 0.8s ease-out, transform 0.8s ease-out',
-          }}
-        >
+        <div className="reveal">
           <InlineTextEditor
             tag="h1"
             editing={isEditing}
@@ -62,15 +49,7 @@ export default function HeroSection({ content, isEditing, onContentChange }: Her
           />
         </div>
 
-        <div
-          ref={subRef}
-          className="reveal"
-          style={{
-            opacity: subVisible ? 1 : 0,
-            transform: subVisible ? 'translateY(0)' : 'translateY(20px)',
-            transition: 'opacity 0.8s ease-out 0.15s, transform 0.8s ease-out 0.15s',
-          }}
-        >
+        <div className="reveal">
           <InlineTextEditor
             tag="p"
             editing={isEditing}
@@ -82,15 +61,7 @@ export default function HeroSection({ content, isEditing, onContentChange }: Her
           />
         </div>
 
-        <div
-          ref={btnRef}
-          className="reveal flex flex-col @2xl:flex-row gap-3 @2xl:gap-4 justify-center"
-          style={{
-            opacity: btnVisible ? 1 : 0,
-            transform: btnVisible ? 'translateY(0)' : 'translateY(20px)',
-            transition: 'opacity 0.8s ease-out 0.3s, transform 0.8s ease-out 0.3s',
-          }}
-        >
+        <div className="reveal flex flex-col @2xl:flex-row gap-3 @2xl:gap-4 justify-center">
           {content.buttonText && (
             <a
               href={content.buttonLink || '#'}

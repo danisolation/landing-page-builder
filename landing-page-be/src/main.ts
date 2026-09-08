@@ -3,6 +3,7 @@ import { ValidationPipe, Logger } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
+import compression from 'compression';
 import { join } from 'path';
 import { AppModule } from './app.module';
 import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
@@ -18,6 +19,9 @@ async function bootstrap() {
 
   // Security headers — protect against clickjacking, XSS, MIME sniffing
   app.use(helmet());
+
+  // Gzip JSON responses — section content compresses 5-10x
+  app.use(compression());
 
   // CORS — use env var, no hardcoded origin
   app.enableCors({
@@ -44,15 +48,17 @@ async function bootstrap() {
     new ResponseInterceptor(),
   );
 
-  // Swagger API docs
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('Landing Page Builder API')
-    .setDescription('API for managing landing pages and sections')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api/docs', app, document);
+  // Swagger API docs — dev only; building the document adds cold-start time
+  if (process.env.NODE_ENV !== 'production') {
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('Landing Page Builder API')
+      .setDescription('API for managing landing pages and sections')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .build();
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup('api/docs', app, document);
+  }
 
   // Serve uploaded media (public uploads dir → /uploads/*)
   app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads/' });
