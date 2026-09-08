@@ -34,6 +34,10 @@ export function middleware(request: NextRequest) {
 
   // Public pages (no locale prefix) — allow through without redirect
   if (!pathnameHasLocale) {
+    // Redirect bare root to locale-prefixed login
+    if (pathname === '/') {
+      return NextResponse.redirect(new URL(`/${defaultLocale}/login`, request.url));
+    }
     if (isAdminPath(pathname)) {
       // Admin routes without locale → redirect to locale-prefixed version
       const url = request.nextUrl.clone();
