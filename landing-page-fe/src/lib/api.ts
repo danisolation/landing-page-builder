@@ -69,35 +69,6 @@ async function fetchAPI<T>(
   return json.data;
 }
 
-// Media upload (multipart) — returns the public URL of the stored image
-export async function uploadMedia(file: File): Promise<{ url: string }> {
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
-
-  const body = new FormData();
-  body.append("file", file);
-
-  const res = await fetch(`${API_URL}/media`, {
-    method: "POST",
-    ...(token ? { headers: { Authorization: `Bearer ${token}` } } : {}),
-    body,
-  });
-
-  if (!res.ok) {
-    let errorMessage = "Upload failed";
-    try {
-      const error = await res.json();
-      errorMessage = error.message || errorMessage;
-    } catch {
-      errorMessage = `HTTP ${res.status}: ${res.statusText}`;
-    }
-    throw new Error(errorMessage);
-  }
-
-  const json: ApiResponse<{ url: string }> = await res.json();
-  return json.data;
-}
-
 // Fire-and-forget view counter for published pages.
 // Deduped per browser session so remounts (StrictMode, back-nav) and
 // repeat visits within one session don't inflate the count.

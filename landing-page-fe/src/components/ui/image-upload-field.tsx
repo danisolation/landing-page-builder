@@ -1,12 +1,9 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { UploadCloud, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { ImageIcon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { uploadMedia } from '@/lib/api';
 
 export interface ImageUploadFieldProps {
   id: string;
@@ -17,9 +14,11 @@ export interface ImageUploadFieldProps {
 }
 
 /**
- * URL input + image upload button. Uploads go to the backend media
- * endpoint and the returned URL is written into the field — so no-code
- * users never need to host images themselves.
+ * Image URL field with live preview.
+ *
+ * Note: local file upload was removed because the hosting tier has an
+ * ephemeral filesystem — uploaded files are lost on every restart/redeploy.
+ * Users paste an image URL from any free host (Cloudinary, Imgur, etc.).
  */
 export default function ImageUploadField({
   id,
@@ -28,23 +27,7 @@ export default function ImageUploadField({
   onChange,
   placeholder,
 }: ImageUploadFieldProps) {
-  const t = useTranslations('common');
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [uploading, setUploading] = useState(false);
   const [previewBroken, setPreviewBroken] = useState(false);
-
-  const handleFile = async (file: File) => {
-    setUploading(true);
-    try {
-      const { url } = await uploadMedia(file);
-      onChange(url);
-      setPreviewBroken(false);
-    } catch (error) {
-      throw error;
-    } finally {
-      setUploading(false);
-    }
-  };
 
   return (
     <div className="space-y-2">
@@ -53,55 +36,32 @@ export default function ImageUploadField({
           {label}
         </Label>
       </div>
-      <div className="flex gap-2">
-        <Input
-          id={id}
-          value={value}
-          onChange={(e) => {
-            setPreviewBroken(false);
-            onChange(e.target.value);
-          }}
-          placeholder={placeholder}
-        />
-        <input
-          ref={inputRef}
-          type="file"
-          accept="image/png,image/jpeg,image/webp,image/gif"
-          className="hidden"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            e.target.value = '';
-            if (file) void handleFile(file);
-          }}
-        />
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          className="shrink-0 h-10"
-          onClick={() => inputRef.current?.click()}
-          disabled={uploading}
-        >
-          {uploading ? (
-            <Loader2 size={16} className="mr-1.5 animate-spin" />
-          ) : (
-            <UploadCloud size={16} className="mr-1.5" />
-          )}
-          <span className="hidden sm:inline">{t('upload')}</span>
-        </Button>
-      </div>
+      <Input
+        id={id}
+        value={value}
+        onChange={(e) => {
+          setPreviewBroken(false);
+          onChange(e.target.value);
+        }}
+        placeholder={placeholder}
+      />
       {value && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={value}
-          alt=""
-          className="h-20 w-auto max-w-full rounded-md border border-border object-contain bg-muted/30"
-          onError={() => setPreviewBroken(true)}
-          hidden={previewBroken}
-        />
-      )}
-      {uploading && (
-        <p className="text-xs text-muted-foreground">{t('uploading')}</p>
+        <div className="flex items-center gap-3">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={value}
+            alt=""
+            className="h-20 w-auto max-w-full rounded-md border border-border object-contain bg-muted/30"
+            onError={() => setPreviewBroken(true)}
+            hidden={previewBroken}
+          />
+          {previewBroken && (
+            <span className="text-xs text-destructive flex items-center gap-1">
+              <ImageIcon size={14} />
+              Failed to load image — check the URL
+            </span>
+          )}
+        </div>
       )}
     </div>
   );
