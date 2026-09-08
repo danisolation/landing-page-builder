@@ -1,5 +1,4 @@
 {
-  "buildCommand": "npm run vercel-build",
-  "outputDirectory": "landing-page-fe/.next",
-  "regions": ["sin1"]
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next"
 }
