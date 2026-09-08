@@ -15,7 +15,13 @@ const nextConfig: NextConfig = {
   images: {
     // Page content (avatars, logos) is user-provided — any https host is allowed.
     // The Vercel Image CDN then optimizes/converts them per device.
-    remotePatterns: [{ protocol: 'https', hostname: '**' }],
+    // localhost covers dev (backend returns http://localhost:3000/uploads/*);
+    // the production backend hostname is already matched by https + **.
+    remotePatterns: [
+      { protocol: 'http', hostname: 'localhost' },
+      { protocol: 'http', hostname: '127.0.0.1' },
+      { protocol: 'https', hostname: '**' },
+    ],
     formats: ['image/avif', 'image/webp'],
   },
 };
