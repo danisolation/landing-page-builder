@@ -31,7 +31,7 @@ export default function LogoCloudSection({ content, isEditing, onContentChange }
 
   return (
     <section className="@container py-(--lp-spacing) px-4 bg-muted/30" ref={ref}>
-      <div className="max-w-5xl mx-auto text-center">
+      <div className="max-w-(--lp-width) mx-auto text-center">
         {/* Header */}
         <div
           className="reveal mb-10"

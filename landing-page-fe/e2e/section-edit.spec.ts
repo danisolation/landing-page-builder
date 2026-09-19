@@ -3,26 +3,36 @@ import { test, expect } from "@playwright/test";
 const BASE_URL = "http://localhost:3001";
 const API_URL = "http://localhost:3000";
 
+// Token dùng chung cho cả file — tránh UI login và /auth rate-limit (5 req/phút)
+let cachedToken: string | null = null;
+
+async function getApiToken(): Promise<string> {
+  let token = cachedToken;
+  if (!token) {
+    const loginRes = await fetch(`${API_URL}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: "admin", password: "123456" }),
+    });
+    const json = (await loginRes.json()) as { data: { access_token: string } };
+    token = json.data.access_token;
+    cachedToken = token;
+  }
+  return token;
+}
+
 async function login(page: any) {
-  await page.goto(`${BASE_URL}/vi/login`);
-  await page.fill('input[id="username"]', "admin");
-  await page.fill('input[id="password"]', "123456");
-  await page.click('button[type="submit"]');
-  await page.waitForURL("**/dashboard**", {
-    timeout: 20000,
-    waitUntil: "domcontentloaded",
-  });
+  const token = await getApiToken();
+  await page.context().addCookies([
+    { name: "token", value: token, domain: "localhost", path: "/" },
+  ]);
+  await page.addInitScript((t: string) => localStorage.setItem("token", t), token);
+  await page.goto(`${BASE_URL}/vi/dashboard`);
+  await page.getByText("Tổng pages").first().waitFor({ timeout: 20000 });
 }
 
 async function getPageWithSections(): Promise<string | null> {
-  // /pages yêu cầu auth + response bọc trong { success, data }
-  const loginRes = await fetch(`${API_URL}/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username: "admin", password: "123456" }),
-  });
-  const token = (await loginRes.json()).data.access_token;
-
+  const token = await getApiToken();
   const res = await fetch(`${API_URL}/pages`, {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -33,8 +43,18 @@ async function getPageWithSections(): Promise<string | null> {
   return pageWithSections?.id || null;
 }
 
-test.describe("Section Edit Page", () => {
-  test("should navigate from edit page to section edit via section card", async ({
+async function openEditor(page: any, pageId: string) {
+  await page.goto(`${BASE_URL}/vi/pages/${pageId}/edit`);
+  // Hero heading trên canvas (InlineTextEditor gắn title "Click to edit")
+  await page.locator('h1[title="Click to edit"]').first().waitFor({
+    timeout: 30000,
+  });
+}
+
+test.describe("Section Edit", () => {
+  test.describe.configure({ mode: "serial" });
+
+  test("selecting a section opens the sidebar edit form", async ({
     page,
   }) => {
     const pageId = await getPageWithSections();
@@ -44,45 +64,21 @@ test.describe("Section Edit Page", () => {
     }
 
     await login(page);
+    await openEditor(page, pageId);
 
-    // Go directly to the page edit
-    await page.goto(`${BASE_URL}/vi/pages/${pageId}/edit`);
-    await page.waitForTimeout(1000);
+    // Click một section trên canvas → sidebar chuyển sang tab Edit
+    await page.locator("div.relative.group").first().click();
+    await page.locator("#hero-heading").waitFor({ timeout: 10000 });
 
-    // Look for section edit links
-    const sectionEditLinks = page.locator(
-      'a[href*="/sections/"][href*="/edit"]',
-    );
-    const sectionCount = await sectionEditLinks.count();
-    console.log(`Found ${sectionCount} section edit links`);
+    // Form editor hiển thị + nút Bỏ chọn để thoát
+    await expect(page.getByRole("button", { name: "Bỏ chọn" })).toBeVisible();
 
-    if (sectionCount === 0) {
-      console.log("No sections found on this page");
-      test.skip();
-      return;
-    }
-
-    // Click edit on first section
-    await sectionEditLinks.first().click();
-    await page.waitForURL("**/sections/**/edit", { timeout: 10000 });
-
-    // Verify section edit page layout
-    const breadcrumbs = page.locator('nav[aria-label="Breadcrumb"]');
-    await expect(breadcrumbs).toBeVisible();
-
-    const title = page.locator("h1");
-    await expect(title).toBeVisible();
-
-    const previewBtn = page.locator("button", { hasText: /Preview|Xem trước/ });
-    await expect(previewBtn).toBeVisible();
-
-    const saveBtn = page.locator("button", { hasText: /Lưu|Save/ });
-    await expect(saveBtn).toBeVisible();
-
-    console.log("✅ All section edit page checks passed");
+    console.log("✅ Sidebar edit form opens on section selection");
   });
 
-  test("preview button opens modal", async ({ page }) => {
+  test("sidebar tab buttons work while a section is selected", async ({
+    page,
+  }) => {
     const pageId = await getPageWithSections();
     if (!pageId) {
       test.skip();
@@ -90,75 +86,82 @@ test.describe("Section Edit Page", () => {
     }
 
     await login(page);
+    await openEditor(page, pageId);
 
-    await page.goto(`${BASE_URL}/vi/pages/${pageId}/edit`);
-    await page.waitForTimeout(1000);
+    // Chọn section → tab Edit hiện form; click tab 'Giao diện' phải chuyển panel
+    await page.locator("div.relative.group").first().click();
+    await page.locator("#hero-heading").waitFor({ timeout: 10000 });
+    await page.getByRole("button", { name: "Giao diện" }).click();
+    await expect(page.locator("#primary-color")).toBeVisible({
+      timeout: 5000,
+    });
 
-    const sectionEditLinks = page.locator(
-      'a[href*="/sections/"][href*="/edit"]',
-    );
-    const cnt = await sectionEditLinks.count();
-    if (cnt === 0) {
+    console.log("✅ Style panel opens even with a selected section");
+  });
+
+  test("preview button opens full page modal", async ({ page }) => {
+    const pageId = await getPageWithSections();
+    if (!pageId) {
       test.skip();
       return;
     }
 
-    await sectionEditLinks.first().click();
-    await page.waitForURL("**/sections/**/edit", { timeout: 10000 });
+    await login(page);
+    await openEditor(page, pageId);
 
-    // Click preview button
-    const previewBtn = page.locator("button", { hasText: /Preview|Xem trước/ });
-    await previewBtn.click();
+    // Toolbar 'Xem trước' mở modal preview toàn trang
+    await page.getByRole("button", { name: "Xem trước", exact: true }).click();
+    const closeBtn = page.locator('button[aria-label="Đóng preview"]');
+    await expect(closeBtn).toBeVisible({ timeout: 10000 });
 
-    // Modal should open
-    const modal = page.locator('[role="dialog"], .fixed.inset-0.z-50').first();
-    await expect(modal).toBeVisible({ timeout: 5000 });
-
-    // Close modal
-    const closeBtn = page
-      .locator('[role="dialog"] button, .fixed.inset-0.z-50 button')
-      .first();
     await closeBtn.click();
-    await expect(modal).not.toBeVisible({ timeout: 5000 });
+    await expect(closeBtn).toHaveCount(0, { timeout: 5000 });
 
     console.log("✅ Preview modal opens and closes correctly");
   });
 
-  test("should navigate from edit page to new section page", async ({
+  test("adding a section via picker appends it to the canvas", async ({
     page,
   }) => {
-    await login(page);
-
-    await page.goto(`${BASE_URL}/vi/pages`);
-    await page.waitForTimeout(1000);
-
-    const editLinks = page.locator('a[href*="/edit"]');
-    if ((await editLinks.count()) === 0) {
+    const pageId = await getPageWithSections();
+    if (!pageId) {
       test.skip();
       return;
     }
 
-    await editLinks.first().click();
-    await page.waitForURL("**/edit", { timeout: 10000 });
+    await login(page);
+    await openEditor(page, pageId);
 
-    // Click "Add Section" button
-    const addBtn = page.locator('a[href*="/sections/new"]').first();
-    await addBtn.click();
-    await page.waitForURL("**/sections/new", { timeout: 10000 });
+    // Thêm section từ SectionPicker
+    const before = await page.locator("div.relative.group").count();
+    await page.locator('button[aria-label="Logo đối tác"]').click();
+    // Sidebar chuyển sang Edit tab — nút Bỏ chọn xuất hiện
+    await page.getByRole("button", { name: "Bỏ chọn" }).waitFor({
+      timeout: 10000,
+    });
+    await page.getByRole("button", { name: "Bỏ chọn" }).click();
+    const after = await page.locator("div.relative.group").count();
+    expect(after).toBeGreaterThan(before);
 
-    // Verify new section page
-    const title = page.locator("h1");
-    await expect(title).toContainText(/Thêm Section|Add Section/);
+    // Dọn dẹp: xóa section vừa thêm (confirm dialog)
+    const logoCard = page
+      .locator("div.relative.group", { hasText: "Companies we work with" })
+      .first();
+    await logoCard.hover();
+    await page.locator('button[aria-label="Xóa"]').click();
+    await page
+      .getByRole("alertdialog")
+      .getByRole("button", { name: "Xác nhận" })
+      .click();
+    await page.waitForTimeout(500);
+    expect(await page.locator("div.relative.group").count()).toBe(before);
 
-    const previewBtn = page.locator("button", { hasText: /Preview|Xem trước/ });
-    await expect(previewBtn).toBeVisible();
-
-    console.log("✅ New section page layout verified");
+    console.log("✅ Section add + delete via picker verified");
   });
 });
 
 test.describe("Dashboard", () => {
-  test("should show stats cards and recent pages", async ({ page }) => {
+  test("should show stats cards and the pages list", async ({ page }) => {
     await login(page);
 
     await page.goto(`${BASE_URL}/vi/dashboard`);
@@ -172,6 +175,13 @@ test.describe("Dashboard", () => {
     // Should have page title
     const title = page.locator("h1");
     await expect(title).toContainText(/Dashboard/);
+
+    // Pages list lives on the Pages page (dashboard/pages split)
+    await page.getByRole("link", { name: "Pages" }).first().click();
+    await page.waitForURL("**/vi/pages", { timeout: 20000 });
+    await page.getByPlaceholder("Tìm kiếm pages...").waitFor({
+      timeout: 20000,
+    });
 
     console.log("✅ Dashboard layout verified");
   });

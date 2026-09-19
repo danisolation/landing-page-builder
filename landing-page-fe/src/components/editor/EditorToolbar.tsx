@@ -11,6 +11,7 @@ import {
   Smartphone,
   Settings,
   ChevronLeft,
+  LayoutTemplate,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEditorState } from "./hooks/useEditorState";
@@ -29,6 +30,7 @@ interface EditorToolbarProps {
   pageTitle: string;
   onBack: () => void;
   onOpenSettings: () => void;
+  onSaveAsTemplate?: () => void;
 }
 
 const viewModes: { mode: ViewMode; icon: typeof Monitor; labelKey: string }[] = [
@@ -48,6 +50,7 @@ export default function EditorToolbar({
   pageTitle,
   onBack,
   onOpenSettings,
+  onSaveAsTemplate,
 }: EditorToolbarProps) {
   const t = useTranslations("editor");
   const tCommon = useTranslations("common");
@@ -150,6 +153,13 @@ export default function EditorToolbar({
           >
             <Settings size={18} />
           </Button>
+
+          {onSaveAsTemplate && (
+            <Button variant="outline" size="sm" onClick={onSaveAsTemplate} title={t("saveAsTemplate")} aria-label={t("saveAsTemplate")}>
+              <LayoutTemplate size={16} className="sm:mr-2" />
+              <span className="hidden sm:inline">{t("saveAsTemplate")}</span>
+            </Button>
+          )}
 
           <Button variant="outline" size="sm" onClick={onPreview}>
             <Eye size={16} className="sm:mr-2" />

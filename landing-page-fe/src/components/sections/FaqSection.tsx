@@ -27,7 +27,7 @@ export default function FaqSection({ content, isEditing, onContentChange }: FaqS
 
   return (
     <section className="@container py-(--lp-spacing) px-4" ref={ref}>
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-(--lp-width) mx-auto">
         {/* Header */}
         <div
           className="reveal text-center mb-12"

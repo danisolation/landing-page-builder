@@ -3,26 +3,32 @@ import { test, expect, Page } from "@playwright/test";
 const BASE_URL = "http://localhost:3001";
 const API_URL = "http://localhost:3000";
 
-async function login(page: Page) {
-  await page.goto(`${BASE_URL}/vi/login`);
-  await page.fill('input[id="username"]', "admin");
-  await page.fill('input[id="password"]', "123456");
-  await page.click('button[type="submit"]');
-  // domcontentloaded: dev server đôi khi giữ 'load' lâu → flaky
-  await page.waitForURL("**/dashboard**", {
-    timeout: 20000,
-    waitUntil: "domcontentloaded",
-  });
-}
+// Token dùng chung cho cả file — tránh UI login và /auth rate-limit (5 req/phút)
+let cachedToken: string | null = null;
 
 async function getApiToken(): Promise<string> {
-  const res = await fetch(`${API_URL}/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username: "admin", password: "123456" }),
-  });
-  const json = await res.json();
-  return json.data.access_token;
+  let token = cachedToken;
+  if (!token) {
+    const res = await fetch(`${API_URL}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: "admin", password: "123456" }),
+    });
+    const json = (await res.json()) as { data: { access_token: string } };
+    token = json.data.access_token;
+    cachedToken = token;
+  }
+  return token;
+}
+
+async function login(page: Page) {
+  const token = await getApiToken();
+  await page.context().addCookies([
+    { name: "token", value: token, domain: "localhost", path: "/" },
+  ]);
+  await page.addInitScript((t: string) => localStorage.setItem("token", t), token);
+  await page.goto(`${BASE_URL}/vi/dashboard`);
+  await page.getByText("Tổng pages").first().waitFor({ timeout: 20000 });
 }
 
 test.describe("Page Templates", () => {
@@ -86,12 +92,13 @@ test.describe("Page Templates", () => {
     await page.fill('input[id="slug"]', slug);
     await page.click('button[type="submit"]');
 
-    // Redirects to editor with 5 sections
+    // Redirects to editor — hero template render trên canvas (visual editor)
     await page.waitForURL("**/edit", { timeout: 15000 });
-    const sectionEditLinks = page.locator(
-      'a[href*="/sections/"][href*="/edit"]',
-    );
-    await expect(sectionEditLinks).toHaveCount(5);
+    await expect(
+      page.locator('h1[title="Click to edit"]', {
+        hasText: "Quản lý công việc thông minh hơn",
+      }),
+    ).toBeVisible({ timeout: 20000 });
 
     // Save current page as custom template
     await page.locator("button", { hasText: "Lưu thành template" }).click();

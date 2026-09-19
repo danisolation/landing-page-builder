@@ -1,4 +1,6 @@
 import { hasLocale } from "next-intl";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { fontVariables } from "@/lib/fonts";
 import "../globals.css";
@@ -27,7 +29,12 @@ export default async function LocaleLayout({
 
   return (
     <html lang={lang} suppressHydrationWarning className={fontVariables}>
-      <body>{children}</body>
+      <body>
+        {/* intl context cho toàn bộ cây — kể cả not-found/404 của trang public */}
+        <NextIntlClientProvider messages={await getMessages()}>
+          {children}
+        </NextIntlClientProvider>
+      </body>
     </html>
   );
 }

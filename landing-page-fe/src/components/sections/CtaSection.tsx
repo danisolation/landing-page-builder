@@ -39,7 +39,7 @@ export default function CtaSection({ content, isEditing, onContentChange }: CtaS
         }}
       />
 
-      <div className="relative z-10 max-w-3xl mx-auto px-4 text-center">
+      <div className="relative z-10 max-w-(--lp-width) mx-auto px-4 text-center">
         <div
           ref={textRef}
           className="reveal"

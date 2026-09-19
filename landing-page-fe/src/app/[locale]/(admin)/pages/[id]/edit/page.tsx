@@ -104,7 +104,10 @@ export default function EditPagePage() {
     updatePage(
       { id: pageId, data },
       {
-        onSuccess: () => toast.success(t("saveSuccess")),
+        onSuccess: () => {
+          toast.success(t("saveSuccess"));
+          setShowSettings(false);
+        },
         onError: (error: Error) =>
           toast.error(error.message || t("saveFailed")),
       },

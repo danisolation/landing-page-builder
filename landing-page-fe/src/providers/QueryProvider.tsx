@@ -13,7 +13,10 @@ export default function QueryProvider({
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 60 * 1000, // 1 minute
+            // staleTime 0: editor/admin luôn thấy dữ liệu mới nhất khi mở lại —
+            // cache 60s làm sửa đổi vừa lưu "biến mất" khi mở lại trong 1 phút.
+            staleTime: 0,
+            // Giữ false: refetch khi focus có thể đè lên sửa đổi chưa lưu trong editor
             refetchOnWindowFocus: false,
           },
         },

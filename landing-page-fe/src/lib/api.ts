@@ -41,8 +41,11 @@ async function fetchAPI<T>(
   });
 
   if (!res.ok) {
-    // 401 → token hết hạn, redirect về login (đúng locale hiện tại)
-    if (res.status === 401 && typeof window !== "undefined") {
+    // 401 → token hết hạn, redirect về login (đúng locale hiện tại).
+    // Ngoại lệ: /auth/login — 401 ở đây là sai thông tin đăng nhập,
+    // không phải hết phiên; form tự hiện toast lỗi thay vì redirect.
+    const isAuthLogin = endpoint.startsWith("/auth/login");
+    if (res.status === 401 && !isAuthLogin && typeof window !== "undefined") {
       localStorage.removeItem("token");
       document.cookie = "token=; path=/; max-age=0";
       const locale = window.location.pathname.split("/")[1] || "vi";

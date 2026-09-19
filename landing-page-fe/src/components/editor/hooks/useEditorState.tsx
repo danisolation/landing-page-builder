@@ -22,10 +22,20 @@ interface EditorState {
   // History for undo/redo
   past: Section[][];
   future: Section[][];
+  // Gộp undo cho chuỗi gõ liên tiếp trên cùng một section
+  lastEdit: { id: string; at: number } | null;
 }
 
 type EditorAction =
   | { type: "SET_SECTIONS"; payload: Section[] }
+  // Sync sau auto-save thay sections bằng bản từ server (temp id → id thật)
+  // mà KHÔNG reset undo/redo history; idMap cập nhật selection đang trỏ
+  // section temp vừa được tạo thật.
+  | {
+      type: "SET_SECTIONS_SYNCED";
+      payload: Section[];
+      idMap: Record<string, string>;
+    }
   | { type: "SELECT_SECTION"; payload: string | null }
   | { type: "ADD_SECTION"; payload: { type: SectionType; index: number } }
   | { type: "UPDATE_SECTION"; payload: { id: string; content: SectionContent } }
@@ -53,12 +63,27 @@ const initialState: EditorState = {
   },
   past: [],
   future: [],
+  lastEdit: null,
 };
 
 function editorReducer(state: EditorState, action: EditorAction): EditorState {
   switch (action.type) {
     case "SET_SECTIONS":
       return { ...state, sections: action.payload, isDirty: false, past: [], future: [] };
+
+    case "SET_SECTIONS_SYNCED": {
+      // Selection đang trỏ section temp vừa được tạo thật → đổi sang id mới
+      let selectedSectionId = state.selectedSectionId;
+      if (selectedSectionId && action.idMap[selectedSectionId]) {
+        selectedSectionId = action.idMap[selectedSectionId];
+      } else if (
+        selectedSectionId &&
+        !action.payload.some((s) => s.id === selectedSectionId)
+      ) {
+        selectedSectionId = null;
+      }
+      return { ...state, sections: action.payload, selectedSectionId };
+    }
 
     case "SELECT_SECTION":
       return { ...state, selectedSectionId: action.payload };
@@ -85,6 +110,7 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
         isDirty: true,
         past: [...state.past, state.sections],
         future: [],
+        lastEdit: null,
       };
     }
 
@@ -93,12 +119,18 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
       const newSections = state.sections.map((s) =>
         s.id === id ? { ...s, content, updatedAt: new Date().toISOString() } : s
       );
+      // Gõ liên tiếp trên cùng section = MỘT bước undo (chuẩn editor),
+      // thay vì mỗi keystroke chiếm một slot lịch sử.
+      const now = Date.now();
+      const coalesce =
+        state.lastEdit?.id === id && now - state.lastEdit.at < 900;
       return {
         ...state,
         sections: newSections,
         isDirty: true,
-        past: [...state.past, state.sections],
+        past: coalesce ? state.past : [...state.past, state.sections],
         future: [],
+        lastEdit: { id, at: now },
       };
     }
 
@@ -113,6 +145,7 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
         isDirty: true,
         past: [...state.past, state.sections],
         future: [],
+        lastEdit: null,
       };
     }
 
@@ -128,6 +161,7 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
         isDirty: true,
         past: [...state.past, state.sections],
         future: [],
+        lastEdit: null,
       };
     }
 
@@ -150,6 +184,7 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
         isDirty: true,
         past: [...state.past, state.sections],
         future: [],
+        lastEdit: null,
       };
     }
 
@@ -177,6 +212,7 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
         past: newPast,
         future: [state.sections, ...state.future],
         isDirty: true,
+        lastEdit: null,
       };
     }
 
@@ -190,6 +226,7 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
         past: [...state.past, state.sections],
         future: newFuture,
         isDirty: true,
+        lastEdit: null,
       };
     }
 

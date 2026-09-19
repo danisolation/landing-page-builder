@@ -19,15 +19,21 @@ interface EditorSidebarProps {
 
 export default function EditorSidebar({ collapsed, onToggle }: EditorSidebarProps) {
   const t = useTranslations("editor");
-  const { state } = useEditorState();
+  const { state, selectSection } = useEditorState();
 
   const [activeTab, setActiveTab] = React.useState<SidebarTab>("sections");
 
-  // Switch to edit tab when a section is selected
+  // Switch to edit tab when a section is selected — unless the user just
+  // clicked a tab themselves (handleTabClick clears the selection).
   const effectiveTab = useMemo(() => {
     if (state.selectedSectionId) return "edit" as const;
     return activeTab;
   }, [state.selectedSectionId, activeTab]);
+
+  const handleTabClick = (tab: SidebarTab) => {
+    selectSection(null);
+    setActiveTab(tab);
+  };
 
   if (collapsed) {
     return (
@@ -40,7 +46,7 @@ export default function EditorSidebar({ collapsed, onToggle }: EditorSidebarProp
           variant="ghost"
           size="icon"
           onClick={() => {
-            setActiveTab("sections");
+            handleTabClick("sections");
             onToggle();
           }}
           title={t("sections")}
@@ -52,7 +58,7 @@ export default function EditorSidebar({ collapsed, onToggle }: EditorSidebarProp
           variant="ghost"
           size="icon"
           onClick={() => {
-            setActiveTab("style");
+            handleTabClick("style");
             onToggle();
           }}
           title={t("style")}
@@ -72,7 +78,7 @@ export default function EditorSidebar({ collapsed, onToggle }: EditorSidebarProp
           <Button
             variant={activeTab === "sections" ? "secondary" : "ghost"}
             size="sm"
-            onClick={() => setActiveTab("sections")}
+            onClick={() => handleTabClick("sections")}
           >
             <Layers size={16} className="mr-2" />
             {t("sections")}
@@ -80,7 +86,7 @@ export default function EditorSidebar({ collapsed, onToggle }: EditorSidebarProp
           <Button
             variant={activeTab === "style" ? "secondary" : "ghost"}
             size="sm"
-            onClick={() => setActiveTab("style")}
+            onClick={() => handleTabClick("style")}
           >
             <Settings size={16} className="mr-2" />
             {t("style")}

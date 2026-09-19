@@ -9,8 +9,9 @@ import { EditorProvider, useEditorState } from "./hooks/useEditorState";
 import EditorToolbar from "./EditorToolbar";
 import EditorSidebar from "./EditorSidebar";
 import LiveCanvas from "./LiveCanvas";
-import { createSection, updateSection, deleteSection } from "@/lib/api";
+import { createSection, updateSection, deleteSection, createTemplate } from "@/lib/api";
 import { usePages } from "@/hooks/usePages";
+import SaveTemplateDialog from "@/components/templates/SaveTemplateDialog";
 import { defaultGlobalStyle } from "@/lib/global-style";
 import type { GlobalStyle } from "./hooks/useEditorState";
 import type { Page, Section } from "@/types";
@@ -33,6 +34,7 @@ function VisualEditorContent({
   onOpenPreview,
 }: VisualEditorProps) {
   const t = useTranslations("editor");
+  const tEdit = useTranslations("editPage");
   const router = useRouter();
   const { state, setSections, dispatch, setGlobalStyle } = useEditorState();
 
@@ -43,6 +45,8 @@ function VisualEditorContent({
   });
   // Re-run the debounce chain after a failed save
   const [retryTick, setRetryTick] = useState(0);
+  const [showSaveTemplate, setShowSaveTemplate] = useState(false);
+  const [isSavingTemplate, setIsSavingTemplate] = useState(false);
 
   const pageId = page.id;
   const baselineRef = useRef<Section[]>([]);
@@ -50,19 +54,27 @@ function VisualEditorContent({
     JSON.stringify({ ...defaultGlobalStyle, ...page.globalStyle }),
   );
 
-  // Initialize sections + global style from the saved page
+  // Initialize sections + global style from the saved page — chỉ khi dữ liệu
+  // đầu vào THẬT SỰ khác lần hydrate trước. Nhờ vậy:
+  //  - isDirtytrue→false sau auto-save KHÔNG đưa state về snapshot cũ lúc mount
+  //  - refetch khi đang có sửa đổi chưa lưu không đè lên nội dung trong bộ nhớ
+  const hydratedRef = useRef("");
   useEffect(() => {
-    if (page.sections) {
-      baselineRef.current = page.sections;
-      setSections(page.sections);
-    }
+    if (state.isDirty || !page.sections) return;
+    const incoming = JSON.stringify(page.sections);
+    if (incoming === hydratedRef.current) return;
+    hydratedRef.current = incoming;
+    baselineRef.current = page.sections;
+    setSections(page.sections);
     setGlobalStyle({ ...defaultGlobalStyle, ...page.globalStyle });
-  }, [page.sections, page.globalStyle, setSections, setGlobalStyle]);
+  }, [page.sections, page.globalStyle, setSections, setGlobalStyle, state.isDirty]);
 
   // Sync sections to backend via sections API
   const syncSections = useCallback(
     async (sections: Section[]) => {
       const baseline = baselineRef.current;
+      // Temp id → id thật (để cập nhật selection đang trỏ section mới thêm)
+      const idMap: Record<string, string> = {};
 
       // Deleted: in baseline but not in current
       const currentIds = new Set(
@@ -83,6 +95,7 @@ function VisualEditorContent({
             content: s.content,
             order: i,
           });
+          idMap[s.id] = created.id;
           synced.push(created);
         } else {
           const original = baseline.find((b) => b.id === s.id);
@@ -92,11 +105,27 @@ function VisualEditorContent({
             JSON.stringify(original.content) !== JSON.stringify(s.content) ||
             original.type !== s.type;
           if (changed) {
-            const updated = await updateSection(pageId, s.id, {
-              type: s.type,
-              content: s.content,
-              order: i,
-            });
+            let updated: Section;
+            try {
+              updated = await updateSection(pageId, s.id, {
+                type: s.type,
+                content: s.content,
+                order: i,
+              });
+            } catch (err: unknown) {
+              // Snapshot undo/redo có thể chứa section đã bị xóa phía server
+              // (vd: undo gỡ section mới thêm rồi redo) — tự tạo lại thay vì
+              // để autosave kẹt vòng lặp 404.
+              if (String(err instanceof Error ? err.message : err).includes("not found")) {
+                updated = await createSection(pageId, {
+                  type: s.type,
+                  content: s.content,
+                  order: i,
+                });
+              } else {
+                throw err;
+              }
+            }
             synced.push(updated);
           } else {
             synced.push(s);
@@ -105,9 +134,10 @@ function VisualEditorContent({
       }
 
       baselineRef.current = synced;
-      setSections(synced);
+      // Dùng action riêng: giữ undo/redo history sau mỗi lần autosave
+      dispatch({ type: "SET_SECTIONS_SYNCED", payload: synced, idMap });
     },
-    [pageId, setSections],
+    [pageId, dispatch],
   );
 
   // Persist StylePanel changes to the Page itself
@@ -188,12 +218,56 @@ function VisualEditorContent({
     }
   };
 
+  // Chặn data loss: đồng bộ thay đổi chưa lưu (đang chờ debounce) trước khi
+  // rời editor hoặc xuất bản — điều hướng client-side không chạy beforeunload.
+  const flushPendingSave = useCallback(async () => {
+    if (!state.isDirty) return;
+    await syncSections(state.sections);
+    await syncGlobalStyle(state.globalStyle);
+    dispatch({ type: "MARK_CLEAN" });
+  }, [state.isDirty, state.sections, state.globalStyle, syncSections, syncGlobalStyle, dispatch]);
+
+  const handleBack = async () => {
+    try {
+      await flushPendingSave();
+    } catch {
+      toast.error(t("saveFailed"));
+      return; // giữ người dùng lại khi lưu thất bại — tránh mất dữ liệu
+    }
+    router.push("/pages");
+  };
+
   const handlePublish = async () => {
     try {
-      await onPublish(!page.isPublished);
-      toast.success(page.isPublished ? t("unpublished") : t("published"));
+      await flushPendingSave();
     } catch {
-      toast.error(t("publishFailed"));
+      toast.error(t("saveFailed"));
+      return;
+    }
+    // Toast thành công/thất bại do onPublish (trang edit) hiển thị —
+    // toast ở đây nữa sẽ ra 2 thông báo "Đã xuất bản!" trùng nhau.
+    await onPublish(!page.isPublished).catch(() => {});
+  };
+
+  // Save the current sections as a reusable template
+  const handleSaveAsTemplate = async (name: string, description?: string) => {
+    setIsSavingTemplate(true);
+    try {
+      await createTemplate({
+        name,
+        description,
+        sections: state.sections.map((s, i) => ({
+          type: s.type,
+          content: s.content,
+          order: i,
+        })),
+      });
+      toast.success(tEdit("templateSaved"));
+      setShowSaveTemplate(false);
+    } catch {
+      toast.error(tEdit("templateSaveFailed"));
+    } finally {
+      setIsSavingTemplate(false);
     }
   };
 
@@ -233,8 +307,9 @@ function VisualEditorContent({
         isPublishing={isPublishing}
         isPublished={page.isPublished}
         pageTitle={page.title}
-        onBack={() => router.push("/pages")}
+        onBack={handleBack}
         onOpenSettings={onOpenSettings}
+        onSaveAsTemplate={() => setShowSaveTemplate(true)}
       />
       <div className="flex-1 flex overflow-hidden relative">
         {/* Backdrop for the mobile overlay sidebar */}
@@ -250,6 +325,12 @@ function VisualEditorContent({
         />
         <LiveCanvas viewMode={viewMode} />
       </div>
+      <SaveTemplateDialog
+        isOpen={showSaveTemplate}
+        isSaving={isSavingTemplate}
+        onClose={() => setShowSaveTemplate(false)}
+        onSave={handleSaveAsTemplate}
+      />
     </div>
   );
 }

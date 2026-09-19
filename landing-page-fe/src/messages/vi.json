@@ -419,6 +419,7 @@
     "sectionSpacing": "Khoảng cách section",
     "contentWidth": "Chiều rộng nội dung",
     "saveSuccess": "Lưu thành công!",
+    "saveAsTemplate": "Lưu thành template",
     "saveFailed": "Lưu thất bại",
     "unsupportedSection": "Section loại \"{type}\" chưa hỗ trợ chỉnh sửa trực quan",
     "unsupportedSectionHint": "Bạn vẫn có thể sửa từ danh sách section hoặc xóa nó",

@@ -16,7 +16,7 @@ export async function getPublicPageBySlug(slug: string): Promise<Page | null> {
   const url = `${API_URL}/pages/slug/${slug}`;
   try {
     const res = await fetch(url, {
-      next: { revalidate: 60 }, // ISR: revalidate every 60 seconds
+      cache: "no-store", // publish/unpublish phải có hiệu lực tức thì — không cache
     });
 
     if (!res.ok) {

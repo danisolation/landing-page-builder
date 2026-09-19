@@ -419,6 +419,7 @@
     "sectionSpacing": "Section Spacing",
     "contentWidth": "Content Width",
     "saveSuccess": "Saved successfully!",
+    "saveAsTemplate": "Save as template",
     "saveFailed": "Failed to save",
     "unsupportedSection": "Section type \"{type}\" is not editable in the visual canvas",
     "unsupportedSectionHint": "You can still edit it from the section list or delete it",

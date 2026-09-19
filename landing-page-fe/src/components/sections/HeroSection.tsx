@@ -37,7 +37,7 @@ export default function HeroSection({ content, isEditing, onContentChange }: Her
       />
 
       {/* Content — entrance is a pure CSS load animation (visible without JS) */}
-      <div className="relative z-10 text-center px-4 max-w-5xl mx-auto pt-16">
+      <div className="relative z-10 text-center px-4 max-w-(--lp-width) mx-auto pt-16">
         <div className="hero-enter">
           <InlineTextEditor
             tag="h1"
